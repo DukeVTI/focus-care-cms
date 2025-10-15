@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,38 +27,53 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <LoadingScreen />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/young-people" element={<YoungPeople />} />
-            <Route path="/young-people/new" element={<NewYoungPerson />} />
-            <Route path="/young-people/:id" element={<YoungPersonDetails />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/new" element={<NewTask />} />
-            <Route path="/tasks/:id" element={<TaskDetail />} />
-            <Route path="/keywork-sessions" element={<KeyworkSessions />} />
-            <Route path="/keywork-sessions/new" element={<NewKeyworkSession />} />
-            <Route path="/keywork-sessions/:id" element={<KeyworkSessionDetail />} />
-            <Route path="/risk-assessments" element={<RiskAssessments />} />
-            <Route path="/risk-assessments/new" element={<NewRiskAssessment />} />
-            <Route path="/risk-assessments/:id" element={<RiskAssessmentDetail />} />
-            <Route path="/chronology" element={<Chronology />} />
-            <Route path="/missing-episodes" element={<MissingEpisodes />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/young-people" element={<YoungPeople />} />
+              <Route path="/young-people/new" element={<NewYoungPerson />} />
+              <Route path="/young-people/:id" element={<YoungPersonDetails />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/tasks/new" element={<NewTask />} />
+              <Route path="/tasks/:id" element={<TaskDetail />} />
+              <Route path="/keywork-sessions" element={<KeyworkSessions />} />
+              <Route path="/keywork-sessions/new" element={<NewKeyworkSession />} />
+              <Route path="/keywork-sessions/:id" element={<KeyworkSessionDetail />} />
+              <Route path="/risk-assessments" element={<RiskAssessments />} />
+              <Route path="/risk-assessments/new" element={<NewRiskAssessment />} />
+              <Route path="/risk-assessments/:id" element={<RiskAssessmentDetail />} />
+              <Route path="/chronology" element={<Chronology />} />
+              <Route path="/missing-episodes" element={<MissingEpisodes />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
