@@ -37,14 +37,69 @@ export function ReassignDialog({ open, onOpenChange, task, onReassigned }: Reass
       return;
     }
 
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(newUserId)) {
+      toast({
+        title: "Error",
+        description: "Invalid user ID format",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Prevent self-assignment
+    const currentAssignee = task.assigned_to_user_id || task.assigned_to;
+    if (newUserId === currentAssignee) {
+      toast({
+        title: "Error",
+        description: "Task is already assigned to this user",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setSubmitting(true);
+
+    // Verify user exists and has valid role
+    const { data: targetUser, error: userError } = await supabase
+      .from('profiles')
+      .select('id, full_name')
+      .eq('id', newUserId)
+      .single();
+
+    if (userError || !targetUser) {
+      toast({
+        title: "Error",
+        description: "User not found or inactive",
+        variant: "destructive"
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // Check if user has a valid role in user_roles table
+    const { data: userRoles, error: roleError } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', newUserId);
+
+    if (roleError || !userRoles || userRoles.length === 0) {
+      toast({
+        title: "Error",
+        description: "User does not have permission to be assigned tasks",
+        variant: "destructive"
+      });
+      setSubmitting(false);
+      return;
+    }
 
     // Get current reassignment history
     const history = task.reassigned_history || [];
     
     // Add new entry to history
     const newHistoryEntry = {
-      fromUserId: task.assigned_to_user_id || task.assigned_to,
+      fromUserId: currentAssignee,
       toUserId: newUserId,
       at: new Date().toISOString(),
       note: note || undefined
@@ -69,7 +124,7 @@ export function ReassignDialog({ open, onOpenChange, task, onReassigned }: Reass
     } else {
       toast({
         title: "Success",
-        description: "Task reassigned successfully"
+        description: `Task reassigned to ${targetUser.full_name}`
       });
       setNewUserId("");
       setNote("");
