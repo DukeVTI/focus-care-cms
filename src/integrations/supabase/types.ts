@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       chronology_entries: {
         Row: {
+          author_name: string | null
           created_at: string | null
           entry_date: string
           entry_time: string
@@ -23,10 +24,12 @@ export type Database = {
           observation: string
           significance: string | null
           staff_id: string
+          tags: string[] | null
           updated_at: string | null
           young_person_id: string
         }
         Insert: {
+          author_name?: string | null
           created_at?: string | null
           entry_date: string
           entry_time: string
@@ -34,10 +37,12 @@ export type Database = {
           observation: string
           significance?: string | null
           staff_id: string
+          tags?: string[] | null
           updated_at?: string | null
           young_person_id: string
         }
         Update: {
+          author_name?: string | null
           created_at?: string | null
           entry_date?: string
           entry_time?: string
@@ -45,6 +50,7 @@ export type Database = {
           observation?: string
           significance?: string | null
           staff_id?: string
+          tags?: string[] | null
           updated_at?: string | null
           young_person_id?: string
         }

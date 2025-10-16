@@ -35,9 +35,11 @@ export default function Chronology() {
         *,
         young_people:young_person_id (
           first_name,
-          last_name
+          last_name,
+          focus_id
         )
       `)
+      .eq("staff_id", user?.id)
       .order("entry_date", { ascending: false })
       .order("entry_time", { ascending: false });
     
@@ -122,9 +124,18 @@ export default function Chronology() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-3">
+                  <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
                     {entry.observation}
                   </p>
+                  {entry.tags && entry.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {entry.tags.map((tag: string) => (
+                        <Badge key={tag} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

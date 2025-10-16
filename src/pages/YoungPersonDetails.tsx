@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { RecentSessionsWidget } from "@/components/young-people/RecentSessionsWidget";
 import { RiskLevelWidget } from "@/components/young-people/RiskLevelWidget";
 import { RiskTrendWidget } from "@/components/young-people/RiskTrendWidget";
+import { ChronologyWidget } from "@/components/young-people/ChronologyWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -142,6 +143,9 @@ export default function YoungPersonDetails() {
 
           {/* Recent Keywork Sessions */}
           <RecentSessionsWidget youngPersonId={youngPerson.id} />
+
+          {/* Recent Chronology */}
+          <ChronologyWidget youngPersonId={youngPerson.id} />
 
           {/* Placement Information */}
           <Card>

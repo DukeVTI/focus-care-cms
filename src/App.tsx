@@ -22,6 +22,8 @@ import RiskAssessments from "./pages/RiskAssessments";
 import NewRiskAssessment from "./pages/NewRiskAssessment";
 import RiskAssessmentDetail from "./pages/RiskAssessmentDetail";
 import Chronology from "./pages/Chronology";
+import NewChronologyEntry from "./pages/NewChronologyEntry";
+import ChronologyDetail from "./pages/ChronologyDetail";
 import MissingEpisodes from "./pages/MissingEpisodes";
 import NotFound from "./pages/NotFound";
 
@@ -66,6 +68,8 @@ const App = () => {
               <Route path="/risk-assessments/new" element={<NewRiskAssessment />} />
               <Route path="/risk-assessments/:id" element={<RiskAssessmentDetail />} />
               <Route path="/chronology" element={<Chronology />} />
+              <Route path="/chronology/new" element={<NewChronologyEntry />} />
+              <Route path="/chronology/:id" element={<ChronologyDetail />} />
               <Route path="/missing-episodes" element={<MissingEpisodes />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
