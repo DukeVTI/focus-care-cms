@@ -14,13 +14,723 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chronology_entries: {
+        Row: {
+          created_at: string | null
+          entry_date: string
+          entry_time: string
+          id: string
+          observation: string
+          significance: string | null
+          staff_id: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          entry_date: string
+          entry_time: string
+          id?: string
+          observation: string
+          significance?: string | null
+          staff_id: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          entry_date?: string
+          entry_time?: string
+          id?: string
+          observation?: string
+          significance?: string | null
+          staff_id?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chronology_entries_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      keywork_sessions: {
+        Row: {
+          author_name: string | null
+          created_at: string | null
+          duration_minutes: number
+          follow_on_action: string | null
+          follow_up_required: boolean | null
+          id: string
+          linked_task_id: string | null
+          location: string | null
+          notes: string | null
+          relevant_standard: string | null
+          session_date: string
+          session_type: string
+          staff_id: string
+          standards_met: string | null
+          title: string | null
+          topic: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          author_name?: string | null
+          created_at?: string | null
+          duration_minutes: number
+          follow_on_action?: string | null
+          follow_up_required?: boolean | null
+          id?: string
+          linked_task_id?: string | null
+          location?: string | null
+          notes?: string | null
+          relevant_standard?: string | null
+          session_date: string
+          session_type: string
+          staff_id: string
+          standards_met?: string | null
+          title?: string | null
+          topic: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          author_name?: string | null
+          created_at?: string | null
+          duration_minutes?: number
+          follow_on_action?: string | null
+          follow_up_required?: boolean | null
+          id?: string
+          linked_task_id?: string | null
+          location?: string | null
+          notes?: string | null
+          relevant_standard?: string | null
+          session_date?: string
+          session_type?: string
+          staff_id?: string
+          standards_met?: string | null
+          title?: string | null
+          topic?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keywork_sessions_linked_task_id_fkey"
+            columns: ["linked_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "keywork_sessions_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      missing_episodes: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_known_location: string | null
+          missing_from: string
+          missing_reason: string | null
+          notes: string | null
+          outcome: string | null
+          police_notified: boolean | null
+          police_reference: string | null
+          reported_by: string
+          returned_at: string | null
+          status: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_known_location?: string | null
+          missing_from: string
+          missing_reason?: string | null
+          notes?: string | null
+          outcome?: string | null
+          police_notified?: boolean | null
+          police_reference?: string | null
+          reported_by: string
+          returned_at?: string | null
+          status?: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_known_location?: string | null
+          missing_from?: string
+          missing_reason?: string | null
+          notes?: string | null
+          outcome?: string | null
+          police_notified?: boolean | null
+          police_reference?: string | null
+          reported_by?: string
+          returned_at?: string | null
+          status?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "missing_episodes_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          organization_name: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          organization_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          organization_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      risk_assessment_config: {
+        Row: {
+          created_at: string
+          id: string
+          sections: Json
+          thresholds: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sections?: Json
+          thresholds?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sections?: Json
+          thresholds?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      risk_assessments: {
+        Row: {
+          assessed_by: string
+          assessment_date: string
+          created_at: string | null
+          follow_up_needed: boolean | null
+          id: string
+          interventions_recommended: string | null
+          level_change_flag: boolean | null
+          linked_task_id: string | null
+          notes: string | null
+          previous_level: string | null
+          protective_factors: string | null
+          recommendations: string | null
+          risk_factors: string | null
+          risk_level: string
+          risk_score: number
+          section_scores: Json | null
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          assessed_by: string
+          assessment_date: string
+          created_at?: string | null
+          follow_up_needed?: boolean | null
+          id?: string
+          interventions_recommended?: string | null
+          level_change_flag?: boolean | null
+          linked_task_id?: string | null
+          notes?: string | null
+          previous_level?: string | null
+          protective_factors?: string | null
+          recommendations?: string | null
+          risk_factors?: string | null
+          risk_level: string
+          risk_score: number
+          section_scores?: Json | null
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          assessed_by?: string
+          assessment_date?: string
+          created_at?: string | null
+          follow_up_needed?: boolean | null
+          id?: string
+          interventions_recommended?: string | null
+          level_change_flag?: boolean | null
+          linked_task_id?: string | null
+          notes?: string | null
+          previous_level?: string | null
+          protective_factors?: string | null
+          recommendations?: string | null
+          risk_factors?: string | null
+          risk_level?: string
+          risk_score?: number
+          section_scores?: Json | null
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "risk_assessments_linked_task_id_fkey"
+            columns: ["linked_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_assessments_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assigned_to: string
+          assigned_to_user_id: string | null
+          assignee_type: string | null
+          completed_at: string | null
+          created_at: string | null
+          created_by_user_id: string | null
+          date_actioned: string | null
+          description: string | null
+          due_date: string | null
+          expected_completion: string | null
+          id: string
+          importance: string
+          reassigned_history: Json | null
+          requires_support: string
+          status: string
+          support_required: boolean | null
+          supporter_role: string | null
+          title: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          assigned_to: string
+          assigned_to_user_id?: string | null
+          assignee_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by_user_id?: string | null
+          date_actioned?: string | null
+          description?: string | null
+          due_date?: string | null
+          expected_completion?: string | null
+          id?: string
+          importance: string
+          reassigned_history?: Json | null
+          requires_support: string
+          status?: string
+          support_required?: boolean | null
+          supporter_role?: string | null
+          title: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          assigned_to?: string
+          assigned_to_user_id?: string | null
+          assignee_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by_user_id?: string | null
+          date_actioned?: string | null
+          description?: string | null
+          due_date?: string | null
+          expected_completion?: string | null
+          id?: string
+          importance?: string
+          reassigned_history?: Json | null
+          requires_support?: string
+          status?: string
+          support_required?: boolean | null
+          supporter_role?: string | null
+          title?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      young_people: {
+        Row: {
+          activities_interests: string[] | null
+          age: number | null
+          allergies: string[] | null
+          assigned_team: string | null
+          attendance_concerns: boolean | null
+          attendance_description: string | null
+          communication_preferences: string[] | null
+          court_orders: string | null
+          created_at: string | null
+          date_of_birth: string
+          dietary_requirements: string[] | null
+          disability_needs: string[] | null
+          draft: boolean | null
+          education_setting: string | null
+          ehcp_review_date: string | null
+          ehcp_status: string | null
+          ethnicity: string | null
+          first_name: string
+          focus_id: string | null
+          gender: string | null
+          gp_practice: string | null
+          id: string
+          initial_risk_summary: string | null
+          internal_notes: string | null
+          interpreter_required: boolean | null
+          iro_name: string | null
+          key_worker_id: string | null
+          known_risks: string[] | null
+          last_name: string | null
+          legal_status: string | null
+          looked_after_child: boolean | null
+          medical_conditions: string[] | null
+          mental_health_next_appointment: string | null
+          mental_health_service: string | null
+          mental_health_support: boolean | null
+          mental_health_worker: string | null
+          nationality: string | null
+          next_lac_review_date: string | null
+          notes: string | null
+          photo_consent: string | null
+          photo_url: string | null
+          placement_info: string | null
+          placement_start_date: string | null
+          placement_type: string | null
+          preferred_name: string | null
+          primary_language: string | null
+          pronouns: string | null
+          protective_factors: string | null
+          religion: string | null
+          school_college: string | null
+          social_worker_email: string | null
+          social_worker_name: string | null
+          social_worker_phone: string | null
+          tags: string[] | null
+          triggers: string | null
+          updated_at: string | null
+          user_id: string
+          visibility: string | null
+          year_group: string | null
+        }
+        Insert: {
+          activities_interests?: string[] | null
+          age?: number | null
+          allergies?: string[] | null
+          assigned_team?: string | null
+          attendance_concerns?: boolean | null
+          attendance_description?: string | null
+          communication_preferences?: string[] | null
+          court_orders?: string | null
+          created_at?: string | null
+          date_of_birth: string
+          dietary_requirements?: string[] | null
+          disability_needs?: string[] | null
+          draft?: boolean | null
+          education_setting?: string | null
+          ehcp_review_date?: string | null
+          ehcp_status?: string | null
+          ethnicity?: string | null
+          first_name: string
+          focus_id?: string | null
+          gender?: string | null
+          gp_practice?: string | null
+          id?: string
+          initial_risk_summary?: string | null
+          internal_notes?: string | null
+          interpreter_required?: boolean | null
+          iro_name?: string | null
+          key_worker_id?: string | null
+          known_risks?: string[] | null
+          last_name?: string | null
+          legal_status?: string | null
+          looked_after_child?: boolean | null
+          medical_conditions?: string[] | null
+          mental_health_next_appointment?: string | null
+          mental_health_service?: string | null
+          mental_health_support?: boolean | null
+          mental_health_worker?: string | null
+          nationality?: string | null
+          next_lac_review_date?: string | null
+          notes?: string | null
+          photo_consent?: string | null
+          photo_url?: string | null
+          placement_info?: string | null
+          placement_start_date?: string | null
+          placement_type?: string | null
+          preferred_name?: string | null
+          primary_language?: string | null
+          pronouns?: string | null
+          protective_factors?: string | null
+          religion?: string | null
+          school_college?: string | null
+          social_worker_email?: string | null
+          social_worker_name?: string | null
+          social_worker_phone?: string | null
+          tags?: string[] | null
+          triggers?: string | null
+          updated_at?: string | null
+          user_id: string
+          visibility?: string | null
+          year_group?: string | null
+        }
+        Update: {
+          activities_interests?: string[] | null
+          age?: number | null
+          allergies?: string[] | null
+          assigned_team?: string | null
+          attendance_concerns?: boolean | null
+          attendance_description?: string | null
+          communication_preferences?: string[] | null
+          court_orders?: string | null
+          created_at?: string | null
+          date_of_birth?: string
+          dietary_requirements?: string[] | null
+          disability_needs?: string[] | null
+          draft?: boolean | null
+          education_setting?: string | null
+          ehcp_review_date?: string | null
+          ehcp_status?: string | null
+          ethnicity?: string | null
+          first_name?: string
+          focus_id?: string | null
+          gender?: string | null
+          gp_practice?: string | null
+          id?: string
+          initial_risk_summary?: string | null
+          internal_notes?: string | null
+          interpreter_required?: boolean | null
+          iro_name?: string | null
+          key_worker_id?: string | null
+          known_risks?: string[] | null
+          last_name?: string | null
+          legal_status?: string | null
+          looked_after_child?: boolean | null
+          medical_conditions?: string[] | null
+          mental_health_next_appointment?: string | null
+          mental_health_service?: string | null
+          mental_health_support?: boolean | null
+          mental_health_worker?: string | null
+          nationality?: string | null
+          next_lac_review_date?: string | null
+          notes?: string | null
+          photo_consent?: string | null
+          photo_url?: string | null
+          placement_info?: string | null
+          placement_start_date?: string | null
+          placement_type?: string | null
+          preferred_name?: string | null
+          primary_language?: string | null
+          pronouns?: string | null
+          protective_factors?: string | null
+          religion?: string | null
+          school_college?: string | null
+          social_worker_email?: string | null
+          social_worker_name?: string | null
+          social_worker_phone?: string | null
+          tags?: string[] | null
+          triggers?: string | null
+          updated_at?: string | null
+          user_id?: string
+          visibility?: string | null
+          year_group?: string | null
+        }
+        Relationships: []
+      }
+      young_person_contacts: {
+        Row: {
+          contact_name: string
+          created_at: string | null
+          id: string
+          is_emergency: boolean | null
+          notes: string | null
+          phone: string | null
+          relationship: string | null
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          contact_name: string
+          created_at?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          contact_name?: string
+          created_at?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_person_contacts_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      young_person_documents: {
+        Row: {
+          created_at: string | null
+          document_type: string
+          expiry_date: string | null
+          file_name: string
+          file_path: string
+          id: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          document_type: string
+          expiry_date?: string | null
+          file_name: string
+          file_path: string
+          id?: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          document_type?: string
+          expiry_date?: string | null
+          file_name?: string
+          file_path?: string
+          id?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_person_documents_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      young_person_medications: {
+        Row: {
+          created_at: string | null
+          dosage: string | null
+          frequency: string | null
+          id: string
+          medication_name: string
+          notes: string | null
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name: string
+          notes?: string | null
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name?: string
+          notes?: string | null
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_person_medications_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_risk_level: {
+        Args: { config_id: string; score: number }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
