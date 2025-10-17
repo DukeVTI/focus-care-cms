@@ -25,6 +25,8 @@ import Chronology from "./pages/Chronology";
 import NewChronologyEntry from "./pages/NewChronologyEntry";
 import ChronologyDetail from "./pages/ChronologyDetail";
 import MissingEpisodes from "./pages/MissingEpisodes";
+import NewMissingEpisode from "./pages/NewMissingEpisode";
+import MissingEpisodeDetail from "./pages/MissingEpisodeDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -71,6 +73,8 @@ const App = () => {
               <Route path="/chronology/new" element={<NewChronologyEntry />} />
               <Route path="/chronology/:id" element={<ChronologyDetail />} />
               <Route path="/missing-episodes" element={<MissingEpisodes />} />
+              <Route path="/missing-episodes/new" element={<NewMissingEpisode />} />
+              <Route path="/missing-episodes/:id" element={<MissingEpisodeDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

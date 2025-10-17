@@ -11,6 +11,7 @@ import { RecentSessionsWidget } from "@/components/young-people/RecentSessionsWi
 import { RiskLevelWidget } from "@/components/young-people/RiskLevelWidget";
 import { RiskTrendWidget } from "@/components/young-people/RiskTrendWidget";
 import { ChronologyWidget } from "@/components/young-people/ChronologyWidget";
+import { MissingEpisodesWidget } from "@/components/young-people/MissingEpisodesWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -146,6 +147,9 @@ export default function YoungPersonDetails() {
 
           {/* Recent Chronology */}
           <ChronologyWidget youngPersonId={youngPerson.id} />
+
+          {/* Missing Episodes */}
+          <MissingEpisodesWidget youngPersonId={youngPerson.id} />
 
           {/* Placement Information */}
           <Card>
