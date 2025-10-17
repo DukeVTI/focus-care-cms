@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/untypedClient";
+import { format } from "date-fns";
 import focusLogo from "@/assets/focus-logo.jpg";
 
 export default function Dashboard() {
@@ -17,6 +18,9 @@ export default function Dashboard() {
     highPriority: 0,
     sessions: 0
   });
+  const [recentTasks, setRecentTasks] = useState<any[]>([]);
+  const [recentYoungPeople, setRecentYoungPeople] = useState<any[]>([]);
+  const [upcomingSessions, setUpcomingSessions] = useState<any[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -28,6 +32,9 @@ export default function Dashboard() {
     if (user) {
       fetchProfile();
       fetchStats();
+      fetchRecentTasks();
+      fetchRecentYoungPeople();
+      fetchUpcomingSessions();
     }
   }, [user]);
 
@@ -56,6 +63,52 @@ export default function Dashboard() {
       highPriority,
       sessions: sessionsRes.count || 0
     });
+  };
+
+  const fetchRecentTasks = async () => {
+    const { data } = await supabase
+      .from("tasks")
+      .select(`
+        *,
+        young_people:young_person_id (
+          first_name,
+          last_name
+        )
+      `)
+      .order("created_at", { ascending: false })
+      .limit(3);
+    
+    if (data) setRecentTasks(data);
+  };
+
+  const fetchRecentYoungPeople = async () => {
+    const { data } = await supabase
+      .from("young_people")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3);
+    
+    if (data) setRecentYoungPeople(data);
+  };
+
+  const fetchUpcomingSessions = async () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const { data } = await supabase
+      .from("keywork_sessions")
+      .select(`
+        *,
+        young_people:young_person_id (
+          first_name,
+          last_name
+        )
+      `)
+      .gte("session_date", today.toISOString())
+      .order("session_date", { ascending: true })
+      .limit(3);
+    
+    if (data) setUpcomingSessions(data);
   };
 
   if (loading) {
@@ -175,27 +228,35 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { task: "Complete risk assessment for Sarah", priority: "High", status: "Pending" },
-                  { task: "Keywork session with Michael", priority: "Medium", status: "In Progress" },
-                  { task: "Update chronology notes", priority: "Low", status: "Completed" },
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{item.task}</p>
-                      <p className="text-xs text-muted-foreground mt-1">Priority: {item.priority}</p>
+                {recentTasks.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">No tasks yet</p>
+                ) : (
+                  recentTasks.map((task) => (
+                    <div 
+                      key={task.id} 
+                      className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors cursor-pointer"
+                      onClick={() => navigate(`/tasks/${task.id}`)}
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{task.title}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {task.young_people?.first_name} {task.young_people?.last_name} • {task.importance}
+                        </p>
+                      </div>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        task.status === "completed" || task.status === "DONE" ? "bg-success/20 text-success" :
+                        task.status === "in_progress" || task.status === "IN_PROGRESS" ? "bg-warning/20 text-warning" :
+                        "bg-destructive/20 text-destructive"
+                      }`}>
+                        {task.status.replace('_', ' ')}
+                      </span>
                     </div>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      item.status === "Completed" ? "bg-success/20 text-success" :
-                      item.status === "In Progress" ? "bg-warning/20 text-warning" :
-                      "bg-destructive/20 text-destructive"
-                    }`}>
-                      {item.status}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
-              <Button variant="outline" className="w-full mt-4">View All Tasks</Button>
+              <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/tasks")}>
+                View All Tasks
+              </Button>
             </CardContent>
           </Card>
 
@@ -210,32 +271,34 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { name: "Sarah Thompson", age: 16, status: "Active", risk: "Medium" },
-                  { name: "Michael Chen", age: 15, status: "Active", risk: "Low" },
-                  { name: "Emily Rodriguez", age: 17, status: "Active", risk: "High" },
-                ].map((person, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-semibold">
-                        {person.name.split(" ").map(n => n[0]).join("")}
+                {recentYoungPeople.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">No young people yet</p>
+                ) : (
+                  recentYoungPeople.map((person) => {
+                    const age = new Date().getFullYear() - new Date(person.date_of_birth).getFullYear();
+                    return (
+                      <div 
+                        key={person.id} 
+                        className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors cursor-pointer"
+                        onClick={() => navigate(`/young-people/${person.id}`)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-semibold">
+                            {person.first_name[0]}{person.last_name[0]}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{person.first_name} {person.last_name}</p>
+                            <p className="text-xs text-muted-foreground">Age: {age} • {person.gender}</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-sm">{person.name}</p>
-                        <p className="text-xs text-muted-foreground">Age: {person.age} • {person.status}</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      person.risk === "High" ? "bg-destructive/20 text-destructive" :
-                      person.risk === "Medium" ? "bg-warning/20 text-warning" :
-                      "bg-success/20 text-success"
-                    }`}>
-                      {person.risk} Risk
-                    </span>
-                  </div>
-                ))}
+                    );
+                  })
+                )}
               </div>
-              <Button variant="outline" className="w-full mt-4">View All Cases</Button>
+              <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/young-people")}>
+                View All Cases
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -250,26 +313,35 @@ export default function Dashboard() {
             <CardDescription className="text-sm">Scheduled keywork sessions for the week</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                { name: "Sarah Thompson", date: "Today, 2:00 PM", type: "Planned Session" },
-                { name: "Michael Chen", date: "Tomorrow, 10:00 AM", type: "Follow-up" },
-                { name: "Emily Rodriguez", date: "Friday, 3:30 PM", type: "Risk Review" },
-              ].map((session, index) => (
-                <div key={index} className="p-4 rounded-lg border bg-card hover:shadow-md transition-all">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <p className="font-medium">{session.name}</p>
-                      <p className="text-sm text-muted-foreground mt-1">{session.date}</p>
+            {upcomingSessions.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">No upcoming sessions</p>
+            ) : (
+              <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {upcomingSessions.map((session) => (
+                  <div 
+                    key={session.id} 
+                    className="p-4 rounded-lg border bg-card hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => navigate(`/keywork-sessions/${session.id}`)}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <p className="font-medium">{session.young_people?.first_name} {session.young_people?.last_name}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {format(new Date(session.session_date), "PPp")}
+                        </p>
+                      </div>
+                      <FileText className="h-4 w-4 text-primary" />
                     </div>
-                    <FileText className="h-4 w-4 text-primary" />
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                      {session.session_type}
+                    </span>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                    {session.type}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/keywork-sessions")}>
+              View All Sessions
+            </Button>
           </CardContent>
         </Card>
       </main>
