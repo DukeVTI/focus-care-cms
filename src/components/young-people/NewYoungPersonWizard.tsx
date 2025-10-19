@@ -39,6 +39,11 @@ const youngPersonSchema = z.object({
   // Legal & Care Status
   placementType: z.string().min(1, "Placement type is required"),
   placementStartDate: z.string().min(1, "Placement start date is required"),
+  placementAddress: z.string().min(1, "Placement address is required").max(500),
+  placementRoadName: z.string().min(1, "Road name is required").max(200),
+  placementPostcode: z.string()
+    .min(1, "Postcode is required")
+    .regex(/^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/i, "Invalid UK postcode format"),
   legalStatus: z.string().min(1, "Legal status is required"),
   lookedAfterChild: z.boolean().default(false),
   iroName: z.string().optional(),
@@ -121,7 +126,7 @@ const steps = [
     id: 2, 
     title: "Legal & Care Status", 
     component: LegalCareStatusStep,
-    fields: ["placementType", "placementStartDate", "legalStatus"]
+    fields: ["placementType", "placementStartDate", "placementAddress", "placementRoadName", "placementPostcode", "legalStatus"]
   },
   { 
     id: 3, 
@@ -188,6 +193,9 @@ export const NewYoungPersonWizard = () => {
       interpreterRequired: false,
       placementType: "",
       placementStartDate: "",
+      placementAddress: "",
+      placementRoadName: "",
+      placementPostcode: "",
       legalStatus: "",
       lookedAfterChild: false,
       iroName: "",
@@ -319,6 +327,9 @@ export const NewYoungPersonWizard = () => {
         photo_url: photoUrl,
         placement_type: values.placementType,
         placement_start_date: values.placementStartDate || null,
+        placement_address: values.placementAddress,
+        placement_road_name: values.placementRoadName,
+        placement_postcode: values.placementPostcode,
         legal_status: values.legalStatus,
         looked_after_child: values.lookedAfterChild,
         iro_name: values.iroName || null,

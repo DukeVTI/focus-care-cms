@@ -57,6 +57,62 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
         />
       </div>
 
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Placement Details</h3>
+        
+        <FormField
+          control={form.control}
+          name="placementAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Placement Address *</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Enter full placement address..."
+                  className="min-h-[80px]"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="placementRoadName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Road Name *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter road name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="placementPostcode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Postcode *</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="e.g. SW1A 1AA" 
+                    {...field} 
+                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
       <FormField
         control={form.control}
         name="legalStatus"

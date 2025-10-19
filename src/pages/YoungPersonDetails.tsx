@@ -175,13 +175,38 @@ export default function YoungPersonDetails() {
                     </p>
                   </div>
                 )}
-                {youngPerson.placement_info && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm font-medium">Details</p>
-                    <p className="text-sm text-muted-foreground">{youngPerson.placement_info}</p>
-                  </div>
-                )}
               </div>
+              {(youngPerson.placement_address || youngPerson.placement_road_name || youngPerson.placement_postcode) && (
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-semibold mb-3">Placement Details</p>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {youngPerson.placement_address && (
+                      <div className="md:col-span-2">
+                        <p className="text-sm font-medium">Address</p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{youngPerson.placement_address}</p>
+                      </div>
+                    )}
+                    {youngPerson.placement_road_name && (
+                      <div>
+                        <p className="text-sm font-medium">Road Name</p>
+                        <p className="text-sm text-muted-foreground">{youngPerson.placement_road_name}</p>
+                      </div>
+                    )}
+                    {youngPerson.placement_postcode && (
+                      <div>
+                        <p className="text-sm font-medium">Postcode</p>
+                        <p className="text-sm text-muted-foreground uppercase">{youngPerson.placement_postcode}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {youngPerson.placement_info && (
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-medium">Additional Details</p>
+                  <p className="text-sm text-muted-foreground">{youngPerson.placement_info}</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 

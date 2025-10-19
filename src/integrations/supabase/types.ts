@@ -480,7 +480,10 @@ export type Database = {
           notes: string | null
           photo_consent: string | null
           photo_url: string | null
+          placement_address: string | null
           placement_info: string | null
+          placement_postcode: string | null
+          placement_road_name: string | null
           placement_start_date: string | null
           placement_type: string | null
           preferred_name: string | null
@@ -541,7 +544,10 @@ export type Database = {
           notes?: string | null
           photo_consent?: string | null
           photo_url?: string | null
+          placement_address?: string | null
           placement_info?: string | null
+          placement_postcode?: string | null
+          placement_road_name?: string | null
           placement_start_date?: string | null
           placement_type?: string | null
           preferred_name?: string | null
@@ -602,7 +608,10 @@ export type Database = {
           notes?: string | null
           photo_consent?: string | null
           photo_url?: string | null
+          placement_address?: string | null
           placement_info?: string | null
+          placement_postcode?: string | null
+          placement_road_name?: string | null
           placement_start_date?: string | null
           placement_type?: string | null
           preferred_name?: string | null
