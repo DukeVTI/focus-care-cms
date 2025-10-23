@@ -460,7 +460,9 @@ export type Database = {
           focus_id: string | null
           gender: string | null
           gp_practice: string | null
+          health_support: string | null
           id: string
+          id_details: string | null
           initial_risk_summary: string | null
           internal_notes: string | null
           interpreter_required: boolean | null
@@ -478,6 +480,8 @@ export type Database = {
           nationality: string | null
           next_lac_review_date: string | null
           notes: string | null
+          offending_details: Json | null
+          offending_history: string | null
           photo_consent: string | null
           photo_url: string | null
           placement_address: string | null
@@ -486,12 +490,17 @@ export type Database = {
           placement_road_name: string | null
           placement_start_date: string | null
           placement_type: string | null
+          placing_authority: string | null
           preferred_name: string | null
+          previous_placement: string | null
           primary_language: string | null
           pronouns: string | null
           protective_factors: string | null
+          reason_for_placement: string | null
           religion: string | null
+          residing_local_authority: string | null
           school_college: string | null
+          social_media: string | null
           social_worker_email: string | null
           social_worker_name: string | null
           social_worker_phone: string | null
@@ -524,7 +533,9 @@ export type Database = {
           focus_id?: string | null
           gender?: string | null
           gp_practice?: string | null
+          health_support?: string | null
           id?: string
+          id_details?: string | null
           initial_risk_summary?: string | null
           internal_notes?: string | null
           interpreter_required?: boolean | null
@@ -542,6 +553,8 @@ export type Database = {
           nationality?: string | null
           next_lac_review_date?: string | null
           notes?: string | null
+          offending_details?: Json | null
+          offending_history?: string | null
           photo_consent?: string | null
           photo_url?: string | null
           placement_address?: string | null
@@ -550,12 +563,17 @@ export type Database = {
           placement_road_name?: string | null
           placement_start_date?: string | null
           placement_type?: string | null
+          placing_authority?: string | null
           preferred_name?: string | null
+          previous_placement?: string | null
           primary_language?: string | null
           pronouns?: string | null
           protective_factors?: string | null
+          reason_for_placement?: string | null
           religion?: string | null
+          residing_local_authority?: string | null
           school_college?: string | null
+          social_media?: string | null
           social_worker_email?: string | null
           social_worker_name?: string | null
           social_worker_phone?: string | null
@@ -588,7 +606,9 @@ export type Database = {
           focus_id?: string | null
           gender?: string | null
           gp_practice?: string | null
+          health_support?: string | null
           id?: string
+          id_details?: string | null
           initial_risk_summary?: string | null
           internal_notes?: string | null
           interpreter_required?: boolean | null
@@ -606,6 +626,8 @@ export type Database = {
           nationality?: string | null
           next_lac_review_date?: string | null
           notes?: string | null
+          offending_details?: Json | null
+          offending_history?: string | null
           photo_consent?: string | null
           photo_url?: string | null
           placement_address?: string | null
@@ -614,12 +636,17 @@ export type Database = {
           placement_road_name?: string | null
           placement_start_date?: string | null
           placement_type?: string | null
+          placing_authority?: string | null
           preferred_name?: string | null
+          previous_placement?: string | null
           primary_language?: string | null
           pronouns?: string | null
           protective_factors?: string | null
+          reason_for_placement?: string | null
           religion?: string | null
+          residing_local_authority?: string | null
           school_college?: string | null
+          social_media?: string | null
           social_worker_email?: string | null
           social_worker_name?: string | null
           social_worker_phone?: string | null

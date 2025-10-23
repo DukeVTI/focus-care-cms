@@ -49,7 +49,7 @@ const Index = () => {
             />
             <div className="hidden sm:block">
               <h1 className="text-base md:text-lg font-bold">FOCUS</h1>
-              <p className="text-xs text-muted-foreground hidden md:block">Youth Care Management</p>
+              <p className="text-xs text-muted-foreground hidden md:block">NextGen Care Support</p>
             </div>
           </div>
           <Button onClick={() => navigate("/auth")} size="sm" className="md:size-default">
@@ -118,10 +118,10 @@ const Index = () => {
       <section className="container px-4 py-20">
         <div className="mx-auto max-w-3xl rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-12 text-center shadow-orange">
           <h2 className="mb-4 text-3xl font-bold text-primary-foreground md:text-4xl">
-            Ready to transform your youth care management?
+            Ready to transform your care management?
           </h2>
           <p className="mb-8 text-lg text-primary-foreground/90">
-            Join organizations that have modernized their care management processes
+            Join organizations that have modernized their care support processes
           </p>
           <Button size="lg" variant="secondary" onClick={() => navigate("/auth")}>
             Start Your Free Trial
@@ -133,7 +133,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t bg-card/50 py-8">
         <div className="container px-4 text-center text-sm text-muted-foreground">
-          <p>© 2024 FOCUS Youth Care Management. All rights reserved.</p>
+          <p>© 2024 FOCUS NextGen Care Support. All rights reserved.</p>
         </div>
       </footer>
     </div>

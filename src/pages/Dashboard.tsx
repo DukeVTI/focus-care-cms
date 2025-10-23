@@ -144,7 +144,7 @@ export default function Dashboard() {
             />
             <div className="hidden sm:block">
               <h1 className="text-base md:text-lg font-bold">FOCUS</h1>
-              <p className="text-xs text-muted-foreground hidden md:block">Youth Care Management</p>
+              <p className="text-xs text-muted-foreground hidden md:block">NextGen Care Support</p>
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
@@ -165,7 +165,7 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="mb-6 md:mb-8">
           <h2 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, {profile?.full_name?.split(" ")[0] || "User"}!</h2>
-          <p className="text-sm md:text-base text-muted-foreground">Here's an overview of your youth care activities</p>
+          <p className="text-sm md:text-base text-muted-foreground">Here's an overview of your Next Gen platform.</p>
         </div>
 
         {/* Stats Grid */}

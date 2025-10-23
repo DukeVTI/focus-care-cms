@@ -1,7 +1,9 @@
 import { UseFormReturn } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
 interface StepProps {
@@ -22,6 +24,7 @@ const riskOptions = [
 
 export const SafeguardingStep = ({ form }: StepProps) => {
   const knownRisks = form.watch("knownRisks") || [];
+  const offendingHistory = form.watch("offendingHistory");
 
   const toggleRisk = (risk: string) => {
     const current = knownRisks;
@@ -118,6 +121,88 @@ export const SafeguardingStep = ({ form }: StepProps) => {
           </FormItem>
         )}
       />
+
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Offending History</h3>
+        
+        <FormField
+          control={form.control}
+          name="offendingHistory"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Offending History</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select option" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="previous-charges">Previous Charges</SelectItem>
+                  <SelectItem value="currently-monitored">Currently Monitored</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {offendingHistory === "yes" && (
+          <div className="space-y-4 pl-4 border-l-2 border-primary">
+            <FormField
+              control={form.control}
+              name="offendingDetails.description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Incident Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe the incident..."
+                      className="min-h-[80px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="offendingDetails.date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date of Incident</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="offendingDetails.outcome"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Outcome</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe the outcome..."
+                      className="min-h-[60px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

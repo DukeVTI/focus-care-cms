@@ -174,34 +174,65 @@ export default function YoungPersonDetails() {
                       {format(new Date(youngPerson.placement_start_date), "PPP")}
                     </p>
                   </div>
-                )}
-              </div>
-              {(youngPerson.placement_address || youngPerson.placement_road_name || youngPerson.placement_postcode) && (
-                <div className="pt-4 border-t">
-                  <p className="text-sm font-semibold mb-3">Placement Details</p>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {youngPerson.placement_address && (
-                      <div className="md:col-span-2">
-                        <p className="text-sm font-medium">Address</p>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{youngPerson.placement_address}</p>
-                      </div>
-                    )}
-                    {youngPerson.placement_road_name && (
-                      <div>
-                        <p className="text-sm font-medium">Road Name</p>
-                        <p className="text-sm text-muted-foreground">{youngPerson.placement_road_name}</p>
-                      </div>
-                    )}
-                    {youngPerson.placement_postcode && (
-                      <div>
-                        <p className="text-sm font-medium">Postcode</p>
-                        <p className="text-sm text-muted-foreground uppercase">{youngPerson.placement_postcode}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              {youngPerson.placement_info && (
+                 )}
+               </div>
+               {(youngPerson.placement_address || youngPerson.placement_road_name || youngPerson.placement_postcode) && (
+                 <div className="pt-4 border-t">
+                   <p className="text-sm font-semibold mb-3">Placement Details</p>
+                   <div className="grid gap-4 md:grid-cols-2">
+                     {youngPerson.placement_address && (
+                       <div className="md:col-span-2">
+                         <p className="text-sm font-medium">Address</p>
+                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">{youngPerson.placement_address}</p>
+                       </div>
+                     )}
+                     {youngPerson.placement_road_name && (
+                       <div>
+                         <p className="text-sm font-medium">Road Name</p>
+                         <p className="text-sm text-muted-foreground">{youngPerson.placement_road_name}</p>
+                       </div>
+                     )}
+                     {youngPerson.placement_postcode && (
+                       <div>
+                         <p className="text-sm font-medium">Postcode</p>
+                         <p className="text-sm text-muted-foreground uppercase">{youngPerson.placement_postcode}</p>
+                       </div>
+                     )}
+                   </div>
+                 </div>
+               )}
+               {(youngPerson.placing_authority || youngPerson.residing_local_authority || youngPerson.previous_placement || youngPerson.reason_for_placement) && (
+                 <div className="pt-4 border-t">
+                   <p className="text-sm font-semibold mb-3">Authority & Placement History</p>
+                   <div className="grid gap-4 md:grid-cols-2">
+                     {youngPerson.placing_authority && (
+                       <div>
+                         <p className="text-sm font-medium">Placing Authority</p>
+                         <p className="text-sm text-muted-foreground capitalize">{youngPerson.placing_authority.replace('-', ' ')}</p>
+                       </div>
+                     )}
+                     {youngPerson.residing_local_authority && (
+                       <div>
+                         <p className="text-sm font-medium">Residing Local Authority</p>
+                         <p className="text-sm text-muted-foreground">{youngPerson.residing_local_authority}</p>
+                       </div>
+                     )}
+                     {youngPerson.previous_placement && (
+                       <div>
+                         <p className="text-sm font-medium">Previous Placement</p>
+                         <p className="text-sm text-muted-foreground">{youngPerson.previous_placement}</p>
+                       </div>
+                     )}
+                     {youngPerson.reason_for_placement && (
+                       <div>
+                         <p className="text-sm font-medium">Reason for Placement</p>
+                         <p className="text-sm text-muted-foreground capitalize">{youngPerson.reason_for_placement.replace('-', ' ')}</p>
+                       </div>
+                     )}
+                   </div>
+                 </div>
+               )}
+               {youngPerson.placement_info && (
                 <div className="pt-4 border-t">
                   <p className="text-sm font-medium">Additional Details</p>
                   <p className="text-sm text-muted-foreground">{youngPerson.placement_info}</p>

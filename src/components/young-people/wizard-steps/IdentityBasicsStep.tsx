@@ -162,9 +162,61 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
           name="nationality"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nationality</FormLabel>
+              <FormLabel>Nationality *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select nationality" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="british">British</SelectItem>
+                  <SelectItem value="irish">Irish</SelectItem>
+                  <SelectItem value="eu">EU National</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="socialMedia"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Social Media</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select platform" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="facebook">Facebook</SelectItem>
+                  <SelectItem value="instagram">Instagram</SelectItem>
+                  <SelectItem value="tiktok">TikTok</SelectItem>
+                  <SelectItem value="snapchat">Snapchat</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="idDetails"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ID Details</FormLabel>
               <FormControl>
-                <Input placeholder="Enter nationality" {...field} />
+                <Input placeholder="Passport, birth certificate, etc." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

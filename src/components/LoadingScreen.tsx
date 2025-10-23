@@ -29,7 +29,7 @@ export const LoadingScreen = () => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent mb-2">
             FOCUS
           </h1>
-          <p className="text-sm text-muted-foreground tracking-wide">Youth Care Management</p>
+          <p className="text-sm text-muted-foreground tracking-wide">NextGen Care Support</p>
           <div className="mt-4 flex justify-center gap-1">
             <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></div>
             <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" style={{ animationDelay: '0.2s' }}></div>

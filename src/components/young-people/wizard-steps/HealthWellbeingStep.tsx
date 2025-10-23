@@ -1,11 +1,13 @@
 import { UseFormReturn, useFieldArray } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, Plus } from "lucide-react";
 import { useState } from "react";
 
 interface StepProps {
@@ -195,6 +197,30 @@ export const HealthWellbeingStep = ({ form }: StepProps) => {
           ))}
         </div>
       </div>
+
+      <FormField
+        control={form.control}
+        name="healthSupport"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Health Support</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select health support type" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="gp-registered">GP Registered</SelectItem>
+                <SelectItem value="dental-care">Dental Care</SelectItem>
+                <SelectItem value="specialist-clinic">Specialist Clinic</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <div className="border rounded-lg p-4 space-y-4">
         <FormField
