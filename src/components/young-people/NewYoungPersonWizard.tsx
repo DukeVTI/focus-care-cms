@@ -369,10 +369,10 @@ export const NewYoungPersonWizard = ({ editMode = false, existingData }: WizardP
     setIsSubmitting(true);
     try {
       await saveYoungPerson(values, false);
-      toast.success("Profile created successfully!");
+      toast.success(editMode ? "Profile updated successfully!" : "Profile created successfully!");
       navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.message || "Failed to create profile");
+      toast.error(error.message || (editMode ? "Failed to update profile" : "Failed to create profile"));
     } finally {
       setIsSubmitting(false);
     }
@@ -400,80 +400,97 @@ export const NewYoungPersonWizard = ({ editMode = false, existingData }: WizardP
       photoUrl = fileName;
     }
 
-    // Insert young person
-    const { data: youngPerson, error: insertError } = await supabase
-      .from("young_people")
-      .insert({
-        user_id: user.id,
-        first_name: values.firstName,
-        last_name: values.lastName,
-        date_of_birth: values.dateOfBirth,
-        preferred_name: values.preferredName || null,
-        pronouns: values.pronouns || null,
-        gender: values.gender || null,
-        ethnicity: values.ethnicity || null,
-        primary_language: values.primaryLanguage || null,
-        interpreter_required: values.interpreterRequired,
-        nationality: values.nationality || null,
-        social_media: values.socialMedia || null,
-        id_details: values.idDetails || null,
-        photo_consent: values.photoConsent || null,
-        photo_url: photoUrl,
-        placement_type: values.placementType,
-        placement_start_date: values.placementStartDate || null,
-        placement_address: values.placementAddress,
-        placement_road_name: values.placementRoadName,
-        placement_postcode: values.placementPostcode,
-        placing_authority: values.placingAuthority || null,
-        residing_local_authority: values.residingLocalAuthority || null,
-        previous_placement: values.previousPlacement || null,
-        reason_for_placement: values.reasonForPlacement || null,
-        legal_status: values.legalStatus,
-        looked_after_child: values.lookedAfterChild,
-        iro_name: values.iroName || null,
-        next_lac_review_date: values.nextLacReviewDate || null,
-        court_orders: values.courtOrders || null,
-        social_worker_name: values.socialWorkerName,
-        social_worker_email: values.socialWorkerEmail,
-        social_worker_phone: values.socialWorkerPhone || null,
-        key_worker_id: values.keyWorkerId || null,
-        gp_practice: values.gpPractice || null,
-        school_college: values.schoolCollege || null,
-        medical_conditions: values.medicalConditions || [],
-        allergies: values.allergies || [],
-        health_support: values.healthSupport || null,
-        mental_health_support: values.mentalHealthSupport,
-        mental_health_service: values.mentalHealthService || null,
-        mental_health_worker: values.mentalHealthWorker || null,
-        mental_health_next_appointment: values.mentalHealthNextAppointment || null,
-        disability_needs: values.disabilityNeeds || [],
-        education_setting: values.educationSetting || null,
-        year_group: values.yearGroup || null,
-        ehcp_status: values.ehcpStatus || null,
-        ehcp_review_date: values.ehcpReviewDate || null,
-        attendance_concerns: values.attendanceConcerns,
-        attendance_description: values.attendanceDescription || null,
-        known_risks: values.knownRisks || [],
-        triggers: values.triggers || null,
-        protective_factors: values.protectiveFactors || null,
-        initial_risk_summary: values.initialRiskSummary,
-        offending_history: values.offendingHistory || null,
-        offending_details: values.offendingDetails ? JSON.stringify(values.offendingDetails) : null,
-        religion: values.religion || null,
-        dietary_requirements: values.dietaryRequirements || [],
-        activities_interests: values.activitiesInterests || [],
-        communication_preferences: values.communicationPreferences || [],
-        assigned_team: values.assignedTeam || null,
-        visibility: values.visibility,
-        tags: values.tags || [],
-        internal_notes: values.internalNotes || null,
-        draft: isDraft,
-      })
-      .select()
-      .single();
+    // Insert or update young person
+    const youngPersonData = {
+      user_id: user.id,
+      first_name: values.firstName,
+      last_name: values.lastName,
+      date_of_birth: values.dateOfBirth,
+      preferred_name: values.preferredName || null,
+      pronouns: values.pronouns || null,
+      gender: values.gender || null,
+      ethnicity: values.ethnicity || null,
+      primary_language: values.primaryLanguage || null,
+      interpreter_required: values.interpreterRequired,
+      nationality: values.nationality || null,
+      social_media: values.socialMedia || null,
+      id_details: values.idDetails || null,
+      photo_consent: values.photoConsent || null,
+      photo_url: photoUrl,
+      placement_type: values.placementType,
+      placement_start_date: values.placementStartDate || null,
+      placement_address: values.placementAddress,
+      placement_road_name: values.placementRoadName,
+      placement_postcode: values.placementPostcode,
+      placing_authority: values.placingAuthority || null,
+      residing_local_authority: values.residingLocalAuthority || null,
+      previous_placement: values.previousPlacement || null,
+      reason_for_placement: values.reasonForPlacement || null,
+      legal_status: values.legalStatus,
+      looked_after_child: values.lookedAfterChild,
+      iro_name: values.iroName || null,
+      next_lac_review_date: values.nextLacReviewDate || null,
+      court_orders: values.courtOrders || null,
+      social_worker_name: values.socialWorkerName,
+      social_worker_email: values.socialWorkerEmail,
+      social_worker_phone: values.socialWorkerPhone || null,
+      key_worker_id: values.keyWorkerId || null,
+      gp_practice: values.gpPractice || null,
+      school_college: values.schoolCollege || null,
+      medical_conditions: values.medicalConditions || [],
+      allergies: values.allergies || [],
+      health_support: values.healthSupport || null,
+      mental_health_support: values.mentalHealthSupport,
+      mental_health_service: values.mentalHealthService || null,
+      mental_health_worker: values.mentalHealthWorker || null,
+      mental_health_next_appointment: values.mentalHealthNextAppointment || null,
+      disability_needs: values.disabilityNeeds || [],
+      education_setting: values.educationSetting || null,
+      year_group: values.yearGroup || null,
+      ehcp_status: values.ehcpStatus || null,
+      ehcp_review_date: values.ehcpReviewDate || null,
+      attendance_concerns: values.attendanceConcerns,
+      attendance_description: values.attendanceDescription || null,
+      known_risks: values.knownRisks || [],
+      triggers: values.triggers || null,
+      protective_factors: values.protectiveFactors || null,
+      initial_risk_summary: values.initialRiskSummary,
+      offending_history: values.offendingHistory || null,
+      offending_details: values.offendingDetails ? JSON.stringify(values.offendingDetails) : null,
+      religion: values.religion || null,
+      dietary_requirements: values.dietaryRequirements || [],
+      activities_interests: values.activitiesInterests || [],
+      communication_preferences: values.communicationPreferences || [],
+      assigned_team: values.assignedTeam || null,
+      visibility: values.visibility,
+      tags: values.tags || [],
+      internal_notes: values.internalNotes || null,
+      draft: isDraft,
+    };
 
-    if (insertError) throw insertError;
-    if (!youngPerson) throw new Error("Failed to create young person");
+    let youngPerson;
+    if (editMode && existingData?.id) {
+      const { data, error: updateError } = await supabase
+        .from("young_people")
+        .update(youngPersonData)
+        .eq("id", existingData.id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+      youngPerson = data;
+    } else {
+      const { data, error: insertError } = await supabase
+        .from("young_people")
+        .insert(youngPersonData)
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+      youngPerson = data;
+    }
+
+    if (!youngPerson) throw new Error(editMode ? "Failed to update young person" : "Failed to create young person");
 
     // Insert medications
     if (values.medications && values.medications.length > 0) {
@@ -598,7 +615,7 @@ export const NewYoungPersonWizard = ({ editMode = false, existingData }: WizardP
                   disabled={isSubmitting}
                   className="gap-2"
                 >
-                  Create Profile
+                  {editMode ? "Update Profile" : "Create Profile"}
                 </Button>
               )}
             </div>
