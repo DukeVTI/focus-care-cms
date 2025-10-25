@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { ModuleHeader } from "@/components/ModuleHeader";
-import { ArrowLeft, MapPin, Calendar, Clock, AlertTriangle } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, AlertTriangle, UserCheck } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -213,6 +213,12 @@ export default function MissingEpisodeDetail() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
+                  {episode.status === "missing" && (
+                    <Button onClick={() => navigate(`/missing-episodes/${id}/report-return`)} variant="default" size="sm">
+                      <UserCheck className="h-4 w-4 mr-2" />
+                      Report Return
+                    </Button>
+                  )}
                   {!isEditing && (
                     <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
                       Edit

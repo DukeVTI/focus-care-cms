@@ -16,19 +16,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-const missingEpisodeSchema = z.object({
+const missingReportSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
   missing_from: z.string().min(1, "Missing date/time is required"),
-  returned_at: z.string().optional(),
   last_known_location: z.string().trim().max(500, "Location must be less than 500 characters").optional(),
   missing_reason: z.string().optional(),
-  outcome: z.string().optional(),
   notes: z.string().trim().max(800, "Notes must be less than 800 characters").optional(),
   police_notified: z.boolean().default(false),
   police_reference: z.string().trim().max(100, "Police reference must be less than 100 characters").optional(),
 });
 
-type MissingEpisodeFormValues = z.infer<typeof missingEpisodeSchema>;
+type MissingReportFormValues = z.infer<typeof missingReportSchema>;
 
 export default function NewMissingEpisode() {
   const { user, loading } = useAuth();
@@ -37,15 +35,13 @@ export default function NewMissingEpisode() {
   const [youngPeople, setYoungPeople] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  const form = useForm<MissingEpisodeFormValues>({
-    resolver: zodResolver(missingEpisodeSchema),
+  const form = useForm<MissingReportFormValues>({
+    resolver: zodResolver(missingReportSchema),
     defaultValues: {
       young_person_id: "",
       missing_from: "",
-      returned_at: "",
       last_known_location: "",
       missing_reason: "",
-      outcome: "",
       notes: "",
       police_notified: false,
       police_reference: "",
@@ -75,32 +71,29 @@ export default function NewMissingEpisode() {
     }
   };
 
-  const onSubmit = async (values: MissingEpisodeFormValues) => {
+  const onSubmit = async (values: MissingReportFormValues) => {
     if (!user) return;
     
     setSubmitting(true);
-    const status = values.returned_at ? "returned" : "missing";
     
     const { error } = await supabase
       .from("missing_episodes")
       .insert([{
         young_person_id: values.young_person_id,
         missing_from: values.missing_from,
-        returned_at: values.returned_at || null,
         last_known_location: values.last_known_location || null,
         missing_reason: values.missing_reason || null,
-        outcome: values.outcome || null,
         notes: values.notes || null,
         police_notified: values.police_notified,
         police_reference: values.police_reference || null,
-        status: status,
+        status: "missing",
         reported_by: user.id
       }]);
 
     if (error) {
       toast({
         title: "Error",
-        description: "Failed to create missing episode. Please try again.",
+        description: "Failed to report missing episode. Please try again.",
         variant: "destructive"
       });
     } else {
@@ -176,20 +169,6 @@ export default function NewMissingEpisode() {
 
                 <FormField
                   control={form.control}
-                  name="returned_at"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date/Time Returned (Optional)</FormLabel>
-                      <FormControl>
-                        <Input type="datetime-local" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="last_known_location"
                   render={({ field }) => (
                     <FormItem>
@@ -218,30 +197,6 @@ export default function NewMissingEpisode() {
                           <SelectItem value="absent_without_leave">Absent Without Leave</SelectItem>
                           <SelectItem value="family_contact">Family Contact</SelectItem>
                           <SelectItem value="peer_influence">Peer Influence</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="outcome"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Outcome (if returned)</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select outcome" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="returned_voluntarily">Returned Voluntarily</SelectItem>
-                          <SelectItem value="brought_back_by_police">Brought Back by Police</SelectItem>
-                          <SelectItem value="located_by_staff">Located by Staff</SelectItem>
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
