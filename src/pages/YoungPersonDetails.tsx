@@ -5,13 +5,15 @@ import { supabase } from "@/integrations/supabase/untypedClient";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe } from "lucide-react";
+import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { RecentSessionsWidget } from "@/components/young-people/RecentSessionsWidget";
 import { RiskLevelWidget } from "@/components/young-people/RiskLevelWidget";
 import { RiskTrendWidget } from "@/components/young-people/RiskTrendWidget";
 import { ChronologyWidget } from "@/components/young-people/ChronologyWidget";
 import { MissingEpisodesWidget } from "@/components/young-people/MissingEpisodesWidget";
+import { SafeguardingRisksWidget } from "@/components/young-people/SafeguardingRisksWidget";
+import { TasksWidget } from "@/components/young-people/TasksWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -92,9 +94,15 @@ export default function YoungPersonDetails() {
                   {youngPerson.first_name[0]}{youngPerson.last_name[0]}
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-2xl mb-2">
-                    {youngPerson.first_name} {youngPerson.last_name}
-                  </CardTitle>
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-2xl mb-2">
+                      {youngPerson.first_name} {youngPerson.last_name}
+                    </CardTitle>
+                    <Button onClick={() => navigate(`/young-people/${id}/edit`)}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </div>
                   <div className="space-y-1">
                     {youngPerson.preferred_name && (
                       <p className="text-muted-foreground">Preferred name: {youngPerson.preferred_name}</p>
@@ -150,6 +158,12 @@ export default function YoungPersonDetails() {
 
           {/* Missing Episodes */}
           <MissingEpisodesWidget youngPersonId={youngPerson.id} />
+
+          {/* Safeguarding & Risks */}
+          <SafeguardingRisksWidget youngPersonId={youngPerson.id} />
+
+          {/* Outstanding Tasks */}
+          <TasksWidget youngPersonId={youngPerson.id} />
 
           {/* Placement Information */}
           <Card>

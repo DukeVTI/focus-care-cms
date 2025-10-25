@@ -29,6 +29,8 @@ import NewMissingEpisode from "./pages/NewMissingEpisode";
 import MissingEpisodeDetail from "./pages/MissingEpisodeDetail";
 import NotFound from "./pages/NotFound";
 
+import EditYoungPerson from "./pages/EditYoungPerson";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -60,6 +62,7 @@ const App = () => {
               <Route path="/young-people" element={<YoungPeople />} />
               <Route path="/young-people/new" element={<NewYoungPerson />} />
               <Route path="/young-people/:id" element={<YoungPersonDetails />} />
+              <Route path="/young-people/:id/edit" element={<EditYoungPerson />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/tasks/new" element={<NewTask />} />
               <Route path="/tasks/:id" element={<TaskDetail />} />

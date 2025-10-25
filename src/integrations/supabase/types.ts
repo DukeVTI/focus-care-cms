@@ -336,6 +336,53 @@ export type Database = {
           },
         ]
       }
+      safeguarding_risks: {
+        Row: {
+          added_by: string
+          created_at: string | null
+          date_added: string
+          description: string
+          id: string
+          is_active: boolean | null
+          mitigation_plan: string | null
+          risk_category: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          added_by: string
+          created_at?: string | null
+          date_added?: string
+          description: string
+          id?: string
+          is_active?: boolean | null
+          mitigation_plan?: string | null
+          risk_category: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          added_by?: string
+          created_at?: string | null
+          date_added?: string
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          mitigation_plan?: string | null
+          risk_category?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safeguarding_risks_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assigned_to: string

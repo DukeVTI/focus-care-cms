@@ -9,6 +9,7 @@ import { Form } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { IdentityBasicsStep } from "./wizard-steps/IdentityBasicsStep";
 import { LegalCareStatusStep } from "./wizard-steps/LegalCareStatusStep";
@@ -185,15 +186,85 @@ const steps = [
   },
 ];
 
-export const NewYoungPersonWizard = () => {
+interface WizardProps {
+  editMode?: boolean;
+  existingData?: any;
+}
+
+export const NewYoungPersonWizard = ({ editMode = false, existingData }: WizardProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const form = useForm<YoungPersonFormValues>({
     resolver: zodResolver(youngPersonSchema),
     mode: "onChange",
-    defaultValues: {
+    defaultValues: existingData ? {
+      firstName: existingData.first_name || "",
+      lastName: existingData.last_name || "",
+      preferredName: existingData.preferred_name || "",
+      dateOfBirth: existingData.date_of_birth || "",
+      pronouns: existingData.pronouns || "",
+      gender: existingData.gender || "",
+      ethnicity: existingData.ethnicity || "",
+      primaryLanguage: existingData.primary_language || "",
+      nationality: existingData.nationality || "",
+      socialMedia: existingData.social_media || "",
+      idDetails: existingData.id_details || "",
+      interpreterRequired: existingData.interpreter_required || false,
+      placementType: existingData.placement_type || "",
+      placementStartDate: existingData.placement_start_date || "",
+      placementAddress: existingData.placement_address || "",
+      placementRoadName: existingData.placement_road_name || "",
+      placementPostcode: existingData.placement_postcode || "",
+      placingAuthority: existingData.placing_authority || "",
+      residingLocalAuthority: existingData.residing_local_authority || "",
+      previousPlacement: existingData.previous_placement || "",
+      reasonForPlacement: existingData.reason_for_placement || "",
+      legalStatus: existingData.legal_status || "",
+      lookedAfterChild: existingData.looked_after_child || false,
+      iroName: existingData.iro_name || "",
+      nextLacReviewDate: existingData.next_lac_review_date || "",
+      courtOrders: existingData.court_orders || "",
+      socialWorkerName: existingData.social_worker_name || "",
+      socialWorkerEmail: existingData.social_worker_email || "",
+      socialWorkerPhone: existingData.social_worker_phone || "",
+      keyWorkerId: existingData.key_worker_id || "",
+      gpPractice: existingData.gp_practice || "",
+      schoolCollege: existingData.school_college || "",
+      healthSupport: existingData.health_support || "",
+      mentalHealthSupport: existingData.mental_health_support || false,
+      mentalHealthService: existingData.mental_health_service || "",
+      mentalHealthWorker: existingData.mental_health_worker || "",
+      mentalHealthNextAppointment: existingData.mental_health_next_appointment || "",
+      educationSetting: existingData.education_setting || "",
+      yearGroup: existingData.year_group || "",
+      attendanceConcerns: existingData.attendance_concerns || false,
+      attendanceDescription: existingData.attendance_description || "",
+      triggers: existingData.triggers || "",
+      protectiveFactors: existingData.protective_factors || "",
+      initialRiskSummary: existingData.initial_risk_summary || "",
+      offendingHistory: existingData.offending_history || "",
+      religion: existingData.religion || "",
+      assignedTeam: existingData.assigned_team || "",
+      visibility: existingData.visibility || "all_staff",
+      internalNotes: existingData.internal_notes || "",
+      medicalConditions: existingData.medical_conditions || [],
+      medications: existingData.medications || [],
+      allergies: existingData.allergies || [],
+      disabilityNeeds: existingData.disability_needs || [],
+      knownRisks: existingData.known_risks || [],
+      dietaryRequirements: existingData.dietary_requirements || [],
+      activitiesInterests: existingData.activities_interests || [],
+      communicationPreferences: existingData.communication_preferences || [],
+      tags: existingData.tags || [],
+      documents: [],
+      emergencyContactName: "",
+      emergencyContactRelationship: "",
+      emergencyContactPhone: "",
+      emergencyContactNotes: "",
+    } : {
       firstName: "",
       lastName: "",
       preferredName: "",

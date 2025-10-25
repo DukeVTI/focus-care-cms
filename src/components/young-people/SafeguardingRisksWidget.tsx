@@ -1,0 +1,287 @@
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/untypedClient";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { AlertTriangle, Plus, Edit, Trash2 } from "lucide-react";
+import { format } from "date-fns";
+
+interface SafeguardingRisksWidgetProps {
+  youngPersonId: string;
+}
+
+interface Risk {
+  id: string;
+  risk_category: string;
+  description: string;
+  mitigation_plan: string | null;
+  date_added: string;
+  is_active: boolean;
+}
+
+const RISK_CATEGORIES = [
+  "Physical Safety",
+  "Emotional Wellbeing",
+  "Online Safety",
+  "Substance Misuse",
+  "Criminal Exploitation",
+  "Sexual Exploitation",
+  "Missing Episodes",
+  "Self-Harm",
+  "Mental Health",
+  "Other"
+];
+
+export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidgetProps) => {
+  const [risks, setRisks] = useState<Risk[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingRisk, setEditingRisk] = useState<Risk | null>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState({
+    risk_category: "",
+    description: "",
+    mitigation_plan: "",
+    date_added: new Date().toISOString().split('T')[0]
+  });
+
+  useEffect(() => {
+    fetchRisks();
+  }, [youngPersonId]);
+
+  const fetchRisks = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("safeguarding_risks")
+      .select("*")
+      .eq("young_person_id", youngPersonId)
+      .eq("is_active", true)
+      .order("date_added", { ascending: false });
+
+    if (!error && data) {
+      setRisks(data);
+    }
+    setLoading(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) return;
+
+    const payload = {
+      ...formData,
+      young_person_id: youngPersonId,
+      added_by: user.id,
+      is_active: true
+    };
+
+    let error;
+    if (editingRisk) {
+      ({ error } = await supabase
+        .from("safeguarding_risks")
+        .update(payload)
+        .eq("id", editingRisk.id));
+    } else {
+      ({ error } = await supabase
+        .from("safeguarding_risks")
+        .insert([payload]));
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Could not save risk entry",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: `Risk entry ${editingRisk ? 'updated' : 'added'} successfully`,
+    });
+
+    setDialogOpen(false);
+    setEditingRisk(null);
+    setFormData({
+      risk_category: "",
+      description: "",
+      mitigation_plan: "",
+      date_added: new Date().toISOString().split('T')[0]
+    });
+    fetchRisks();
+  };
+
+  const handleEdit = (risk: Risk) => {
+    setEditingRisk(risk);
+    setFormData({
+      risk_category: risk.risk_category,
+      description: risk.description,
+      mitigation_plan: risk.mitigation_plan || "",
+      date_added: risk.date_added
+    });
+    setDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from("safeguarding_risks")
+      .update({ is_active: false })
+      .eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Could not delete risk entry",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Risk entry removed",
+    });
+    fetchRisks();
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-orange-500" />
+              Safeguarding & Risks
+            </CardTitle>
+            <CardDescription>Active risk factors and mitigation plans</CardDescription>
+          </div>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" onClick={() => {
+                setEditingRisk(null);
+                setFormData({
+                  risk_category: "",
+                  description: "",
+                  mitigation_plan: "",
+                  date_added: new Date().toISOString().split('T')[0]
+                });
+              }}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Risk
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{editingRisk ? 'Edit' : 'Add'} Risk Entry</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label>Risk Category *</Label>
+                  <Select 
+                    value={formData.risk_category} 
+                    onValueChange={(value) => setFormData({...formData, risk_category: value})}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RISK_CATEGORIES.map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Description *</Label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Describe the risk..."
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Mitigation Plan</Label>
+                  <Textarea
+                    value={formData.mitigation_plan}
+                    onChange={(e) => setFormData({...formData, mitigation_plan: e.target.value})}
+                    placeholder="What steps are being taken to mitigate this risk?"
+                  />
+                </div>
+                <div>
+                  <Label>Date Added *</Label>
+                  <Input
+                    type="date"
+                    value={formData.date_added}
+                    onChange={(e) => setFormData({...formData, date_added: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    {editingRisk ? 'Update' : 'Add'} Risk
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <p className="text-muted-foreground">Loading risks...</p>
+        ) : risks.length === 0 ? (
+          <p className="text-muted-foreground">No active risks recorded</p>
+        ) : (
+          <div className="space-y-4">
+            {risks.map((risk) => (
+              <div key={risk.id} className="border rounded-lg p-4 space-y-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-xs font-medium">
+                        {risk.risk_category}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(risk.date_added), "dd MMM yyyy")}
+                      </span>
+                    </div>
+                    <p className="font-medium mb-1">{risk.description}</p>
+                    {risk.mitigation_plan && (
+                      <div className="mt-2 p-2 bg-muted rounded text-sm">
+                        <p className="font-medium text-xs mb-1">Mitigation Plan:</p>
+                        <p>{risk.mitigation_plan}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2 ml-4">
+                    <Button size="sm" variant="ghost" onClick={() => handleEdit(risk)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => handleDelete(risk.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
