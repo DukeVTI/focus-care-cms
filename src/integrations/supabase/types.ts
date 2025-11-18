@@ -492,6 +492,7 @@ export type Database = {
           assigned_team: string | null
           attendance_concerns: boolean | null
           attendance_description: string | null
+          care_legal_status: string | null
           communication_preferences: string[] | null
           court_orders: string | null
           created_at: string | null
@@ -510,6 +511,9 @@ export type Database = {
           health_support: string | null
           id: string
           id_details: string | null
+          id_type: string | null
+          id_value: string | null
+          immigration_legal_status: string | null
           initial_risk_summary: string | null
           internal_notes: string | null
           interpreter_required: boolean | null
@@ -544,6 +548,7 @@ export type Database = {
           pronouns: string | null
           protective_factors: string | null
           reason_for_placement: string | null
+          reason_for_placement_notes: string | null
           religion: string | null
           residing_local_authority: string | null
           school_college: string | null
@@ -552,6 +557,7 @@ export type Database = {
           social_worker_name: string | null
           social_worker_phone: string | null
           tags: string[] | null
+          time_looked_after: string | null
           triggers: string | null
           updated_at: string | null
           user_id: string
@@ -565,6 +571,7 @@ export type Database = {
           assigned_team?: string | null
           attendance_concerns?: boolean | null
           attendance_description?: string | null
+          care_legal_status?: string | null
           communication_preferences?: string[] | null
           court_orders?: string | null
           created_at?: string | null
@@ -583,6 +590,9 @@ export type Database = {
           health_support?: string | null
           id?: string
           id_details?: string | null
+          id_type?: string | null
+          id_value?: string | null
+          immigration_legal_status?: string | null
           initial_risk_summary?: string | null
           internal_notes?: string | null
           interpreter_required?: boolean | null
@@ -617,6 +627,7 @@ export type Database = {
           pronouns?: string | null
           protective_factors?: string | null
           reason_for_placement?: string | null
+          reason_for_placement_notes?: string | null
           religion?: string | null
           residing_local_authority?: string | null
           school_college?: string | null
@@ -625,6 +636,7 @@ export type Database = {
           social_worker_name?: string | null
           social_worker_phone?: string | null
           tags?: string[] | null
+          time_looked_after?: string | null
           triggers?: string | null
           updated_at?: string | null
           user_id: string
@@ -638,6 +650,7 @@ export type Database = {
           assigned_team?: string | null
           attendance_concerns?: boolean | null
           attendance_description?: string | null
+          care_legal_status?: string | null
           communication_preferences?: string[] | null
           court_orders?: string | null
           created_at?: string | null
@@ -656,6 +669,9 @@ export type Database = {
           health_support?: string | null
           id?: string
           id_details?: string | null
+          id_type?: string | null
+          id_value?: string | null
+          immigration_legal_status?: string | null
           initial_risk_summary?: string | null
           internal_notes?: string | null
           interpreter_required?: boolean | null
@@ -690,6 +706,7 @@ export type Database = {
           pronouns?: string | null
           protective_factors?: string | null
           reason_for_placement?: string | null
+          reason_for_placement_notes?: string | null
           religion?: string | null
           residing_local_authority?: string | null
           school_college?: string | null
@@ -698,6 +715,7 @@ export type Database = {
           social_worker_name?: string | null
           social_worker_phone?: string | null
           tags?: string[] | null
+          time_looked_after?: string | null
           triggers?: string | null
           updated_at?: string | null
           user_id?: string
