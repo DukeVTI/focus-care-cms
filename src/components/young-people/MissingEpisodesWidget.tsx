@@ -108,6 +108,11 @@ export const MissingEpisodesWidget = ({ youngPersonId }: MissingEpisodesWidgetPr
               <Clock className="h-4 w-4 text-destructive" />
             </div>
             <div className="space-y-1 text-sm">
+              {currentEpisode.case_id && (
+                <div className="flex items-center gap-2 font-semibold">
+                  <span>Case: {currentEpisode.case_id}</span>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Calendar className="h-3 w-3" />
                 <span>Since: {format(new Date(currentEpisode.missing_from), "PPp")}</span>

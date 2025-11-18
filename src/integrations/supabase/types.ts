@@ -144,7 +144,12 @@ export type Database = {
       }
       missing_episodes: {
         Row: {
+          case_id: string | null
           created_at: string | null
+          edt_contact: string | null
+          follow_up_actions: string | null
+          found_by: string | null
+          found_location: string | null
           id: string
           last_known_location: string | null
           missing_from: string
@@ -154,13 +159,20 @@ export type Database = {
           police_notified: boolean | null
           police_reference: string | null
           reported_by: string
+          return_reason: string | null
           returned_at: string | null
+          risks_encountered: string | null
           status: string
           updated_at: string | null
           young_person_id: string
         }
         Insert: {
+          case_id?: string | null
           created_at?: string | null
+          edt_contact?: string | null
+          follow_up_actions?: string | null
+          found_by?: string | null
+          found_location?: string | null
           id?: string
           last_known_location?: string | null
           missing_from: string
@@ -170,13 +182,20 @@ export type Database = {
           police_notified?: boolean | null
           police_reference?: string | null
           reported_by: string
+          return_reason?: string | null
           returned_at?: string | null
+          risks_encountered?: string | null
           status?: string
           updated_at?: string | null
           young_person_id: string
         }
         Update: {
+          case_id?: string | null
           created_at?: string | null
+          edt_contact?: string | null
+          follow_up_actions?: string | null
+          found_by?: string | null
+          found_location?: string | null
           id?: string
           last_known_location?: string | null
           missing_from?: string
@@ -186,7 +205,9 @@ export type Database = {
           police_notified?: boolean | null
           police_reference?: string | null
           reported_by?: string
+          return_reason?: string | null
           returned_at?: string | null
+          risks_encountered?: string | null
           status?: string
           updated_at?: string | null
           young_person_id?: string
@@ -859,6 +880,7 @@ export type Database = {
         Args: { config_id: string; score: number }
         Returns: string
       }
+      generate_missing_case_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

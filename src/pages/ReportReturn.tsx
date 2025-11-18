@@ -19,6 +19,11 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 
 const returnReportSchema = z.object({
   returned_at: z.string().min(1, "Return date/time is required"),
+  found_by: z.string().min(1, "Please specify who found the young person"),
+  found_location: z.string().trim().max(500, "Location must be less than 500 characters").optional(),
+  return_reason: z.string().trim().max(1000, "Reason must be less than 1000 characters").optional(),
+  risks_encountered: z.string().trim().max(1000, "Risks must be less than 1000 characters").optional(),
+  follow_up_actions: z.string().trim().max(1000, "Actions must be less than 1000 characters").optional(),
   outcome: z.string().min(1, "Outcome is required"),
   notes: z.string().trim().max(800, "Notes must be less than 800 characters").optional(),
 });
@@ -38,6 +43,11 @@ export default function ReportReturn() {
     resolver: zodResolver(returnReportSchema),
     defaultValues: {
       returned_at: "",
+      found_by: "",
+      found_location: "",
+      return_reason: "",
+      risks_encountered: "",
+      follow_up_actions: "",
       outcome: "",
       notes: "",
     }
@@ -93,6 +103,11 @@ export default function ReportReturn() {
       .from("missing_episodes")
       .update({
         returned_at: values.returned_at,
+        found_by: values.found_by,
+        found_location: values.found_location || null,
+        return_reason: values.return_reason || null,
+        risks_encountered: values.risks_encountered || null,
+        follow_up_actions: values.follow_up_actions || null,
         outcome: values.outcome,
         notes: episode.notes 
           ? `${episode.notes}\n\nReturn Notes: ${values.notes || "N/A"}`
@@ -173,10 +188,103 @@ export default function ReportReturn() {
 
                 <FormField
                   control={form.control}
+                  name="found_by"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Found By *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Who found the young person?" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="self-returned">Self-Returned</SelectItem>
+                          <SelectItem value="police">Police</SelectItem>
+                          <SelectItem value="staff">Staff</SelectItem>
+                          <SelectItem value="family">Family / Carer</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="found_location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Where Found</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Location where young person was found" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="return_reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reason for Going Missing (YP's Explanation)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Young person's explanation for why they went missing..."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="risks_encountered"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Risks Encountered While Missing</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="E.g., exploitation, substance use, unsafe contacts..."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="follow_up_actions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Follow-up Actions</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="E.g., referrals, safety planning, meetings..."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="outcome"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Outcome</FormLabel>
+                      <FormLabel>Outcome *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -184,9 +292,11 @@ export default function ReportReturn() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="returned_voluntarily">Returned Voluntarily</SelectItem>
-                          <SelectItem value="brought_back_by_police">Brought Back by Police</SelectItem>
-                          <SelectItem value="located_by_staff">Located by Staff</SelectItem>
+                          <SelectItem value="safe_well">Returned Safe & Well</SelectItem>
+                          <SelectItem value="police_located">Located by Police</SelectItem>
+                          <SelectItem value="family_located">Located by Family</SelectItem>
+                          <SelectItem value="self_returned">Self-Returned</SelectItem>
+                          <SelectItem value="medical_attention">Required Medical Attention</SelectItem>
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>

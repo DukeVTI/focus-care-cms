@@ -14,6 +14,7 @@ import { ChronologyWidget } from "@/components/young-people/ChronologyWidget";
 import { MissingEpisodesWidget } from "@/components/young-people/MissingEpisodesWidget";
 import { SafeguardingRisksWidget } from "@/components/young-people/SafeguardingRisksWidget";
 import { TasksWidget } from "@/components/young-people/TasksWidget";
+import { MissingPersonGrabPackButton } from "@/components/young-people/MissingPersonGrabPackButton";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -98,10 +99,13 @@ export default function YoungPersonDetails() {
                     <CardTitle className="text-2xl mb-2">
                       {youngPerson.first_name} {youngPerson.last_name}
                     </CardTitle>
-                    <Button onClick={() => navigate(`/young-people/${id}/edit`)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit Profile
-                    </Button>
+                    <div className="flex gap-2">
+                      <MissingPersonGrabPackButton youngPersonId={youngPerson.id} />
+                      <Button onClick={() => navigate(`/young-people/${id}/edit`)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     {youngPerson.preferred_name && (

@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, AlertTriangle, MapPin, Calendar } from "lucide-react";
+import { Plus, AlertTriangle, MapPin, Calendar, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
@@ -116,6 +116,11 @@ export default function MissingEpisodes() {
                       <CardTitle className="text-lg mb-2">
                         {episode.young_people?.first_name} {episode.young_people?.last_name}
                       </CardTitle>
+                      {episode.case_id && (
+                        <p className="text-sm font-mono text-muted-foreground mb-2">
+                          Case: {episode.case_id}
+                        </p>
+                      )}
                       <CardDescription className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-3 w-3" />
@@ -123,6 +128,7 @@ export default function MissingEpisodes() {
                         </div>
                         {episode.returned_at && (
                           <div className="flex items-center gap-2">
+                            <UserCheck className="h-3 w-3" />
                             Returned: {format(new Date(episode.returned_at), "PPP p")}
                           </div>
                         )}

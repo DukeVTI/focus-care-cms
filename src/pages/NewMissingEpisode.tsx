@@ -20,7 +20,8 @@ const missingReportSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
   missing_from: z.string().min(1, "Missing date/time is required"),
   last_known_location: z.string().trim().max(500, "Location must be less than 500 characters").optional(),
-  missing_reason: z.string().optional(),
+  missing_reason: z.string().min(1, "Reason for going missing is required"),
+  edt_contact: z.string().trim().max(500, "EDT contact must be less than 500 characters").optional(),
   notes: z.string().trim().max(800, "Notes must be less than 800 characters").optional(),
   police_notified: z.boolean().default(false),
   police_reference: z.string().trim().max(100, "Police reference must be less than 100 characters").optional(),
@@ -42,6 +43,7 @@ export default function NewMissingEpisode() {
       missing_from: "",
       last_known_location: "",
       missing_reason: "",
+      edt_contact: "",
       notes: "",
       police_notified: false,
       police_reference: "",
@@ -83,6 +85,7 @@ export default function NewMissingEpisode() {
         missing_from: values.missing_from,
         last_known_location: values.last_known_location || null,
         missing_reason: values.missing_reason || null,
+        edt_contact: values.edt_contact || null,
         notes: values.notes || null,
         police_notified: values.police_notified,
         police_reference: values.police_reference || null,
@@ -186,7 +189,7 @@ export default function NewMissingEpisode() {
                   name="missing_reason"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Reason</FormLabel>
+                      <FormLabel>Reason for Going Missing *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -194,12 +197,33 @@ export default function NewMissingEpisode() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="absent_without_leave">Absent Without Leave</SelectItem>
-                          <SelectItem value="family_contact">Family Contact</SelectItem>
-                          <SelectItem value="peer_influence">Peer Influence</SelectItem>
+                          <SelectItem value="argument">Argument / Family Conflict</SelectItem>
+                          <SelectItem value="not_returning">Not Returning to Placement</SelectItem>
+                          <SelectItem value="friends_family">Going to Friends/Family</SelectItem>
+                          <SelectItem value="exploitation">Possible Exploitation Concern</SelectItem>
+                          <SelectItem value="substance">Substance Misuse Episode</SelectItem>
+                          <SelectItem value="mental_health">Mental Health / Emotional Distress</SelectItem>
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="edt_contact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>EDT Contact Details</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="EDT team name, contact number, notes..."
+                          className="min-h-[80px]"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
