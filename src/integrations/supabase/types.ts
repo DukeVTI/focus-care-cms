@@ -17,39 +17,51 @@ export type Database = {
       chronology_entries: {
         Row: {
           author_name: string | null
+          category: string | null
           created_at: string | null
           entry_date: string
           entry_time: string
+          entry_type: string | null
+          flagged_for_report: boolean | null
           id: string
           observation: string
           significance: string | null
           staff_id: string
+          summary: string | null
           tags: string[] | null
           updated_at: string | null
           young_person_id: string
         }
         Insert: {
           author_name?: string | null
+          category?: string | null
           created_at?: string | null
           entry_date: string
           entry_time: string
+          entry_type?: string | null
+          flagged_for_report?: boolean | null
           id?: string
           observation: string
           significance?: string | null
           staff_id: string
+          summary?: string | null
           tags?: string[] | null
           updated_at?: string | null
           young_person_id: string
         }
         Update: {
           author_name?: string | null
+          category?: string | null
           created_at?: string | null
           entry_date?: string
           entry_time?: string
+          entry_type?: string | null
+          flagged_for_report?: boolean | null
           id?: string
           observation?: string
           significance?: string | null
           staff_id?: string
+          summary?: string | null
           tags?: string[] | null
           updated_at?: string | null
           young_person_id?: string
