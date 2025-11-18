@@ -105,6 +105,12 @@ export default function ChronologyDetail() {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
+            {entry.summary && (
+              <div>
+                <h3 className="font-semibold text-lg mb-2">{entry.summary}</h3>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center gap-2 text-sm">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -118,6 +124,20 @@ export default function ChronologyDetail() {
                 <span>{entry.entry_time}</span>
               </div>
 
+              {entry.category && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-medium">Category:</span>
+                  <Badge variant="outline">{entry.category}</Badge>
+                </div>
+              )}
+
+              {entry.entry_type && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-medium">Type:</span>
+                  <Badge variant="outline">{entry.entry_type}</Badge>
+                </div>
+              )}
+
               {entry.author_name && (
                 <div className="flex items-center gap-2 text-sm">
                   <User className="h-4 w-4 text-muted-foreground" />
@@ -126,9 +146,17 @@ export default function ChronologyDetail() {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-sm">
-                <span className="font-medium">Created:</span>
-                <span>{format(new Date(entry.created_at), "PPp")}</span>
+              {entry.flagged_for_report && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Badge variant="default" className="bg-yellow-500">★ Flagged for Report</Badge>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">Details / Observation</h4>
+              <div className="prose prose-sm max-w-none">
+                <p className="whitespace-pre-wrap text-muted-foreground">{entry.observation}</p>
               </div>
             </div>
 
@@ -147,15 +175,6 @@ export default function ChronologyDetail() {
                 </div>
               </div>
             )}
-
-            <div>
-              <h3 className="font-semibold mb-3">Observation</h3>
-              <div className="prose max-w-none">
-                <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {entry.observation}
-                </p>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>

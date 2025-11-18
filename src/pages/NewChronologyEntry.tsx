@@ -19,18 +19,42 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const AVAILABLE_TAGS = [
-  "education",
-  "health",
-  "incident",
-  "missing",
-  "positive",
-  "safeguarding",
-  "family",
-  "behavior",
-  "achievement",
-  "concern"
+  "Health",
+  "Education",
+  "Incident",
+  "Safeguarding",
+  "Positive",
+  "Missing episode",
+  "Family contact",
+  "Behaviour",
+  "Achievement",
+  "Other"
+];
+
+const CATEGORIES = [
+  "General",
+  "Health",
+  "Education",
+  "Behaviour",
+  "Contact with Family",
+  "Professional Contact",
+  "Incident / Safeguarding",
+  "Missing / Return",
+  "Positive Achievement",
+  "Other"
+];
+
+const ENTRY_TYPES = [
+  "Observation",
+  "Phone call",
+  "Meeting",
+  "Visit",
+  "Keywork session reference",
+  "Incident record",
+  "Other"
 ];
 
 const SIGNIFICANCE_LEVELS = ["Low", "Medium", "High"];
@@ -39,12 +63,18 @@ const formSchema = z.object({
   young_person_id: z.string().uuid({ message: "Please select a young person" }),
   entry_date: z.date({ required_error: "Entry date is required" }),
   entry_time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format"),
+  category: z.string().min(1, { message: "Category is required" }),
+  entry_type: z.string().min(1, { message: "Entry type is required" }),
+  summary: z.string()
+    .min(5, { message: "Summary must be at least 5 characters" })
+    .max(200, { message: "Summary must not exceed 200 characters" }),
   observation: z.string()
-    .min(10, { message: "Observation must be at least 10 characters" })
-    .max(5000, { message: "Observation must not exceed 5000 characters" }),
+    .min(20, { message: "Details must be at least 20 characters" })
+    .max(5000, { message: "Details must not exceed 5000 characters" }),
   tags: z.array(z.string()).default([]),
   significance: z.string().optional(),
   author_name: z.string().optional(),
+  flagged_for_report: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -62,10 +92,14 @@ export default function NewChronologyEntry() {
     defaultValues: {
       entry_date: new Date(),
       entry_time: format(new Date(), "HH:mm"),
+      category: "General",
+      entry_type: "Observation",
+      summary: "",
       observation: "",
       tags: [],
       significance: "Low",
       author_name: "",
+      flagged_for_report: false,
     },
   });
 
@@ -129,10 +163,14 @@ export default function NewChronologyEntry() {
           staff_id: user.id,
           entry_date: format(values.entry_date, "yyyy-MM-dd"),
           entry_time: values.entry_time,
+          category: values.category,
+          entry_type: values.entry_type,
+          summary: values.summary,
           observation: values.observation,
           tags: values.tags,
           significance: values.significance || "Low",
           author_name: values.author_name || null,
+          flagged_for_report: values.flagged_for_report,
         });
 
       if (error) throw error;
@@ -255,6 +293,75 @@ export default function NewChronologyEntry() {
                   />
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CATEGORIES.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="entry_type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Entry Type *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {ENTRY_TYPES.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="summary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Summary *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Brief summary of this entry" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        A short title/one-line summary (5-200 characters)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="author_name"
@@ -328,18 +435,41 @@ export default function NewChronologyEntry() {
                   name="observation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Observation / Note *</FormLabel>
+                      <FormLabel>Details / Observation *</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Describe what happened, observations, context..."
-                          className="min-h-[200px]"
+                          placeholder="Detailed observation or notes about this entry"
+                          className="min-h-[150px]"
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        {field.value.length}/5000 characters
+                        Main details (minimum 20 characters)
                       </FormDescription>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="flagged_for_report"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <input
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={field.onChange}
+                          className="mt-1"
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Flag for monthly report</FormLabel>
+                        <FormDescription>
+                          Highlight this entry for inclusion in monthly/council reports
+                        </FormDescription>
+                      </div>
                     </FormItem>
                   )}
                 />
