@@ -29,12 +29,15 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="foster">Foster Care</SelectItem>
-                  <SelectItem value="residential">Residential Care</SelectItem>
-                  <SelectItem value="kinship">Kinship Care</SelectItem>
-                  <SelectItem value="semi-independent">Semi-independent</SelectItem>
-                  <SelectItem value="secure">Secure Accommodation</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="foster-care">Foster care</SelectItem>
+                  <SelectItem value="residential-childrens-home">Residential children's home</SelectItem>
+                  <SelectItem value="special-guardianship">Special guardianship</SelectItem>
+                  <SelectItem value="parent-address">Parent address</SelectItem>
+                  <SelectItem value="supported-accommodation">Supported accommodation</SelectItem>
+                  <SelectItem value="street-homeless">Street homeless</SelectItem>
+                  <SelectItem value="la-pathway-service">Local authority pathway service</SelectItem>
+                  <SelectItem value="secure-unit">Secure unit</SelectItem>
+                  <SelectItem value="youth-offenders-institute">Youth Offenders Institute</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
