@@ -195,6 +195,11 @@ export default function MissingEpisodeDetail() {
                     {youngPerson?.first_name} {youngPerson?.last_name}
                     {youngPerson?.focus_id && ` (${youngPerson.focus_id})`}
                   </CardTitle>
+                  {episode.case_id && (
+                    <p className="text-sm font-mono text-muted-foreground mb-2">
+                      Case: {episode.case_id}
+                    </p>
+                  )}
                   <CardDescription className="space-y-2 text-base">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -414,14 +419,20 @@ export default function MissingEpisodeDetail() {
                   <CardTitle className="text-lg">Episode Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {episode.case_id && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Case ID</p>
+                      <p className="font-medium font-mono">{episode.case_id}</p>
+                    </div>
+                  )}
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Reason</p>
+                    <p className="text-sm text-muted-foreground mb-1">Reason for Going Missing</p>
                     <p className="font-medium">{formatReason(episode.missing_reason)}</p>
                   </div>
-                  {episode.outcome && (
+                  {episode.edt_contact && (
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Outcome</p>
-                      <p className="font-medium">{formatReason(episode.outcome)}</p>
+                      <p className="text-sm text-muted-foreground mb-1">EDT Contact Details</p>
+                      <p className="font-medium whitespace-pre-wrap">{episode.edt_contact}</p>
                     </div>
                   )}
                   {episode.police_reference && (
@@ -429,6 +440,50 @@ export default function MissingEpisodeDetail() {
                       <p className="text-sm text-muted-foreground mb-1">Police Reference</p>
                       <p className="font-medium">{episode.police_reference}</p>
                     </div>
+                  )}
+                  
+                  {episode.status === "returned" && (
+                    <>
+                      <div className="border-t pt-4 mt-4">
+                        <p className="text-sm font-semibold mb-3">Return Information</p>
+                      </div>
+                      {episode.found_by && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Found By</p>
+                          <p className="font-medium capitalize">{episode.found_by.replace(/-/g, " ")}</p>
+                        </div>
+                      )}
+                      {episode.found_location && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Location Found</p>
+                          <p className="font-medium">{episode.found_location}</p>
+                        </div>
+                      )}
+                      {episode.return_reason && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">YP's Explanation for Going Missing</p>
+                          <p className="font-medium whitespace-pre-wrap">{episode.return_reason}</p>
+                        </div>
+                      )}
+                      {episode.risks_encountered && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Risks Encountered While Missing</p>
+                          <p className="font-medium whitespace-pre-wrap">{episode.risks_encountered}</p>
+                        </div>
+                      )}
+                      {episode.follow_up_actions && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Follow-up Actions</p>
+                          <p className="font-medium whitespace-pre-wrap">{episode.follow_up_actions}</p>
+                        </div>
+                      )}
+                      {episode.outcome && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Outcome</p>
+                          <p className="font-medium">{formatReason(episode.outcome)}</p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>
