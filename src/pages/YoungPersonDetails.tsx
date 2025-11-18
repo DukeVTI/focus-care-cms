@@ -15,6 +15,7 @@ import { MissingEpisodesWidget } from "@/components/young-people/MissingEpisodes
 import { SafeguardingRisksWidget } from "@/components/young-people/SafeguardingRisksWidget";
 import { TasksWidget } from "@/components/young-people/TasksWidget";
 import { MissingPersonGrabPackButton } from "@/components/young-people/MissingPersonGrabPackButton";
+import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -162,6 +163,9 @@ export default function YoungPersonDetails() {
 
           {/* Missing Episodes */}
           <MissingEpisodesWidget youngPersonId={youngPerson.id} />
+
+          {/* Key Contacts */}
+          <KeyContactsWidget youngPersonId={youngPerson.id} />
 
           {/* Safeguarding & Risks */}
           <SafeguardingRisksWidget youngPersonId={youngPerson.id} />

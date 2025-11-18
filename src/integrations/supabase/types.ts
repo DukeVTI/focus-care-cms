@@ -379,6 +379,7 @@ export type Database = {
           is_active: boolean | null
           mitigation_plan: string | null
           risk_category: string
+          severity: string | null
           updated_at: string | null
           young_person_id: string
         }
@@ -391,6 +392,7 @@ export type Database = {
           is_active?: boolean | null
           mitigation_plan?: string | null
           risk_category: string
+          severity?: string | null
           updated_at?: string | null
           young_person_id: string
         }
@@ -403,6 +405,7 @@ export type Database = {
           is_active?: boolean | null
           mitigation_plan?: string | null
           risk_category?: string
+          severity?: string | null
           updated_at?: string | null
           young_person_id?: string
         }
@@ -761,33 +764,45 @@ export type Database = {
         Row: {
           contact_name: string
           created_at: string | null
+          email: string | null
           id: string
           is_emergency: boolean | null
+          is_primary: boolean | null
           notes: string | null
+          organisation: string | null
           phone: string | null
           relationship: string | null
+          role: string | null
           updated_at: string | null
           young_person_id: string
         }
         Insert: {
           contact_name: string
           created_at?: string | null
+          email?: string | null
           id?: string
           is_emergency?: boolean | null
+          is_primary?: boolean | null
           notes?: string | null
+          organisation?: string | null
           phone?: string | null
           relationship?: string | null
+          role?: string | null
           updated_at?: string | null
           young_person_id: string
         }
         Update: {
           contact_name?: string
           created_at?: string | null
+          email?: string | null
           id?: string
           is_emergency?: boolean | null
+          is_primary?: boolean | null
           notes?: string | null
+          organisation?: string | null
           phone?: string | null
           relationship?: string | null
+          role?: string | null
           updated_at?: string | null
           young_person_id?: string
         }

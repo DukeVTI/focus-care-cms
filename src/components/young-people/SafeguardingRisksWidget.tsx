@@ -23,6 +23,7 @@ interface Risk {
   mitigation_plan: string | null;
   date_added: string;
   is_active: boolean;
+  severity: string | null;
 }
 
 const RISK_CATEGORIES = [
@@ -50,7 +51,8 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
     risk_category: "",
     description: "",
     mitigation_plan: "",
-    date_added: new Date().toISOString().split('T')[0]
+    date_added: new Date().toISOString().split('T')[0],
+    severity: "Medium"
   });
 
   useEffect(() => {
@@ -116,7 +118,8 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
       risk_category: "",
       description: "",
       mitigation_plan: "",
-      date_added: new Date().toISOString().split('T')[0]
+      date_added: new Date().toISOString().split('T')[0],
+      severity: "Medium"
     });
     fetchRisks();
   };
@@ -127,7 +130,8 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
       risk_category: risk.risk_category,
       description: risk.description,
       mitigation_plan: risk.mitigation_plan || "",
-      date_added: risk.date_added
+      date_added: risk.date_added,
+      severity: risk.severity || "Medium"
     });
     setDialogOpen(true);
   };
@@ -173,7 +177,8 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
                   risk_category: "",
                   description: "",
                   mitigation_plan: "",
-                  date_added: new Date().toISOString().split('T')[0]
+                  date_added: new Date().toISOString().split('T')[0],
+                  severity: "Medium"
                 });
               }}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -219,14 +224,29 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
                     placeholder="What steps are being taken to mitigate this risk?"
                   />
                 </div>
-                <div>
-                  <Label>Date Added *</Label>
-                  <Input
-                    type="date"
-                    value={formData.date_added}
-                    onChange={(e) => setFormData({...formData, date_added: e.target.value})}
-                    required
-                  />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label>Severity *</Label>
+                    <Select value={formData.severity} onValueChange={(value) => setFormData({ ...formData, severity: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select severity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Low">Low</SelectItem>
+                        <SelectItem value="Medium">Medium</SelectItem>
+                        <SelectItem value="High">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Date Added *</Label>
+                    <Input
+                      type="date"
+                      value={formData.date_added}
+                      onChange={(e) => setFormData({...formData, date_added: e.target.value})}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
@@ -256,6 +276,15 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
                       <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-xs font-medium">
                         {risk.risk_category}
                       </span>
+                      {risk.severity && (
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          risk.severity === "High" ? "bg-destructive/10 text-destructive" :
+                          risk.severity === "Medium" ? "bg-warning/10 text-warning" :
+                          "bg-muted text-muted-foreground"
+                        }`}>
+                          {risk.severity}
+                        </span>
+                      )}
                       <span className="text-xs text-muted-foreground">
                         {format(new Date(risk.date_added), "dd MMM yyyy")}
                       </span>
