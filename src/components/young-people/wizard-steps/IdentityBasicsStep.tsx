@@ -149,9 +149,32 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ethnicity</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter ethnicity" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select ethnicity" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="white-british">White British</SelectItem>
+                  <SelectItem value="white-irish">White Irish</SelectItem>
+                  <SelectItem value="gypsy-irish-traveller">Gypsy or Irish Traveller</SelectItem>
+                  <SelectItem value="other-white">Any Other White Background</SelectItem>
+                  <SelectItem value="black-caribbean">Black Caribbean</SelectItem>
+                  <SelectItem value="black-african">Black African</SelectItem>
+                  <SelectItem value="other-black">Any Other Black Background</SelectItem>
+                  <SelectItem value="asian-pakistani">Asian Pakistani</SelectItem>
+                  <SelectItem value="asian-bangladeshi">Asian Bangladeshi</SelectItem>
+                  <SelectItem value="asian-indian">Asian Indian</SelectItem>
+                  <SelectItem value="other-asian">Any Other Asian Background</SelectItem>
+                  <SelectItem value="mixed-white-black-caribbean">Mixed White & Black Caribbean</SelectItem>
+                  <SelectItem value="mixed-white-black-african">Mixed White & Black African</SelectItem>
+                  <SelectItem value="mixed-white-asian">Mixed White & Asian</SelectItem>
+                  <SelectItem value="other-mixed">Any Other Mixed Background</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="prefer-not-to-say">Prefer Not to Say</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -172,7 +195,10 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
                 <SelectContent>
                   <SelectItem value="british">British</SelectItem>
                   <SelectItem value="irish">Irish</SelectItem>
-                  <SelectItem value="eu">EU National</SelectItem>
+                  <SelectItem value="eu-national">EU National</SelectItem>
+                  <SelectItem value="non-eu-national">Non-EU National</SelectItem>
+                  <SelectItem value="asylum-seeker">Asylum Seeker</SelectItem>
+                  <SelectItem value="refugee">Refugee</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
@@ -255,52 +281,6 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
         )}
       />
 
-      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
-        <h3 className="text-sm font-semibold">Identification</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="idType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ID Type</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select ID type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="passport">Passport</SelectItem>
-                    <SelectItem value="nino">NINO</SelectItem>
-                    <SelectItem value="bank-account">Bank account details</SelectItem>
-                    <SelectItem value="driving-licence">Driving licence details</SelectItem>
-                    <SelectItem value="biometric-card">Biometric card details</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {form.watch("idType") && (
-            <FormField
-              control={form.control}
-              name="idValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ID Value</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter details or reference number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-        </div>
-      </div>
 
       <div className="space-y-2">
         <FormField
