@@ -122,18 +122,47 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
             name="placingAuthority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Placing Authority</FormLabel>
+                <FormLabel>Placing Authority *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select authority" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="local-authority">Local Authority</SelectItem>
-                    <SelectItem value="private">Private</SelectItem>
-                    <SelectItem value="voluntary">Voluntary</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="barking-dagenham">Barking and Dagenham</SelectItem>
+                    <SelectItem value="barnet">Barnet</SelectItem>
+                    <SelectItem value="bexley">Bexley</SelectItem>
+                    <SelectItem value="brent">Brent</SelectItem>
+                    <SelectItem value="bromley">Bromley</SelectItem>
+                    <SelectItem value="camden">Camden</SelectItem>
+                    <SelectItem value="croydon">Croydon</SelectItem>
+                    <SelectItem value="ealing">Ealing</SelectItem>
+                    <SelectItem value="enfield">Enfield</SelectItem>
+                    <SelectItem value="greenwich">Greenwich (Royal Borough of Greenwich)</SelectItem>
+                    <SelectItem value="hackney">Hackney</SelectItem>
+                    <SelectItem value="hammersmith-fulham">Hammersmith and Fulham</SelectItem>
+                    <SelectItem value="haringey">Haringey</SelectItem>
+                    <SelectItem value="harrow">Harrow</SelectItem>
+                    <SelectItem value="havering">Havering</SelectItem>
+                    <SelectItem value="hillingdon">Hillingdon</SelectItem>
+                    <SelectItem value="hounslow">Hounslow</SelectItem>
+                    <SelectItem value="islington">Islington</SelectItem>
+                    <SelectItem value="kensington-chelsea">Kensington and Chelsea</SelectItem>
+                    <SelectItem value="kingston">Kingston upon Thames</SelectItem>
+                    <SelectItem value="lambeth">Lambeth</SelectItem>
+                    <SelectItem value="lewisham">Lewisham</SelectItem>
+                    <SelectItem value="merton">Merton</SelectItem>
+                    <SelectItem value="newham">Newham</SelectItem>
+                    <SelectItem value="redbridge">Redbridge</SelectItem>
+                    <SelectItem value="richmond">Richmond upon Thames</SelectItem>
+                    <SelectItem value="southwark">Southwark</SelectItem>
+                    <SelectItem value="sutton">Sutton</SelectItem>
+                    <SelectItem value="tower-hamlets">Tower Hamlets</SelectItem>
+                    <SelectItem value="waltham-forest">Waltham Forest</SelectItem>
+                    <SelectItem value="wandsworth">Wandsworth</SelectItem>
+                    <SelectItem value="westminster">Westminster (City of Westminster)</SelectItem>
+                    <SelectItem value="city-of-london">City of London Corporation</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -146,10 +175,49 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
             name="residingLocalAuthority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Residing Local Authority</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter local authority name" {...field} />
-                </FormControl>
+                <FormLabel>Residing Local Authority *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select authority" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="barking-dagenham">Barking and Dagenham</SelectItem>
+                    <SelectItem value="barnet">Barnet</SelectItem>
+                    <SelectItem value="bexley">Bexley</SelectItem>
+                    <SelectItem value="brent">Brent</SelectItem>
+                    <SelectItem value="bromley">Bromley</SelectItem>
+                    <SelectItem value="camden">Camden</SelectItem>
+                    <SelectItem value="croydon">Croydon</SelectItem>
+                    <SelectItem value="ealing">Ealing</SelectItem>
+                    <SelectItem value="enfield">Enfield</SelectItem>
+                    <SelectItem value="greenwich">Greenwich (Royal Borough of Greenwich)</SelectItem>
+                    <SelectItem value="hackney">Hackney</SelectItem>
+                    <SelectItem value="hammersmith-fulham">Hammersmith and Fulham</SelectItem>
+                    <SelectItem value="haringey">Haringey</SelectItem>
+                    <SelectItem value="harrow">Harrow</SelectItem>
+                    <SelectItem value="havering">Havering</SelectItem>
+                    <SelectItem value="hillingdon">Hillingdon</SelectItem>
+                    <SelectItem value="hounslow">Hounslow</SelectItem>
+                    <SelectItem value="islington">Islington</SelectItem>
+                    <SelectItem value="kensington-chelsea">Kensington and Chelsea</SelectItem>
+                    <SelectItem value="kingston">Kingston upon Thames</SelectItem>
+                    <SelectItem value="lambeth">Lambeth</SelectItem>
+                    <SelectItem value="lewisham">Lewisham</SelectItem>
+                    <SelectItem value="merton">Merton</SelectItem>
+                    <SelectItem value="newham">Newham</SelectItem>
+                    <SelectItem value="redbridge">Redbridge</SelectItem>
+                    <SelectItem value="richmond">Richmond upon Thames</SelectItem>
+                    <SelectItem value="southwark">Southwark</SelectItem>
+                    <SelectItem value="sutton">Sutton</SelectItem>
+                    <SelectItem value="tower-hamlets">Tower Hamlets</SelectItem>
+                    <SelectItem value="waltham-forest">Waltham Forest</SelectItem>
+                    <SelectItem value="wandsworth">Wandsworth</SelectItem>
+                    <SelectItem value="westminster">Westminster (City of Westminster)</SelectItem>
+                    <SelectItem value="city-of-london">City of London Corporation</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -158,13 +226,28 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
 
         <FormField
           control={form.control}
-          name="previousPlacement"
+          name="previousPlacementCategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Previous Placement</FormLabel>
-              <FormControl>
-                <Input placeholder="Previous placement details (optional)" {...field} />
-              </FormControl>
+              <FormLabel>Previous Placement Category</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select previous placement type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="foster-care">Foster care</SelectItem>
+                  <SelectItem value="residential-childrens-home">Residential children's home</SelectItem>
+                  <SelectItem value="special-guardianship">Special guardianship</SelectItem>
+                  <SelectItem value="parent-address">Parent address</SelectItem>
+                  <SelectItem value="supported-accommodation">Supported accommodation</SelectItem>
+                  <SelectItem value="street-homeless">Street homeless</SelectItem>
+                  <SelectItem value="la-pathway-service">Local authority pathway service</SelectItem>
+                  <SelectItem value="secure-unit">Secure unit</SelectItem>
+                  <SelectItem value="youth-offenders-institute">Youth Offenders Institute</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -175,7 +258,7 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
           name="reasonForPlacement"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Reason for Placement</FormLabel>
+              <FormLabel>Reason for Placement *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -183,11 +266,119 @@ export const LegalCareStatusStep = ({ form }: StepProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="family-breakdown">Family Breakdown</SelectItem>
-                  <SelectItem value="education">Education</SelectItem>
-                  <SelectItem value="welfare">Welfare</SelectItem>
-                  <SelectItem value="justice">Justice</SelectItem>
+                  <SelectItem value="family-breakdown">Family breakdown</SelectItem>
+                  <SelectItem value="abuse">Abuse</SelectItem>
+                  <SelectItem value="substance-abuse">Substance abuse</SelectItem>
+                  <SelectItem value="health-concerns">Health concerns</SelectItem>
+                  <SelectItem value="behavioural-concerns">Behavioural concerns</SelectItem>
+                  <SelectItem value="parental-death">Parental death</SelectItem>
+                  <SelectItem value="unaccompanied-minor">Unaccompanied minor</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch("reasonForPlacement") === "other" && (
+          <FormField
+            control={form.control}
+            name="reasonForPlacementNotes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Please specify reason</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter specific reason for placement" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Identity & Legal</h3>
+        
+        <FormField
+          control={form.control}
+          name="immigrationLegalStatus"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Legal Status (Immigration / Residency) *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select legal status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="max-h-[300px]">
+                  <SelectItem value="british-citizen">British Citizen</SelectItem>
+                  <SelectItem value="indefinite-leave">Indefinite Leave to Remain / Settled Status</SelectItem>
+                  <SelectItem value="work-visa">Work Visa (Skilled / Temporary)</SelectItem>
+                  <SelectItem value="student-visa">Student Visa</SelectItem>
+                  <SelectItem value="family-visa">Family Visa</SelectItem>
+                  <SelectItem value="visitor-visa">Visitor Visa</SelectItem>
+                  <SelectItem value="asylum-seeker">Asylum Seeker</SelectItem>
+                  <SelectItem value="refugee-status">Refugee Status</SelectItem>
+                  <SelectItem value="humanitarian-protection">Humanitarian Protection</SelectItem>
+                  <SelectItem value="limited-leave">Limited Leave to Remain (LLR / NRPF)</SelectItem>
+                  <SelectItem value="pre-settled">Pre-Settled Status</SelectItem>
+                  <SelectItem value="no-legal-status">No Legal Status / Undocumented</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="careLegalStatus"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Children's Legal Status in Care (Accommodating Under) *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select care legal status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="max-h-[300px]">
+                  <SelectItem value="s17">Section 17 (S17) – Child in Need</SelectItem>
+                  <SelectItem value="s20">Section 20 (S20) – Voluntary Accommodation</SelectItem>
+                  <SelectItem value="ico">Interim Care Order (ICO)</SelectItem>
+                  <SelectItem value="care-order-s31">Care Order (Section 31)</SelectItem>
+                  <SelectItem value="placement-order">Placement Order</SelectItem>
+                  <SelectItem value="adoption-order">Adoption Order</SelectItem>
+                  <SelectItem value="supervision-order">Supervision Order</SelectItem>
+                  <SelectItem value="sgo">Special Guardianship Order (SGO)</SelectItem>
+                  <SelectItem value="cao">Child Arrangements Order (CAO)</SelectItem>
+                  <SelectItem value="epo">Emergency Protection Order (EPO)</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="timeLookedAfter"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Length of Time Looked After</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select duration" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="0-6months">0–6 months</SelectItem>
+                  <SelectItem value="6-12months">6–12 months</SelectItem>
+                  <SelectItem value="12-18months">12–18 months</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

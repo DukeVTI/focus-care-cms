@@ -182,46 +182,124 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="socialMedia"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Social Media</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select platform" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="facebook">Facebook</SelectItem>
-                  <SelectItem value="instagram">Instagram</SelectItem>
-                  <SelectItem value="tiktok">TikTok</SelectItem>
-                  <SelectItem value="snapchat">Snapchat</SelectItem>
-                  <SelectItem value="none">None</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Identification</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="idType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ID Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ID type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="passport">Passport</SelectItem>
+                    <SelectItem value="nino">NINO</SelectItem>
+                    <SelectItem value="bank-account">Bank account details</SelectItem>
+                    <SelectItem value="driving-licence">Driving licence details</SelectItem>
+                    <SelectItem value="biometric-card">Biometric card details</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="idDetails"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ID Details</FormLabel>
-              <FormControl>
-                <Input placeholder="Passport, birth certificate, etc." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {form.watch("idType") && (
+            <FormField
+              control={form.control}
+              name="idValue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ID Value</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter details or reference number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
+        </div>
+      </div>
+
+      <FormField
+        control={form.control}
+        name="socialMedia"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Social Media</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select platform" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="facebook">Facebook</SelectItem>
+                <SelectItem value="instagram">Instagram</SelectItem>
+                <SelectItem value="tiktok">TikTok</SelectItem>
+                <SelectItem value="snapchat">Snapchat</SelectItem>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Identification</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="idType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ID Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ID type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="passport">Passport</SelectItem>
+                    <SelectItem value="nino">NINO</SelectItem>
+                    <SelectItem value="bank-account">Bank account details</SelectItem>
+                    <SelectItem value="driving-licence">Driving licence details</SelectItem>
+                    <SelectItem value="biometric-card">Biometric card details</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {form.watch("idType") && (
+            <FormField
+              control={form.control}
+              name="idValue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ID Value</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter details or reference number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
