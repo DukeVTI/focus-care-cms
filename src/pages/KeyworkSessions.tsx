@@ -121,6 +121,11 @@ export default function KeyworkSessions() {
                           Task Linked
                         </Badge>
                       )}
+                      {session.standards_met && session.standards_met.length > 0 && (
+                        <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                          {session.standards_met.length} Standards Met
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -130,6 +135,20 @@ export default function KeyworkSessions() {
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       {session.notes}
                     </p>
+                  )}
+                  {session.standards_referenced && session.standards_referenced.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {session.standards_referenced.slice(0, 3).map((standard: string, idx: number) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {standard}
+                        </Badge>
+                      ))}
+                      {session.standards_referenced.length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{session.standards_referenced.length - 3} more
+                        </Badge>
+                      )}
+                    </div>
                   )}
                 </CardContent>
               </Card>

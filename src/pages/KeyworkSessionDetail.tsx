@@ -20,13 +20,17 @@ const sessionSchema = z.object({
   topic: z.string().trim().min(1, "Topic is required").max(200, "Topic must be less than 200 characters"),
   duration_minutes: z.number().min(1, "Duration is required"),
   location: z.string().min(1, "Location is required"),
-  relevant_standard: z.string().min(1, "Relevant standard is required"),
+  relevant_standard: z.string().optional(),
   title: z.string().trim().min(1, "Title is required").max(200, "Title must be less than 200 characters"),
   notes: z.string().trim().max(2000, "Notes must be less than 2000 characters").optional(),
   follow_on_action: z.string().trim().max(1000, "Follow-on action must be less than 1000 characters").optional(),
-  standards_met: z.string().trim().max(500, "Standards met must be less than 500 characters").optional(),
+  standards_met: z.array(z.string()).optional(),
   follow_up_required: z.boolean(),
-  author_name: z.string().min(1, "Author is required")
+  author_name: z.string().min(1, "Author is required"),
+  standards_framework: z.string().optional(),
+  standards_referenced: z.array(z.string()).optional(),
+  outcomes: z.string().trim().max(2000, "Outcomes must be less than 2000 characters").optional(),
+  follow_up_notes: z.string().trim().max(1000, "Follow-up notes must be less than 1000 characters").optional(),
 });
 
 type SessionFormValues = z.infer<typeof sessionSchema>;
@@ -108,9 +112,13 @@ export default function KeyworkSessionDetail() {
         title: data.title || "",
         notes: data.notes || "",
         follow_on_action: data.follow_on_action || "",
-        standards_met: data.standards_met || "",
+        standards_met: data.standards_met || [],
         follow_up_required: data.follow_up_required,
-        author_name: data.author_name || ""
+        author_name: data.author_name || "",
+        standards_framework: data.standards_framework || "",
+        standards_referenced: data.standards_referenced || [],
+        outcomes: data.outcomes || "",
+        follow_up_notes: data.follow_up_notes || ""
       });
     }
   };
@@ -125,13 +133,17 @@ export default function KeyworkSessionDetail() {
         topic: values.topic,
         duration_minutes: values.duration_minutes,
         location: values.location,
-        relevant_standard: values.relevant_standard,
+        relevant_standard: values.relevant_standard || null,
         title: values.title,
         notes: values.notes || null,
         follow_on_action: values.follow_on_action || null,
-        standards_met: values.standards_met || null,
+        standards_met: values.standards_met || [],
         follow_up_required: values.follow_up_required,
-        author_name: values.author_name
+        author_name: values.author_name,
+        standards_framework: values.standards_framework || null,
+        standards_referenced: values.standards_referenced || [],
+        outcomes: values.outcomes || null,
+        follow_up_notes: values.follow_up_notes || null
       })
       .eq("id", id);
 
@@ -272,10 +284,30 @@ export default function KeyworkSessionDetail() {
                       <p className="text-base">{session.title}</p>
                     </div>
                   )}
-                  {session.relevant_standard && (
+                  {session.standards_framework && (
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Relevant Standard</p>
-                      <p className="text-sm">{session.relevant_standard}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Standards Framework</p>
+                      <p className="text-sm">{session.standards_framework === 'SupportedAccommodation' ? 'Supported Accommodation Standards 2023' : 'Children\'s Home Quality Standards'}</p>
+                    </div>
+                  )}
+                  {session.standards_referenced && session.standards_referenced.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Standards Referenced</p>
+                      <div className="flex flex-wrap gap-2">
+                        {session.standards_referenced.map((standard: string, idx: number) => (
+                          <Badge key={idx} variant="outline">{standard}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {session.standards_met && session.standards_met.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Standards Met</p>
+                      <div className="flex flex-wrap gap-2">
+                        {session.standards_met.map((standard: string, idx: number) => (
+                          <Badge key={idx} variant="default">{standard}</Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
                   {session.linked_task_id && (
@@ -298,10 +330,21 @@ export default function KeyworkSessionDetail() {
               {session.notes && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Session Notes</CardTitle>
+                    <CardTitle>Session Overview</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="whitespace-pre-wrap">{session.notes}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {session.outcomes && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Outcomes & Progress</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="whitespace-pre-wrap">{session.outcomes}</p>
                   </CardContent>
                 </Card>
               )}
@@ -317,13 +360,13 @@ export default function KeyworkSessionDetail() {
                 </Card>
               )}
 
-              {session.standards_met && (
+              {session.follow_up_notes && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Standards Met</CardTitle>
+                    <CardTitle>Follow-Up Notes</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="whitespace-pre-wrap">{session.standards_met}</p>
+                    <p className="whitespace-pre-wrap">{session.follow_up_notes}</p>
                   </CardContent>
                 </Card>
               )}
