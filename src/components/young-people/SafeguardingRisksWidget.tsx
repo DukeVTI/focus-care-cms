@@ -159,11 +159,11 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
   };
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <AlertTriangle className="h-5 w-5 text-orange-500" />
               Safeguarding & Risks
             </CardTitle>
@@ -182,7 +182,7 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
                 });
               }}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Risk
+                Add
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -263,23 +263,27 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
       </CardHeader>
       <CardContent>
         {loading ? (
-          <p className="text-muted-foreground">Loading risks...</p>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Loading risks...</p>
+          </div>
         ) : risks.length === 0 ? (
-          <p className="text-muted-foreground">No active risks recorded</p>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No active risks recorded</p>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {risks.map((risk) => (
-              <div key={risk.id} className="border rounded-lg p-4 space-y-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-xs font-medium">
+              <div key={risk.id} className="border rounded-lg p-4 bg-card hover:bg-accent/30 transition-colors">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-md text-xs font-medium">
                         {risk.risk_category}
                       </span>
                       {risk.severity && (
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
                           risk.severity === "High" ? "bg-destructive/10 text-destructive" :
-                          risk.severity === "Medium" ? "bg-warning/10 text-warning" :
+                          risk.severity === "Medium" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300" :
                           "bg-muted text-muted-foreground"
                         }`}>
                           {risk.severity}
@@ -289,15 +293,15 @@ export const SafeguardingRisksWidget = ({ youngPersonId }: SafeguardingRisksWidg
                         {format(new Date(risk.date_added), "dd MMM yyyy")}
                       </span>
                     </div>
-                    <p className="font-medium mb-1">{risk.description}</p>
+                    <p className="text-sm">{risk.description}</p>
                     {risk.mitigation_plan && (
-                      <div className="mt-2 p-2 bg-muted rounded text-sm">
-                        <p className="font-medium text-xs mb-1">Mitigation Plan:</p>
-                        <p>{risk.mitigation_plan}</p>
+                      <div className="mt-2 p-2.5 bg-muted/50 rounded-md">
+                        <p className="font-medium text-xs text-muted-foreground mb-1">Mitigation Plan:</p>
+                        <p className="text-sm">{risk.mitigation_plan}</p>
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-1 shrink-0">
                     <Button size="sm" variant="ghost" onClick={() => handleEdit(risk)}>
                       <Edit className="h-4 w-4" />
                     </Button>
