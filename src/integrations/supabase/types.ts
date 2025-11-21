@@ -82,16 +82,22 @@ export type Database = {
           created_at: string | null
           duration_minutes: number
           follow_on_action: string | null
+          follow_up_notes: string | null
           follow_up_required: boolean | null
           id: string
           linked_task_id: string | null
           location: string | null
           notes: string | null
+          outcomes: string | null
           relevant_standard: string | null
+          requires_task: boolean | null
           session_date: string
           session_type: string
           staff_id: string
-          standards_met: string | null
+          standards_framework: string | null
+          standards_met: string[] | null
+          standards_referenced: string[] | null
+          task_allocation_role: string | null
           title: string | null
           topic: string
           updated_at: string | null
@@ -102,16 +108,22 @@ export type Database = {
           created_at?: string | null
           duration_minutes: number
           follow_on_action?: string | null
+          follow_up_notes?: string | null
           follow_up_required?: boolean | null
           id?: string
           linked_task_id?: string | null
           location?: string | null
           notes?: string | null
+          outcomes?: string | null
           relevant_standard?: string | null
+          requires_task?: boolean | null
           session_date: string
           session_type: string
           staff_id: string
-          standards_met?: string | null
+          standards_framework?: string | null
+          standards_met?: string[] | null
+          standards_referenced?: string[] | null
+          task_allocation_role?: string | null
           title?: string | null
           topic: string
           updated_at?: string | null
@@ -122,16 +134,22 @@ export type Database = {
           created_at?: string | null
           duration_minutes?: number
           follow_on_action?: string | null
+          follow_up_notes?: string | null
           follow_up_required?: boolean | null
           id?: string
           linked_task_id?: string | null
           location?: string | null
           notes?: string | null
+          outcomes?: string | null
           relevant_standard?: string | null
+          requires_task?: boolean | null
           session_date?: string
           session_type?: string
           staff_id?: string
-          standards_met?: string | null
+          standards_framework?: string | null
+          standards_met?: string[] | null
+          standards_referenced?: string[] | null
+          task_allocation_role?: string | null
           title?: string | null
           topic?: string
           updated_at?: string | null
