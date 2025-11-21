@@ -24,7 +24,7 @@ export function TasksWidget({ youngPersonId }: TasksWidgetProps) {
       .from("tasks")
       .select("*")
       .eq("young_person_id", youngPersonId)
-      .in("status", ["OPEN", "IN_PROGRESS", "pending", "in_progress"])
+      .not("status", "in", '("completed","done","archived","COMPLETED","DONE","ARCHIVED")')
       .order("expected_completion", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: true });
     
