@@ -54,8 +54,8 @@ export default function Dashboard() {
       supabase.from("keywork_sessions").select("id", { count: "exact", head: true })
     ]);
 
-    const activeTasks = tasksRes.data?.filter(t => t.status !== "completed" && t.status !== "archived").length || 0;
-    const highPriority = tasksRes.data?.filter(t => t.importance === "High" && t.status !== "completed").length || 0;
+    const activeTasks = tasksRes.data?.filter(t => !["completed","COMPLETED","done","DONE","archived","ARCHIVED"].includes(t.status)).length || 0;
+    const highPriority = tasksRes.data?.filter(t => ["High","HIGH"].includes(t.importance) && !["completed","COMPLETED","done","DONE","archived","ARCHIVED"].includes(t.status)).length || 0;
 
     setStats({
       youngPeople: youngPeopleRes.count || 0,
