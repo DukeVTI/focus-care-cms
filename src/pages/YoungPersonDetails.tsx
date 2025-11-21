@@ -15,6 +15,7 @@ import { MissingEpisodesWidget } from "@/components/young-people/MissingEpisodes
 import { SafeguardingRisksWidget } from "@/components/young-people/SafeguardingRisksWidget";
 import { TasksWidget } from "@/components/young-people/TasksWidget";
 import { MissingPersonGrabPackButton } from "@/components/young-people/MissingPersonGrabPackButton";
+import { MonthlyReportButton } from "@/components/young-people/MonthlyReportButton";
 import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 
 export default function YoungPersonDetails() {
@@ -102,6 +103,7 @@ export default function YoungPersonDetails() {
                     </CardTitle>
                     <div className="flex gap-2">
                       <MissingPersonGrabPackButton youngPersonId={youngPerson.id} />
+                      <MonthlyReportButton youngPersonId={youngPerson.id} />
                       <Button onClick={() => navigate(`/young-people/${id}/edit`)}>
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Profile
