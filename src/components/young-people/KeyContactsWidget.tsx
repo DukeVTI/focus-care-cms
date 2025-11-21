@@ -179,10 +179,13 @@ export const KeyContactsWidget = ({ youngPersonId }: KeyContactsWidgetProps) => 
 
   return (
     <>
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Key Contacts</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Phone className="h-5 w-5" />
+              Key Contacts
+            </CardTitle>
             <Dialog open={dialogOpen} onOpenChange={(open) => {
               setDialogOpen(open);
               if (!open) resetForm();
@@ -190,7 +193,7 @@ export const KeyContactsWidget = ({ youngPersonId }: KeyContactsWidgetProps) => 
               <DialogTrigger asChild>
                 <Button size="sm">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Contact
+                  Add
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -303,58 +306,64 @@ export const KeyContactsWidget = ({ youngPersonId }: KeyContactsWidgetProps) => 
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-muted-foreground text-center py-8">Loading contacts...</p>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Loading contacts...</p>
+            </div>
           ) : contacts.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No contacts added yet</p>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No contacts added yet</p>
+            </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {contacts.map((contact) => (
-                <div key={contact.id} className="border rounded-lg p-4 space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                <div key={contact.id} className="border rounded-lg p-4 bg-card hover:bg-accent/30 transition-colors">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-semibold">{contact.contact_name}</h4>
+                        <h4 className="font-semibold text-sm">{contact.contact_name}</h4>
                         {contact.is_primary && (
-                          <Star className="h-4 w-4 fill-primary text-primary" />
+                          <Star className="h-4 w-4 fill-primary text-primary shrink-0" />
                         )}
                       </div>
-                      <div className="grid gap-2 mt-2 text-sm">
+                      <div className="grid gap-2 text-sm">
                         {contact.role && (
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <span className="font-medium">Role:</span> {contact.role}
+                          <div className="flex items-start gap-2 text-muted-foreground">
+                            <span className="font-medium shrink-0">Role:</span> 
+                            <span>{contact.role}</span>
                           </div>
                         )}
                         {contact.relationship && (
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <span className="font-medium">Relationship:</span> {contact.relationship}
+                          <div className="flex items-start gap-2 text-muted-foreground">
+                            <span className="font-medium shrink-0">Relationship:</span> 
+                            <span>{contact.relationship}</span>
                           </div>
                         )}
                         {contact.organisation && (
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <Building2 className="h-4 w-4" />
-                            {contact.organisation}
+                            <Building2 className="h-4 w-4 shrink-0" />
+                            <span>{contact.organisation}</span>
                           </div>
                         )}
                         {contact.phone && (
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <Phone className="h-4 w-4" />
-                            {contact.phone}
+                            <Phone className="h-4 w-4 shrink-0" />
+                            <span>{contact.phone}</span>
                           </div>
                         )}
                         {contact.email && (
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <Mail className="h-4 w-4" />
-                            {contact.email}
+                            <Mail className="h-4 w-4 shrink-0" />
+                            <span className="truncate">{contact.email}</span>
                           </div>
                         )}
                         {contact.notes && (
-                          <div className="text-muted-foreground mt-2 pt-2 border-t">
+                          <div className="text-muted-foreground mt-2 pt-2 border-t text-xs">
                             {contact.notes}
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1 shrink-0">
                       <Button
                         variant="ghost"
                         size="sm"

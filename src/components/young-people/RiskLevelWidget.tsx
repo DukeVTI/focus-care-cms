@@ -47,10 +47,10 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
 
   const getRiskGaugeColor = (level: string) => {
     switch (level) {
-      case "High": return "bg-red-500";
-      case "Medium": return "bg-yellow-500";
-      case "Low": return "bg-green-500";
-      default: return "bg-gray-500";
+      case "High": return "text-destructive";
+      case "Medium": return "text-warning";
+      case "Low": return "text-green-500";
+      default: return "text-muted";
     }
   };
 
@@ -97,16 +97,16 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
   const riskPercentage = (latestAssessment.risk_score / 40) * 100;
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <Shield className="h-5 w-5" />
               Current Risk Level
             </CardTitle>
-            <CardDescription>
-              Last assessed {format(new Date(latestAssessment.assessment_date), "PPP")}
+            <CardDescription className="mt-1">
+              Last assessed {format(new Date(latestAssessment.assessment_date), "PP")}
             </CardDescription>
           </div>
           {latestAssessment.level_change_flag && (
@@ -114,52 +114,52 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {/* Risk Gauge */}
-        <div className="flex items-center justify-center">
-          <div className="relative w-40 h-40">
+        <div className="flex items-center justify-center py-4">
+          <div className="relative w-36 h-36">
             <svg className="w-full h-full transform -rotate-90">
               <circle
-                cx="80"
-                cy="80"
-                r="70"
+                cx="72"
+                cy="72"
+                r="60"
                 stroke="currentColor"
-                strokeWidth="12"
+                strokeWidth="10"
                 fill="none"
-                className="text-muted"
+                className="text-muted opacity-20"
               />
               <circle
-                cx="80"
-                cy="80"
-                r="70"
+                cx="72"
+                cy="72"
+                r="60"
                 stroke="currentColor"
-                strokeWidth="12"
+                strokeWidth="10"
                 fill="none"
-                strokeDasharray={`${(riskPercentage / 100) * 439.8} 439.8`}
+                strokeDasharray={`${(riskPercentage / 100) * 377} 377`}
                 className={getRiskGaugeColor(latestAssessment.risk_level)}
                 strokeLinecap="round"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold">{latestAssessment.risk_score}</span>
-              <span className="text-xs text-muted-foreground">/ 40</span>
+              <span className="text-4xl font-bold">{latestAssessment.risk_score}</span>
+              <span className="text-sm text-muted-foreground">/ 40</span>
             </div>
           </div>
         </div>
 
-        <div className="text-center">
-          <Badge variant={getRiskColor(latestAssessment.risk_level) as any} className="text-base px-4 py-1">
+        <div className="text-center space-y-3">
+          <Badge variant={getRiskColor(latestAssessment.risk_level) as any} className="text-sm px-4 py-1.5 font-semibold">
             {latestAssessment.risk_level} Risk
           </Badge>
           {latestAssessment.previous_level && (
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground">
               Previously: {latestAssessment.previous_level}
             </p>
           )}
         </div>
 
         {latestAssessment.level_change_flag && (
-          <div className="p-3 bg-destructive/10 rounded-md">
+          <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
             <p className="text-sm font-medium text-destructive flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Risk level increased
@@ -170,11 +170,10 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 gap-2 pt-2">
           <Button
             variant="outline"
             size="sm"
-            className="flex-1"
             onClick={() => navigate(`/risk-assessments/${latestAssessment.id}`)}
           >
             View Details
@@ -182,11 +181,10 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
           <Button
             variant="default"
             size="sm"
-            className="flex-1"
             onClick={() => navigate(`/risk-assessments/new?yp=${youngPersonId}`)}
           >
             <Plus className="h-4 w-4 mr-1" />
-            New Assessment
+            New
           </Button>
         </div>
       </CardContent>
