@@ -121,6 +121,14 @@ const youngPersonSchema = z.object({
     date: z.string().optional(),
     outcome: z.string().optional(),
   }).optional(),
+  exploitationCategories: z.array(z.string()).optional(),
+  exploitationNotes: z.string().optional(),
+  yotInvolved: z.boolean().default(false),
+  yotWorkerName: z.string().optional(),
+  yotWorkerPhone: z.string().optional(),
+  yotWorkerEmail: z.string().optional(),
+  probationOrder: z.string().optional(),
+  probationEndDate: z.string().optional(),
 
   // Culture & Preferences
   religion: z.string().optional(),
