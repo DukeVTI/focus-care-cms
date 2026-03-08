@@ -29,6 +29,7 @@ import NewMissingEpisode from "./pages/NewMissingEpisode";
 import MissingEpisodeDetail from "./pages/MissingEpisodeDetail";
 import ReportReturn from "./pages/ReportReturn";
 import NotFound from "./pages/NotFound";
+import HealthWellbeing from "./pages/HealthWellbeing";
 
 import EditYoungPerson from "./pages/EditYoungPerson";
 
@@ -64,6 +65,7 @@ const App = () => {
               <Route path="/young-people/new" element={<NewYoungPerson />} />
               <Route path="/young-people/:id" element={<YoungPersonDetails />} />
               <Route path="/young-people/:id/edit" element={<EditYoungPerson />} />
+              <Route path="/young-people/:id/health-wellbeing" element={<HealthWellbeing />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/tasks/new" element={<NewTask />} />
               <Route path="/tasks/:id" element={<TaskDetail />} />
