@@ -22,9 +22,24 @@ const riskOptions = [
   { value: "other", label: "Other Risks" },
 ];
 
+const exploitationOptions = [
+  { value: "cse", label: "Child Sexual Exploitation (CSE)" },
+  { value: "cce", label: "Child Criminal Exploitation (CCE)" },
+  { value: "county-lines", label: "County Lines" },
+  { value: "modern-slavery", label: "Modern Slavery / Trafficking" },
+  { value: "radicalisation", label: "Radicalisation / Extremism" },
+  { value: "financial-exploitation", label: "Financial Exploitation" },
+  { value: "online-exploitation", label: "Online Exploitation" },
+  { value: "forced-marriage", label: "Forced Marriage" },
+  { value: "fgm", label: "FGM" },
+  { value: "honour-based", label: "Honour-Based Abuse" },
+];
+
 export const SafeguardingStep = ({ form }: StepProps) => {
   const knownRisks = form.watch("knownRisks") || [];
+  const exploitationCategories = form.watch("exploitationCategories") || [];
   const offendingHistory = form.watch("offendingHistory");
+  const yotInvolved = form.watch("yotInvolved");
 
   const toggleRisk = (risk: string) => {
     const current = knownRisks;
@@ -32,6 +47,15 @@ export const SafeguardingStep = ({ form }: StepProps) => {
       form.setValue("knownRisks", current.filter((r: string) => r !== risk));
     } else {
       form.setValue("knownRisks", [...current, risk]);
+    }
+  };
+
+  const toggleExploitation = (category: string) => {
+    const current = exploitationCategories;
+    if (current.includes(category)) {
+      form.setValue("exploitationCategories", current.filter((c: string) => c !== category));
+    } else {
+      form.setValue("exploitationCategories", [...current, category]);
     }
   };
 
@@ -45,15 +69,10 @@ export const SafeguardingStep = ({ form }: StepProps) => {
 
       <div className="space-y-3">
         <Label className="text-base font-semibold">Known Risks</Label>
-        <p className="text-sm text-muted-foreground">
-          Select all known risk factors (check all that apply)
-        </p>
+        <p className="text-sm text-muted-foreground">Select all known risk factors (check all that apply)</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {riskOptions.map((option) => (
-            <div
-              key={option.value}
-              className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-accent"
-            >
+            <div key={option.value} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-accent">
               <Checkbox
                 id={option.value}
                 checked={knownRisks.includes(option.value)}
@@ -65,6 +84,39 @@ export const SafeguardingStep = ({ form }: StepProps) => {
         </div>
       </div>
 
+      {/* Exploitation Categories */}
+      <div className="space-y-3">
+        <Label className="text-base font-semibold">Exploitation Categories</Label>
+        <p className="text-sm text-muted-foreground">Select any applicable exploitation concerns</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {exploitationOptions.map((option) => (
+            <div key={option.value} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-accent">
+              <Checkbox
+                id={`exploit-${option.value}`}
+                checked={exploitationCategories.includes(option.value)}
+                onCheckedChange={() => toggleExploitation(option.value)}
+              />
+              <Label htmlFor={`exploit-${option.value}`} className="cursor-pointer flex-1">{option.label}</Label>
+            </div>
+          ))}
+        </div>
+        {exploitationCategories.length > 0 && (
+          <FormField
+            control={form.control}
+            name="exploitationNotes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Exploitation Notes</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Provide additional context on exploitation concerns..." className="min-h-[80px]" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+
       <FormField
         control={form.control}
         name="triggers"
@@ -72,11 +124,7 @@ export const SafeguardingStep = ({ form }: StepProps) => {
           <FormItem>
             <FormLabel>Triggers / Early Warning Signs</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="Describe behaviors, situations, or circumstances that may trigger concerning behaviors or indicate increased risk..."
-                className="min-h-[100px]"
-                {...field}
-              />
+              <Textarea placeholder="Describe behaviors, situations, or circumstances that may trigger concerning behaviors..." className="min-h-[100px]" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -90,11 +138,7 @@ export const SafeguardingStep = ({ form }: StepProps) => {
           <FormItem>
             <FormLabel>Protective Factors / Strengths</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="List positive relationships, coping strategies, interests, achievements, and other protective factors..."
-                className="min-h-[100px]"
-                {...field}
-              />
+              <Textarea placeholder="List positive relationships, coping strategies, interests, achievements..." className="min-h-[100px]" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -108,23 +152,17 @@ export const SafeguardingStep = ({ form }: StepProps) => {
           <FormItem>
             <FormLabel>Initial Risk Summary *</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="Provide a brief initial risk summary (20-400 characters). This is a high-level overview - detailed assessments should be completed separately."
-                className="min-h-[120px]"
-                {...field}
-              />
+              <Textarea placeholder="Provide a brief initial risk summary (20-400 characters)..." className="min-h-[120px]" {...field} />
             </FormControl>
-            <p className="text-xs text-muted-foreground">
-              {field.value?.length || 0} / 400 characters (minimum 20)
-            </p>
+            <p className="text-xs text-muted-foreground">{field.value?.length || 0} / 400 characters (minimum 20)</p>
             <FormMessage />
           </FormItem>
         )}
       />
 
+      {/* Offending History */}
       <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
         <h3 className="text-sm font-semibold">Offending History</h3>
-        
         <FormField
           control={form.control}
           name="offendingHistory"
@@ -158,17 +196,12 @@ export const SafeguardingStep = ({ form }: StepProps) => {
                 <FormItem>
                   <FormLabel>Incident Description</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Describe the incident..."
-                      className="min-h-[80px]"
-                      {...field}
-                    />
+                    <Textarea placeholder="Describe the incident..." className="min-h-[80px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="offendingDetails.date"
@@ -182,7 +215,6 @@ export const SafeguardingStep = ({ form }: StepProps) => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="offendingDetails.outcome"
@@ -190,11 +222,112 @@ export const SafeguardingStep = ({ form }: StepProps) => {
                 <FormItem>
                   <FormLabel>Outcome</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Describe the outcome..."
-                      className="min-h-[60px]"
-                      {...field}
-                    />
+                    <Textarea placeholder="Describe the outcome..." className="min-h-[60px]" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* YOT / Probation */}
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">YOT / Probation Details</h3>
+        <FormField
+          control={form.control}
+          name="yotInvolved"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+              <FormControl>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <Label>Youth Offending Team (YOT) Involved</Label>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        {yotInvolved && (
+          <div className="space-y-4 pl-4 border-l-2 border-primary">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="yotWorkerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>YOT Worker Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="yotWorkerPhone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>YOT Worker Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Phone number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="yotWorkerEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>YOT Worker Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="email@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="probationOrder"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Probation / Court Order Type</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select order type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="referral-order">Referral Order</SelectItem>
+                      <SelectItem value="youth-rehabilitation">Youth Rehabilitation Order (YRO)</SelectItem>
+                      <SelectItem value="detention-training">Detention & Training Order (DTO)</SelectItem>
+                      <SelectItem value="youth-conditional-caution">Youth Conditional Caution</SelectItem>
+                      <SelectItem value="community-resolution">Community Resolution</SelectItem>
+                      <SelectItem value="bail-conditions">Bail Conditions</SelectItem>
+                      <SelectItem value="issp">ISSP (Intensive Supervision)</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="probationEndDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Order End Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

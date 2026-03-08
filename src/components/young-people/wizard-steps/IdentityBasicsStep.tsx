@@ -1,15 +1,84 @@
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Plus, Trash2 } from "lucide-react";
 
 interface StepProps {
   form: UseFormReturn<any>;
 }
 
+const socialMediaPlatforms = [
+  { value: "facebook", label: "Facebook" },
+  { value: "instagram", label: "Instagram" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "snapchat", label: "Snapchat" },
+  { value: "twitter", label: "X (Twitter)" },
+  { value: "youtube", label: "YouTube" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "telegram", label: "Telegram" },
+  { value: "discord", label: "Discord" },
+  { value: "other", label: "Other" },
+];
+
+const idTypes = [
+  { value: "passport", label: "Passport" },
+  { value: "nino", label: "NINO" },
+  { value: "bank-account", label: "Bank Account Details" },
+  { value: "driving-licence", label: "Driving Licence" },
+  { value: "biometric-card", label: "Biometric Card" },
+  { value: "birth-certificate", label: "Birth Certificate" },
+  { value: "nhs-number", label: "NHS Number" },
+];
+
 export const IdentityBasicsStep = ({ form }: StepProps) => {
+  const socialMediaAccounts = form.watch("socialMediaAccounts") || [];
+  const structuredIds = form.watch("structuredIds") || [];
+
+  const addSocialMedia = () => {
+    form.setValue("socialMediaAccounts", [
+      ...socialMediaAccounts,
+      { platform: "", handle: "", notes: "" },
+    ]);
+  };
+
+  const removeSocialMedia = (index: number) => {
+    form.setValue(
+      "socialMediaAccounts",
+      socialMediaAccounts.filter((_: any, i: number) => i !== index)
+    );
+  };
+
+  const updateSocialMedia = (index: number, field: string, value: string) => {
+    const updated = [...socialMediaAccounts];
+    updated[index] = { ...updated[index], [field]: value };
+    form.setValue("socialMediaAccounts", updated);
+  };
+
+  const addStructuredId = () => {
+    form.setValue("structuredIds", [
+      ...structuredIds,
+      { type: "", value: "", expiryDate: "" },
+    ]);
+  };
+
+  const removeStructuredId = (index: number) => {
+    form.setValue(
+      "structuredIds",
+      structuredIds.filter((_: any, i: number) => i !== index)
+    );
+  };
+
+  const updateStructuredId = (index: number, field: string, value: string) => {
+    const updated = [...structuredIds];
+    updated[index] = { ...updated[index], [field]: value };
+    form.setValue("structuredIds", updated);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -47,7 +116,6 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="lastName"
@@ -115,7 +183,6 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="gender"
@@ -179,7 +246,6 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="nationality"
@@ -208,79 +274,185 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
         />
       </div>
 
+      {/* Structured IDs */}
       <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
-        <h3 className="text-sm font-semibold">Identification</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="idType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ID Type</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select ID type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="passport">Passport</SelectItem>
-                    <SelectItem value="nino">NINO</SelectItem>
-                    <SelectItem value="bank-account">Bank account details</SelectItem>
-                    <SelectItem value="driving-licence">Driving licence details</SelectItem>
-                    <SelectItem value="biometric-card">Biometric card details</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {form.watch("idType") && (
-            <FormField
-              control={form.control}
-              name="idValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ID Value</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter details or reference number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold">Identification Documents</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addStructuredId} className="gap-1">
+            <Plus className="h-3 w-3" /> Add ID
+          </Button>
         </div>
+        
+        {structuredIds.length === 0 && (
+          <p className="text-sm text-muted-foreground">No identification documents added yet.</p>
+        )}
+
+        {structuredIds.map((id: any, index: number) => (
+          <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end border-b pb-3 last:border-0 last:pb-0">
+            <div className="md:col-span-4">
+              <Label className="text-xs">ID Type</Label>
+              <Select value={id.type} onValueChange={(v) => updateStructuredId(index, "type", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {idTypes.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-4">
+              <Label className="text-xs">Reference / Number</Label>
+              <Input
+                placeholder="Enter reference"
+                value={id.value}
+                onChange={(e) => updateStructuredId(index, "value", e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-3">
+              <Label className="text-xs">Expiry Date</Label>
+              <Input
+                type="date"
+                value={id.expiryDate || ""}
+                onChange={(e) => updateStructuredId(index, "expiryDate", e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Button type="button" variant="ghost" size="icon" onClick={() => removeStructuredId(index)} className="text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <FormField
-        control={form.control}
-        name="socialMedia"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Social Media</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
+      {/* Social Media Accounts */}
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold">Social Media Accounts</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addSocialMedia} className="gap-1">
+            <Plus className="h-3 w-3" /> Add Account
+          </Button>
+        </div>
+
+        {socialMediaAccounts.length === 0 && (
+          <p className="text-sm text-muted-foreground">No social media accounts tracked yet.</p>
+        )}
+
+        {socialMediaAccounts.map((account: any, index: number) => (
+          <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end border-b pb-3 last:border-0 last:pb-0">
+            <div className="md:col-span-4">
+              <Label className="text-xs">Platform</Label>
+              <Select value={account.platform} onValueChange={(v) => updateSocialMedia(index, "platform", v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select platform" />
                 </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="facebook">Facebook</SelectItem>
-                <SelectItem value="instagram">Instagram</SelectItem>
-                <SelectItem value="tiktok">TikTok</SelectItem>
-                <SelectItem value="snapchat">Snapchat</SelectItem>
-                <SelectItem value="none">None</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+                <SelectContent>
+                  {socialMediaPlatforms.map((p) => (
+                    <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-4">
+              <Label className="text-xs">Username / Handle</Label>
+              <Input
+                placeholder="@username"
+                value={account.handle}
+                onChange={(e) => updateSocialMedia(index, "handle", e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-3">
+              <Label className="text-xs">Notes</Label>
+              <Input
+                placeholder="e.g. monitored"
+                value={account.notes || ""}
+                onChange={(e) => updateSocialMedia(index, "notes", e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Button type="button" variant="ghost" size="icon" onClick={() => removeSocialMedia(index)} className="text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
+      {/* Associated Areas */}
+      <div className="space-y-4 rounded-lg border p-4 bg-muted/50">
+        <h3 className="text-sm font-semibold">Associated Areas / Frequented Locations</h3>
+        <FormField
+          control={form.control}
+          name="associatedAreas"
+          render={() => {
+            const areas = form.watch("associatedAreas") || [];
+            const [newArea, setNewArea] = useState("");
+            return (
+              <FormItem>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add area (e.g. Camden Town, Brixton)"
+                    value={newArea}
+                    onChange={(e) => setNewArea(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newArea.trim()) {
+                        e.preventDefault();
+                        form.setValue("associatedAreas", [...areas, newArea.trim()]);
+                        setNewArea("");
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (newArea.trim()) {
+                        form.setValue("associatedAreas", [...areas, newArea.trim()]);
+                        setNewArea("");
+                      }
+                    }}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+                {areas.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {areas.map((area: string, i: number) => (
+                      <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent text-accent-foreground text-xs">
+                        {area}
+                        <button
+                          type="button"
+                          onClick={() => form.setValue("associatedAreas", areas.filter((_: string, idx: number) => idx !== i))}
+                          className="hover:text-destructive"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="associatedAreasNotes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes on associated areas</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. frequently visits after school" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <div className="space-y-2">
         <FormField
@@ -296,17 +468,13 @@ export const IdentityBasicsStep = ({ form }: StepProps) => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="interpreterRequired"
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <Label>Interpreter required</Label>

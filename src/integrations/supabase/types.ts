@@ -702,6 +702,8 @@ export type Database = {
           age: number | null
           allergies: string[] | null
           assigned_team: string | null
+          associated_areas: string[] | null
+          associated_areas_notes: string | null
           attendance_concerns: boolean | null
           attendance_description: string | null
           care_legal_status: string | null
@@ -716,6 +718,8 @@ export type Database = {
           ehcp_review_date: string | null
           ehcp_status: string | null
           ethnicity: string | null
+          exploitation_categories: string[] | null
+          exploitation_notes: string | null
           first_name: string
           focus_id: string | null
           gender: string | null
@@ -757,6 +761,8 @@ export type Database = {
           preferred_name: string | null
           previous_placement: string | null
           primary_language: string | null
+          probation_end_date: string | null
+          probation_order: string | null
           pronouns: string | null
           protective_factors: string | null
           reason_for_placement: string | null
@@ -765,9 +771,11 @@ export type Database = {
           residing_local_authority: string | null
           school_college: string | null
           social_media: string | null
+          social_media_accounts: Json | null
           social_worker_email: string | null
           social_worker_name: string | null
           social_worker_phone: string | null
+          structured_ids: Json | null
           tags: string[] | null
           time_looked_after: string | null
           triggers: string | null
@@ -775,12 +783,18 @@ export type Database = {
           user_id: string
           visibility: string | null
           year_group: string | null
+          yot_involved: boolean | null
+          yot_worker_email: string | null
+          yot_worker_name: string | null
+          yot_worker_phone: string | null
         }
         Insert: {
           activities_interests?: string[] | null
           age?: number | null
           allergies?: string[] | null
           assigned_team?: string | null
+          associated_areas?: string[] | null
+          associated_areas_notes?: string | null
           attendance_concerns?: boolean | null
           attendance_description?: string | null
           care_legal_status?: string | null
@@ -795,6 +809,8 @@ export type Database = {
           ehcp_review_date?: string | null
           ehcp_status?: string | null
           ethnicity?: string | null
+          exploitation_categories?: string[] | null
+          exploitation_notes?: string | null
           first_name: string
           focus_id?: string | null
           gender?: string | null
@@ -836,6 +852,8 @@ export type Database = {
           preferred_name?: string | null
           previous_placement?: string | null
           primary_language?: string | null
+          probation_end_date?: string | null
+          probation_order?: string | null
           pronouns?: string | null
           protective_factors?: string | null
           reason_for_placement?: string | null
@@ -844,9 +862,11 @@ export type Database = {
           residing_local_authority?: string | null
           school_college?: string | null
           social_media?: string | null
+          social_media_accounts?: Json | null
           social_worker_email?: string | null
           social_worker_name?: string | null
           social_worker_phone?: string | null
+          structured_ids?: Json | null
           tags?: string[] | null
           time_looked_after?: string | null
           triggers?: string | null
@@ -854,12 +874,18 @@ export type Database = {
           user_id: string
           visibility?: string | null
           year_group?: string | null
+          yot_involved?: boolean | null
+          yot_worker_email?: string | null
+          yot_worker_name?: string | null
+          yot_worker_phone?: string | null
         }
         Update: {
           activities_interests?: string[] | null
           age?: number | null
           allergies?: string[] | null
           assigned_team?: string | null
+          associated_areas?: string[] | null
+          associated_areas_notes?: string | null
           attendance_concerns?: boolean | null
           attendance_description?: string | null
           care_legal_status?: string | null
@@ -874,6 +900,8 @@ export type Database = {
           ehcp_review_date?: string | null
           ehcp_status?: string | null
           ethnicity?: string | null
+          exploitation_categories?: string[] | null
+          exploitation_notes?: string | null
           first_name?: string
           focus_id?: string | null
           gender?: string | null
@@ -915,6 +943,8 @@ export type Database = {
           preferred_name?: string | null
           previous_placement?: string | null
           primary_language?: string | null
+          probation_end_date?: string | null
+          probation_order?: string | null
           pronouns?: string | null
           protective_factors?: string | null
           reason_for_placement?: string | null
@@ -923,9 +953,11 @@ export type Database = {
           residing_local_authority?: string | null
           school_college?: string | null
           social_media?: string | null
+          social_media_accounts?: Json | null
           social_worker_email?: string | null
           social_worker_name?: string | null
           social_worker_phone?: string | null
+          structured_ids?: Json | null
           tags?: string[] | null
           time_looked_after?: string | null
           triggers?: string | null
@@ -933,6 +965,10 @@ export type Database = {
           user_id?: string
           visibility?: string | null
           year_group?: string | null
+          yot_involved?: boolean | null
+          yot_worker_email?: string | null
+          yot_worker_name?: string | null
+          yot_worker_phone?: string | null
         }
         Relationships: []
       }

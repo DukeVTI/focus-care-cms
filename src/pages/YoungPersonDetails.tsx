@@ -6,7 +6,7 @@ import { ModuleHeader } from "@/components/ModuleHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe, Edit, FileText, Activity } from "lucide-react";
+import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe, Edit, FileText, Activity, Shield, Fingerprint } from "lucide-react";
 import { format } from "date-fns";
 import { RecentSessionsWidget } from "@/components/young-people/RecentSessionsWidget";
 import { RiskLevelWidget } from "@/components/young-people/RiskLevelWidget";
@@ -445,7 +445,7 @@ export default function YoungPersonDetails() {
             )}
 
             {/* Safeguarding & Risk */}
-            {(youngPerson.known_risks?.length > 0 || youngPerson.initial_risk_summary || youngPerson.triggers || youngPerson.protective_factors) && (
+            {(youngPerson.known_risks?.length > 0 || youngPerson.initial_risk_summary || youngPerson.triggers || youngPerson.protective_factors || youngPerson.exploitation_categories?.length > 0) && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -466,6 +466,21 @@ export default function YoungPersonDetails() {
                       </div>
                     </div>
                   )}
+                  {youngPerson.exploitation_categories && youngPerson.exploitation_categories.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Exploitation Concerns</p>
+                      <div className="flex flex-wrap gap-2">
+                        {youngPerson.exploitation_categories.map((cat: string) => (
+                          <span key={cat} className="px-2.5 py-1 bg-destructive/20 text-destructive rounded-md text-xs font-medium uppercase">
+                            {cat.replace(/-/g, ' ')}
+                          </span>
+                        ))}
+                      </div>
+                      {youngPerson.exploitation_notes && (
+                        <p className="text-sm mt-2">{youngPerson.exploitation_notes}</p>
+                      )}
+                    </div>
+                  )}
                   {youngPerson.initial_risk_summary && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">Risk Summary</p>
@@ -483,6 +498,118 @@ export default function YoungPersonDetails() {
                       <p className="text-sm font-medium text-muted-foreground mb-1">Protective Factors</p>
                       <p className="text-sm">{youngPerson.protective_factors}</p>
                     </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* YOT / Probation */}
+            {youngPerson.yot_involved && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    YOT / Probation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {youngPerson.yot_worker_name && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">YOT Worker</p>
+                        <p className="text-sm">{youngPerson.yot_worker_name}</p>
+                        {youngPerson.yot_worker_phone && <p className="text-xs text-muted-foreground mt-1">{youngPerson.yot_worker_phone}</p>}
+                        {youngPerson.yot_worker_email && <p className="text-xs text-muted-foreground">{youngPerson.yot_worker_email}</p>}
+                      </div>
+                    )}
+                    {youngPerson.probation_order && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Order Type</p>
+                        <p className="text-sm capitalize">{youngPerson.probation_order.replace(/-/g, ' ')}</p>
+                      </div>
+                    )}
+                    {youngPerson.probation_end_date && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Order End Date</p>
+                        <p className="text-sm">{format(new Date(youngPerson.probation_end_date), "PPP")}</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Structured IDs */}
+            {youngPerson.structured_ids && youngPerson.structured_ids.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Fingerprint className="h-5 w-5" />
+                    Identification Documents
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {youngPerson.structured_ids.map((id: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between border rounded-lg p-3">
+                        <div>
+                          <p className="text-sm font-medium capitalize">{id.type?.replace(/-/g, ' ')}</p>
+                          <p className="text-xs text-muted-foreground">{id.value}</p>
+                        </div>
+                        {id.expiryDate && (
+                          <p className="text-xs text-muted-foreground">Exp: {format(new Date(id.expiryDate), "PP")}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Social Media */}
+            {youngPerson.social_media_accounts && youngPerson.social_media_accounts.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5" />
+                    Social Media Accounts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {youngPerson.social_media_accounts.map((acc: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between border rounded-lg p-3">
+                        <div>
+                          <p className="text-sm font-medium capitalize">{acc.platform}</p>
+                          <p className="text-xs text-muted-foreground">{acc.handle}</p>
+                        </div>
+                        {acc.notes && <p className="text-xs text-muted-foreground">{acc.notes}</p>}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Associated Areas */}
+            {youngPerson.associated_areas && youngPerson.associated_areas.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Associated Areas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {youngPerson.associated_areas.map((area: string, i: number) => (
+                      <span key={i} className="px-2.5 py-1 bg-accent text-accent-foreground rounded-md text-xs font-medium">
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                  {youngPerson.associated_areas_notes && (
+                    <p className="text-sm text-muted-foreground mt-2">{youngPerson.associated_areas_notes}</p>
                   )}
                 </CardContent>
               </Card>
