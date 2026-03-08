@@ -994,33 +994,51 @@ export type Database = {
       }
       young_person_documents: {
         Row: {
+          action_notes: string | null
+          action_required: boolean | null
+          category: string | null
           created_at: string | null
           document_type: string
           expiry_date: string | null
           file_name: string
           file_path: string
+          file_size: number | null
           id: string
           updated_at: string | null
+          uploaded_by: string | null
+          uploaded_by_name: string | null
           young_person_id: string
         }
         Insert: {
+          action_notes?: string | null
+          action_required?: boolean | null
+          category?: string | null
           created_at?: string | null
           document_type: string
           expiry_date?: string | null
           file_name: string
           file_path: string
+          file_size?: number | null
           id?: string
           updated_at?: string | null
+          uploaded_by?: string | null
+          uploaded_by_name?: string | null
           young_person_id: string
         }
         Update: {
+          action_notes?: string | null
+          action_required?: boolean | null
+          category?: string | null
           created_at?: string | null
           document_type?: string
           expiry_date?: string | null
           file_name?: string
           file_path?: string
+          file_size?: number | null
           id?: string
           updated_at?: string | null
+          uploaded_by?: string | null
+          uploaded_by_name?: string | null
           young_person_id?: string
         }
         Relationships: [

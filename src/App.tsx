@@ -28,6 +28,7 @@ import MissingEpisodes from "./pages/MissingEpisodes";
 import NewMissingEpisode from "./pages/NewMissingEpisode";
 import MissingEpisodeDetail from "./pages/MissingEpisodeDetail";
 import ReportReturn from "./pages/ReportReturn";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 import HealthWellbeing from "./pages/HealthWellbeing";
 
@@ -82,6 +83,7 @@ const App = () => {
               <Route path="/missing-episodes/new" element={<NewMissingEpisode />} />
               <Route path="/missing-episodes/:id" element={<MissingEpisodeDetail />} />
               <Route path="/missing-episodes/:id/report-return" element={<ReportReturn />} />
+              <Route path="/documents" element={<Documents />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
