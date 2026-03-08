@@ -39,6 +39,18 @@ const youngPersonSchema = z.object({
   idType: z.string().optional(),
   idValue: z.string().optional(),
   photoConsent: z.enum(["yes", "no", "not_obtained"]).optional(),
+  socialMediaAccounts: z.array(z.object({
+    platform: z.string(),
+    handle: z.string(),
+    notes: z.string().optional(),
+  })).optional(),
+  structuredIds: z.array(z.object({
+    type: z.string(),
+    value: z.string(),
+    expiryDate: z.string().optional(),
+  })).optional(),
+  associatedAreas: z.array(z.string()).optional(),
+  associatedAreasNotes: z.string().optional(),
 
   // Legal & Care Status
   placementType: z.string().min(1, "Placement type is required"),
