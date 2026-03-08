@@ -76,6 +76,53 @@ export type Database = {
           },
         ]
       }
+      health_condition_entries: {
+        Row: {
+          category: string
+          comment: string | null
+          condition_name: string
+          created_at: string | null
+          free_text_condition: string | null
+          id: string
+          rating: number
+          recorded_by: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          category: string
+          comment?: string | null
+          condition_name: string
+          created_at?: string | null
+          free_text_condition?: string | null
+          id?: string
+          rating?: number
+          recorded_by: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          category?: string
+          comment?: string | null
+          condition_name?: string
+          created_at?: string | null
+          free_text_condition?: string | null
+          id?: string
+          rating?: number
+          recorded_by?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_condition_entries_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       keywork_sessions: {
         Row: {
           author_name: string | null
@@ -165,6 +212,53 @@ export type Database = {
           },
           {
             foreignKeyName: "keywork_sessions_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_appointment_logs: {
+        Row: {
+          created_at: string | null
+          date_of_visit: string
+          id: string
+          next_appointment_date: string | null
+          outcome_notes: string | null
+          provider_name: string
+          recorded_by: string
+          updated_at: string | null
+          visit_type: string
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date_of_visit: string
+          id?: string
+          next_appointment_date?: string | null
+          outcome_notes?: string | null
+          provider_name: string
+          recorded_by: string
+          updated_at?: string | null
+          visit_type: string
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date_of_visit?: string
+          id?: string
+          next_appointment_date?: string | null
+          outcome_notes?: string | null
+          provider_name?: string
+          recorded_by?: string
+          updated_at?: string | null
+          visit_type?: string
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_appointment_logs_young_person_id_fkey"
             columns: ["young_person_id"]
             isOneToOne: false
             referencedRelation: "young_people"
