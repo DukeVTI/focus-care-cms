@@ -28,6 +28,7 @@ import MissingEpisodes from "./pages/MissingEpisodes";
 import NewMissingEpisode from "./pages/NewMissingEpisode";
 import MissingEpisodeDetail from "./pages/MissingEpisodeDetail";
 import ReportReturn from "./pages/ReportReturn";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 import HealthWellbeing from "./pages/HealthWellbeing";
 
