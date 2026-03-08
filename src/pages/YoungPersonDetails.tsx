@@ -193,6 +193,9 @@ export default function YoungPersonDetails() {
               <KeyContactsWidget youngPersonId={youngPerson.id} />
               <MissingEpisodesWidget youngPersonId={youngPerson.id} />
             </div>
+
+            {/* Documents */}
+            <DocumentsWidget youngPersonId={youngPerson.id} />
           </TabsContent>
 
           {/* Profile Tab */}
