@@ -6,7 +6,7 @@ import { ModuleHeader } from "@/components/ModuleHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe, Edit, FileText, Activity } from "lucide-react";
+import { ArrowLeft, User, Calendar, MapPin, Phone, Mail, Heart, GraduationCap, AlertTriangle, Globe, Edit, FileText, Activity, Shield, Fingerprint } from "lucide-react";
 import { format } from "date-fns";
 import { RecentSessionsWidget } from "@/components/young-people/RecentSessionsWidget";
 import { RiskLevelWidget } from "@/components/young-people/RiskLevelWidget";
