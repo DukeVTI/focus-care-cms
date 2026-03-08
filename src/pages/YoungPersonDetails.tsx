@@ -112,6 +112,10 @@ export default function YoungPersonDetails() {
                   <div className="flex flex-wrap gap-2">
                     <MissingPersonGrabPackButton youngPersonId={youngPerson.id} />
                     <MonthlyReportButton youngPersonId={youngPerson.id} />
+                    <Button onClick={() => navigate(`/young-people/${id}/health-wellbeing`)} variant="outline">
+                      <Heart className="h-4 w-4 mr-2" />
+                      Health & Wellbeing
+                    </Button>
                     <Button onClick={() => navigate(`/young-people/${id}/edit`)} variant="outline">
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
