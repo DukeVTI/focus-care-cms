@@ -269,74 +269,138 @@ export type Database = {
       missing_episodes: {
         Row: {
           case_id: string | null
+          clothing_description: string | null
           created_at: string | null
+          distinguishing_features: string | null
           edt_contact: string | null
+          escalated_at: string | null
+          escalation_level: string | null
           follow_up_actions: string | null
           found_by: string | null
           found_location: string | null
           id: string
+          known_associates: string | null
           last_known_location: string | null
+          likely_destinations: string | null
+          linked_task_id: string | null
+          manager_approved: boolean | null
+          manager_approved_at: string | null
+          manager_approved_by: string | null
           missing_from: string
           missing_reason: string | null
           notes: string | null
           outcome: string | null
+          placing_authority_notified: boolean | null
+          placing_authority_notified_at: string | null
           police_notified: boolean | null
           police_reference: string | null
           reported_by: string
+          return_interview_completed: boolean | null
+          return_interview_date: string | null
+          return_interview_notes: string | null
           return_reason: string | null
           returned_at: string | null
+          risk_level: string | null
           risks_encountered: string | null
+          social_worker_notified: boolean | null
+          social_worker_notified_at: string | null
           status: string
+          transport_mode: string | null
           updated_at: string | null
           young_person_id: string
         }
         Insert: {
           case_id?: string | null
+          clothing_description?: string | null
           created_at?: string | null
+          distinguishing_features?: string | null
           edt_contact?: string | null
+          escalated_at?: string | null
+          escalation_level?: string | null
           follow_up_actions?: string | null
           found_by?: string | null
           found_location?: string | null
           id?: string
+          known_associates?: string | null
           last_known_location?: string | null
+          likely_destinations?: string | null
+          linked_task_id?: string | null
+          manager_approved?: boolean | null
+          manager_approved_at?: string | null
+          manager_approved_by?: string | null
           missing_from: string
           missing_reason?: string | null
           notes?: string | null
           outcome?: string | null
+          placing_authority_notified?: boolean | null
+          placing_authority_notified_at?: string | null
           police_notified?: boolean | null
           police_reference?: string | null
           reported_by: string
+          return_interview_completed?: boolean | null
+          return_interview_date?: string | null
+          return_interview_notes?: string | null
           return_reason?: string | null
           returned_at?: string | null
+          risk_level?: string | null
           risks_encountered?: string | null
+          social_worker_notified?: boolean | null
+          social_worker_notified_at?: string | null
           status?: string
+          transport_mode?: string | null
           updated_at?: string | null
           young_person_id: string
         }
         Update: {
           case_id?: string | null
+          clothing_description?: string | null
           created_at?: string | null
+          distinguishing_features?: string | null
           edt_contact?: string | null
+          escalated_at?: string | null
+          escalation_level?: string | null
           follow_up_actions?: string | null
           found_by?: string | null
           found_location?: string | null
           id?: string
+          known_associates?: string | null
           last_known_location?: string | null
+          likely_destinations?: string | null
+          linked_task_id?: string | null
+          manager_approved?: boolean | null
+          manager_approved_at?: string | null
+          manager_approved_by?: string | null
           missing_from?: string
           missing_reason?: string | null
           notes?: string | null
           outcome?: string | null
+          placing_authority_notified?: boolean | null
+          placing_authority_notified_at?: string | null
           police_notified?: boolean | null
           police_reference?: string | null
           reported_by?: string
+          return_interview_completed?: boolean | null
+          return_interview_date?: string | null
+          return_interview_notes?: string | null
           return_reason?: string | null
           returned_at?: string | null
+          risk_level?: string | null
           risks_encountered?: string | null
+          social_worker_notified?: boolean | null
+          social_worker_notified_at?: string | null
           status?: string
+          transport_mode?: string | null
           updated_at?: string | null
           young_person_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "missing_episodes_linked_task_id_fkey"
+            columns: ["linked_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "missing_episodes_young_person_id_fkey"
             columns: ["young_person_id"]
