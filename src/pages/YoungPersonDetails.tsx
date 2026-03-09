@@ -505,15 +505,20 @@ export default function YoungPersonDetails() {
             )}
 
             {/* YOT / Probation */}
-            {youngPerson.yot_involved && (
-              <Card>
-                <CardHeader>
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5" />
                     YOT / Probation
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  <Button variant="ghost" size="sm" onClick={() => setEditSection("yot_details")} className="h-8 w-8 p-0">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {youngPerson.yot_involved ? (
                   <div className="grid gap-6 md:grid-cols-2">
                     {youngPerson.yot_worker_name && (
                       <div>
@@ -536,9 +541,11 @@ export default function YoungPersonDetails() {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No YOT involvement recorded. Click edit to add.</p>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Structured IDs */}
             <Card>
