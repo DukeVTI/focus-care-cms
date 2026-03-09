@@ -735,6 +735,8 @@ export default function YoungPersonDetails() {
           editSection === "social_media" ? youngPerson.social_media_accounts
           : editSection === "structured_ids" ? youngPerson.structured_ids
           : editSection === "associated_areas" ? { areas: youngPerson.associated_areas, notes: youngPerson.associated_areas_notes }
+          : editSection === "exploitation" ? { categories: youngPerson.exploitation_categories, notes: youngPerson.exploitation_notes }
+          : editSection === "yot_details" ? youngPerson
           : null
         }
         onSaved={fetchYoungPerson}
