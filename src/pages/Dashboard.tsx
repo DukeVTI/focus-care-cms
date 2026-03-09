@@ -129,6 +129,7 @@ export default function Dashboard() {
     { title: "Risk Assessments", description: "Monitor risk levels", icon: Shield, link: "/risk-assessments", color: "warning" },
     { title: "Chronology", description: "Daily observations", icon: BookOpen, link: "/chronology", color: "primary" },
     { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "destructive" },
+    { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "primary" },
   ];
 
   return (
