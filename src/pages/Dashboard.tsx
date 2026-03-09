@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen, UserCog } from "lucide-react";
+import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen, UserCog, ArrowRight, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { format } from "date-fns";
 import focusLogo from "@/assets/focus-logo.jpg";
@@ -71,16 +71,9 @@ export default function Dashboard() {
   const fetchRecentTasks = async () => {
     const { data } = await supabase
       .from("tasks")
-      .select(`
-        *,
-        young_people:young_person_id (
-          first_name,
-          last_name
-        )
-      `)
+      .select(`*, young_people:young_person_id (first_name, last_name)`)
       .order("created_at", { ascending: false })
-      .limit(3);
-    
+      .limit(4);
     if (data) setRecentTasks(data);
   };
 
@@ -89,178 +82,171 @@ export default function Dashboard() {
       .from("young_people")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(3);
-    
+      .limit(4);
     if (data) setRecentYoungPeople(data);
   };
 
   const fetchUpcomingSessions = async () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
     const { data } = await supabase
       .from("keywork_sessions")
-      .select(`
-        *,
-        young_people:young_person_id (
-          first_name,
-          last_name
-        )
-      `)
+      .select(`*, young_people:young_person_id (first_name, last_name)`)
       .gte("session_date", today.toISOString())
       .order("session_date", { ascending: true })
       .limit(3);
-    
     if (data) setUpcomingSessions(data);
   };
 
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
   const statCards = [
-    { title: "Young People", value: stats.youngPeople.toString(), icon: Users, color: "text-primary", link: "/young-people" },
-    { title: "Active Tasks", value: stats.activeTasks.toString(), icon: CheckCircle2, color: "text-success", link: "/tasks" },
-    { title: "High Priority", value: stats.highPriority.toString(), icon: AlertCircle, color: "text-warning", link: "/tasks" },
-    { title: "Sessions Logged", value: stats.sessions.toString(), icon: Calendar, color: "text-primary", link: "/keywork-sessions" },
+    { title: "Young People", value: stats.youngPeople, icon: Users, color: "text-primary", bgColor: "bg-primary/10", link: "/young-people" },
+    { title: "Active Tasks", value: stats.activeTasks, icon: CheckCircle2, color: "text-success", bgColor: "bg-success/10", link: "/tasks" },
+    { title: "High Priority", value: stats.highPriority, icon: AlertCircle, color: "text-warning", bgColor: "bg-warning/10", link: "/tasks" },
+    { title: "Sessions Logged", value: stats.sessions, icon: Calendar, color: "text-primary", bgColor: "bg-primary/10", link: "/keywork-sessions" },
   ];
 
   const modules = [
-    { title: "Young People", description: "Manage your caseload", icon: Users, link: "/young-people", color: "primary" },
-    { title: "Tasks", description: "Track assignments", icon: CheckCircle2, link: "/tasks", color: "success" },
-    { title: "Keywork Sessions", description: "Log sessions", icon: Calendar, link: "/keywork-sessions", color: "primary" },
-    { title: "Risk Assessments", description: "Monitor risk levels", icon: Shield, link: "/risk-assessments", color: "warning" },
-    { title: "Chronology", description: "Daily observations", icon: BookOpen, link: "/chronology", color: "primary" },
-    { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "destructive" },
-    { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "primary" },
+    { title: "Young People", description: "Manage your caseload", icon: Users, link: "/young-people", color: "text-primary", bgColor: "bg-primary/10" },
+    { title: "Tasks", description: "Track assignments", icon: CheckCircle2, link: "/tasks", color: "text-success", bgColor: "bg-success/10" },
+    { title: "Keywork Sessions", description: "Log sessions", icon: Calendar, link: "/keywork-sessions", color: "text-primary", bgColor: "bg-primary/10" },
+    { title: "Risk Assessments", description: "Monitor risk levels", icon: Shield, link: "/risk-assessments", color: "text-warning", bgColor: "bg-warning/10" },
+    { title: "Chronology", description: "Daily observations", icon: BookOpen, link: "/chronology", color: "text-primary", bgColor: "bg-primary/10" },
+    { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "text-destructive", bgColor: "bg-destructive/10" },
+    { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "text-primary", bgColor: "bg-primary/10" },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-background">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container flex h-16 items-center justify-between px-4 max-w-full">
-          <div className="flex items-center gap-2 md:gap-3">
-            <img 
-              src={focusLogo} 
-              alt="FOCUS Logo" 
-              className="h-10 w-10 md:h-12 md:w-12 object-contain"
-            />
+      <header className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="container flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl mx-auto">
+          <div className="flex items-center gap-3">
+            <img src={focusLogo} alt="FOCUS Logo" className="h-10 w-10 md:h-11 md:w-11 rounded-lg object-contain shadow-sm" />
             <div className="hidden sm:block">
-              <h1 className="text-base md:text-lg font-bold">FOCUS</h1>
-              <p className="text-xs text-muted-foreground hidden md:block">NextGen Care Support</p>
+              <h1 className="text-base md:text-lg font-bold tracking-tight">FOCUS</h1>
+              <p className="text-[11px] text-muted-foreground leading-none">NextGen Care Support</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-3">
             <div className="hidden lg:block text-right">
-              <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
-              <p className="text-xs text-muted-foreground">{profile?.role || "Staff"}</p>
+              <p className="text-sm font-semibold">{profile?.full_name || "User"}</p>
+              <p className="text-[11px] text-muted-foreground leading-none">{profile?.role || "Staff"}</p>
             </div>
-            <Button variant="outline" size="sm" onClick={signOut} className="text-xs md:text-sm">
-              <LogOut className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
+            <Button variant="outline" size="sm" onClick={signOut} className="text-xs gap-1.5">
+              <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container py-4 md:py-8 px-4 max-w-full">
-        {/* Welcome Section */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, {profile?.full_name?.split(" ")[0] || "User"}!</h2>
-          <p className="text-sm md:text-base text-muted-foreground">Here's an overview of your Next Gen platform.</p>
+      <main className="container py-6 md:py-8 px-4 md:px-6 max-w-7xl mx-auto space-y-8">
+        {/* Welcome */}
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Welcome back, <span className="text-primary">{profile?.full_name?.split(" ")[0] || "User"}</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">Here's an overview of your Next Gen platform.</p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4 mb-6 md:mb-8">
-          {statCards.map((stat, index) => (
-            <Card 
-              key={index} 
-              className="transition-all hover:shadow-lg cursor-pointer"
+        {/* Stats */}
+        <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
+          {statCards.map((stat, i) => (
+            <Card
+              key={i}
+              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 border-transparent hover:border-primary/20"
               onClick={() => navigate(stat.link)}
             >
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{stat.value}</div>
+              <CardContent className="p-4 md:p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{stat.title}</span>
+                  <div className={`h-8 w-8 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
+                    <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                  </div>
+                </div>
+                <p className="text-3xl md:text-4xl font-bold tracking-tight">{stat.value}</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Quick Access Modules */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Core Modules</h2>
-          <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {modules.map((module, index) => (
+        {/* Core Modules */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg md:text-xl font-bold">Core Modules</h3>
+          </div>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            {modules.map((module, i) => (
               <Card
-                key={index}
-                className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1"
+                key={i}
+                className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 border-transparent hover:border-primary/20"
                 onClick={() => navigate(module.link)}
               >
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className={`h-12 w-12 rounded-lg bg-${module.color}/10 flex items-center justify-center`}>
-                      <module.icon className={`h-6 w-6 text-${module.color}`} />
-                    </div>
-                    <div>
-                      <CardTitle>{module.title}</CardTitle>
-                      <CardDescription>{module.description}</CardDescription>
-                    </div>
+                <CardContent className="p-4 md:p-5 flex flex-col items-start gap-3">
+                  <div className={`h-10 w-10 rounded-xl ${module.bgColor} flex items-center justify-center transition-transform duration-200 group-hover:scale-110`}>
+                    <module.icon className={`h-5 w-5 ${module.color}`} />
                   </div>
-                </CardHeader>
+                  <div>
+                    <p className="font-semibold text-sm">{module.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{module.description}</p>
+                  </div>
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/50 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardContent>
               </Card>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Analytics Charts */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Analytics</h2>
-          <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
+        {/* Analytics */}
+        <section>
+          <h3 className="text-lg md:text-xl font-bold mb-4">Analytics</h3>
+          <div className="grid gap-4 lg:grid-cols-3">
             <RiskTrendChart />
             <CaseloadDistributionChart />
             <TaskCompletionChart />
           </div>
-        </div>
+        </section>
 
-        {/* Main Content Cards */}
-        <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
+        {/* Activity Grid */}
+        <div className="grid gap-4 lg:grid-cols-2">
           {/* Recent Tasks */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-                Recent Tasks
-              </CardTitle>
-              <CardDescription>Your assigned tasks and their status</CardDescription>
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  Recent Tasks
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => navigate("/tasks")}>
+                  View all <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-2">
                 {recentTasks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">No tasks yet</p>
+                  <p className="text-sm text-muted-foreground text-center py-6">No tasks yet</p>
                 ) : (
                   recentTasks.map((task) => (
-                    <div 
-                      key={task.id} 
-                      className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors cursor-pointer"
+                    <div
+                      key={task.id}
+                      className="flex items-center justify-between p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group"
                       onClick={() => navigate(`/tasks/${task.id}`)}
                     >
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{task.title}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {task.young_people?.first_name} {task.young_people?.last_name} • {task.importance}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{task.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {task.young_people?.first_name} {task.young_people?.last_name} · {task.importance}
                         </p>
                       </div>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        task.status === "completed" || task.status === "DONE" ? "bg-success/20 text-success" :
-                        task.status === "in_progress" || task.status === "IN_PROGRESS" ? "bg-warning/20 text-warning" :
-                        "bg-destructive/20 text-destructive"
+                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${
+                        task.status === "completed" || task.status === "DONE" ? "bg-success/15 text-success" :
+                        task.status === "in_progress" || task.status === "IN_PROGRESS" ? "bg-warning/15 text-warning" :
+                        "bg-destructive/15 text-destructive"
                       }`}>
                         {task.status.replace('_', ' ')}
                       </span>
@@ -268,94 +254,94 @@ export default function Dashboard() {
                   ))
                 )}
               </div>
-              <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/tasks")}>
-                View All Tasks
-              </Button>
             </CardContent>
           </Card>
 
-          {/* Young People Overview */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                Young People
-              </CardTitle>
-              <CardDescription>Your current caseload overview</CardDescription>
+          {/* Young People */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  Young People
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => navigate("/young-people")}>
+                  View all <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-2">
                 {recentYoungPeople.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">No young people yet</p>
+                  <p className="text-sm text-muted-foreground text-center py-6">No young people yet</p>
                 ) : (
                   recentYoungPeople.map((person) => {
                     const age = new Date().getFullYear() - new Date(person.date_of_birth).getFullYear();
                     return (
-                      <div 
-                        key={person.id} 
-                        className="flex items-center justify-between p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors cursor-pointer"
+                      <div
+                        key={person.id}
+                        className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                         onClick={() => navigate(`/young-people/${person.id}`)}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-semibold">
-                            {person.first_name[0]}{person.last_name[0]}
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">{person.first_name} {person.last_name}</p>
-                            <p className="text-xs text-muted-foreground">Age: {age} • {person.gender}</p>
-                          </div>
+                        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-xs font-bold shrink-0">
+                          {person.first_name[0]}{person.last_name?.[0] || ""}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{person.first_name} {person.last_name}</p>
+                          <p className="text-xs text-muted-foreground">Age: {age} · {person.gender}</p>
                         </div>
                       </div>
                     );
                   })
                 )}
               </div>
-              <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/young-people")}>
-                View All Cases
-              </Button>
             </CardContent>
           </Card>
         </div>
 
         {/* Upcoming Sessions */}
-        <Card className="mt-4 md:mt-6 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
-              <Calendar className="h-5 w-5 text-primary" />
-              Upcoming Sessions
-            </CardTitle>
-            <CardDescription className="text-sm">Scheduled keywork sessions for the week</CardDescription>
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Calendar className="h-3.5 w-3.5 text-primary" />
+                </div>
+                Upcoming Sessions
+              </CardTitle>
+              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => navigate("/keywork-sessions")}>
+                View all <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {upcomingSessions.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">No upcoming sessions</p>
+              <p className="text-sm text-muted-foreground text-center py-6">No upcoming sessions</p>
             ) : (
-              <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {upcomingSessions.map((session) => (
-                  <div 
-                    key={session.id} 
-                    className="p-4 rounded-lg border bg-card hover:shadow-md transition-all cursor-pointer"
+                  <div
+                    key={session.id}
+                    className="p-4 rounded-xl border bg-card hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
                     onClick={() => navigate(`/keywork-sessions/${session.id}`)}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <p className="font-medium">{session.young_people?.first_name} {session.young_people?.last_name}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {format(new Date(session.session_date), "PPp")}
-                        </p>
-                      </div>
-                      <FileText className="h-4 w-4 text-primary" />
+                      <p className="font-semibold text-sm">{session.young_people?.first_name} {session.young_people?.last_name}</p>
+                      <FileText className="h-4 w-4 text-muted-foreground/50" />
                     </div>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
+                      <Clock className="h-3 w-3" />
+                      {format(new Date(session.session_date), "PPp")}
+                    </div>
+                    <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
                       {session.session_type}
                     </span>
                   </div>
                 ))}
               </div>
             )}
-            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/keywork-sessions")}>
-              View All Sessions
-            </Button>
           </CardContent>
         </Card>
       </main>
