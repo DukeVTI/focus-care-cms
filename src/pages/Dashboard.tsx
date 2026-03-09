@@ -10,6 +10,7 @@ import focusLogo from "@/assets/focus-logo.jpg";
 import { RiskTrendChart } from "@/components/dashboard/RiskTrendChart";
 import { CaseloadDistributionChart } from "@/components/dashboard/CaseloadDistributionChart";
 import { TaskCompletionChart } from "@/components/dashboard/TaskCompletionChart";
+import { NotificationsBell } from "@/components/dashboard/NotificationsBell";
 
 export default function Dashboard() {
   const { user, signOut, loading } = useAuth();
@@ -134,6 +135,7 @@ export default function Dashboard() {
               <p className="text-sm font-semibold">{profile?.full_name || "User"}</p>
               <p className="text-[11px] text-muted-foreground leading-none">{profile?.role || "Staff"}</p>
             </div>
+            <NotificationsBell />
             <Button variant="outline" size="sm" onClick={signOut} className="text-xs gap-1.5">
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign Out</span>
