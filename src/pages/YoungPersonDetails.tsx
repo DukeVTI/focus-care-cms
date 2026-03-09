@@ -639,7 +639,6 @@ export default function YoungPersonDetails() {
                 )}
               </CardContent>
             </Card>
-            )}
 
             {/* Culture & Preferences */}
             <Card>
