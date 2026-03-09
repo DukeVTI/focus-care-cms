@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen } from "lucide-react";
+import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen, UserCog } from "lucide-react";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { format } from "date-fns";
 import focusLogo from "@/assets/focus-logo.jpg";
@@ -129,6 +129,7 @@ export default function Dashboard() {
     { title: "Risk Assessments", description: "Monitor risk levels", icon: Shield, link: "/risk-assessments", color: "warning" },
     { title: "Chronology", description: "Daily observations", icon: BookOpen, link: "/chronology", color: "primary" },
     { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "destructive" },
+    { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "primary" },
   ];
 
   return (

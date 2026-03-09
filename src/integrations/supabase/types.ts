@@ -412,30 +412,45 @@ export type Database = {
       }
       profiles: {
         Row: {
+          availability_note: string | null
+          availability_status: string | null
           avatar_url: string | null
           created_at: string | null
           email: string | null
           full_name: string | null
           id: string
+          job_title: string | null
           organization_name: string | null
+          phone: string | null
+          team: string | null
           updated_at: string | null
         }
         Insert: {
+          availability_note?: string | null
+          availability_status?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           full_name?: string | null
           id: string
+          job_title?: string | null
           organization_name?: string | null
+          phone?: string | null
+          team?: string | null
           updated_at?: string | null
         }
         Update: {
+          availability_note?: string | null
+          availability_status?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          job_title?: string | null
           organization_name?: string | null
+          phone?: string | null
+          team?: string | null
           updated_at?: string | null
         }
         Relationships: []

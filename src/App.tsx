@@ -31,7 +31,7 @@ import ReportReturn from "./pages/ReportReturn";
 import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 import HealthWellbeing from "./pages/HealthWellbeing";
-
+import StaffManagement from "./pages/StaffManagement";
 import EditYoungPerson from "./pages/EditYoungPerson";
 
 const queryClient = new QueryClient();
@@ -84,6 +84,7 @@ const App = () => {
               <Route path="/missing-episodes/:id" element={<MissingEpisodeDetail />} />
               <Route path="/missing-episodes/:id/report-return" element={<ReportReturn />} />
               <Route path="/documents" element={<Documents />} />
+              <Route path="/staff" element={<StaffManagement />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
