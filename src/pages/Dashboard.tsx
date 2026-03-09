@@ -135,6 +135,7 @@ export default function Dashboard() {
               <p className="text-sm font-semibold">{profile?.full_name || "User"}</p>
               <p className="text-[11px] text-muted-foreground leading-none">{profile?.role || "Staff"}</p>
             </div>
+            <NotificationsBell />
             <Button variant="outline" size="sm" onClick={signOut} className="text-xs gap-1.5">
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign Out</span>
