@@ -719,6 +719,20 @@ export default function YoungPersonDetails() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <InlineEditDialog
+        open={editSection !== null}
+        onOpenChange={(open) => { if (!open) setEditSection(null); }}
+        youngPersonId={youngPerson.id}
+        section={editSection || "social_media"}
+        initialData={
+          editSection === "social_media" ? youngPerson.social_media_accounts
+          : editSection === "structured_ids" ? youngPerson.structured_ids
+          : editSection === "associated_areas" ? { areas: youngPerson.associated_areas, notes: youngPerson.associated_areas_notes }
+          : null
+        }
+        onSaved={fetchYoungPerson}
+      />
     </div>
   );
 }
