@@ -19,6 +19,7 @@ import { MissingPersonGrabPackButton } from "@/components/young-people/MissingPe
 import { MonthlyReportButton } from "@/components/young-people/MonthlyReportButton";
 import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 import { DocumentsWidget } from "@/components/young-people/DocumentsWidget";
+import { InlineEditDialog } from "@/components/young-people/InlineEditDialog";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
