@@ -19,7 +19,7 @@ import { MissingPersonGrabPackButton } from "@/components/young-people/MissingPe
 import { MonthlyReportButton } from "@/components/young-people/MonthlyReportButton";
 import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 import { DocumentsWidget } from "@/components/young-people/DocumentsWidget";
-import { InlineEditDialog } from "@/components/young-people/InlineEditDialog";
+import { InlineEditDialog, EditSection } from "@/components/young-people/InlineEditDialog";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -27,7 +27,7 @@ export default function YoungPersonDetails() {
   const navigate = useNavigate();
   const [youngPerson, setYoungPerson] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(true);
-  const [editSection, setEditSection] = useState<"social_media" | "structured_ids" | "associated_areas" | null>(null);
+  const [editSection, setEditSection] = useState<EditSection | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -461,28 +461,27 @@ export default function YoungPersonDetails() {
                       <p className="text-sm font-medium text-muted-foreground mb-2">Known Risks</p>
                       <div className="flex flex-wrap gap-2">
                         {youngPerson.known_risks.map((risk: string) => (
-                          <span key={risk} className="px-2.5 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-medium uppercase">
-                            {risk}
-                          </span>
+                          <span key={risk} className="px-2.5 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-medium uppercase">{risk}</span>
                         ))}
                       </div>
                     </div>
                   )}
-                  {youngPerson.exploitation_categories && youngPerson.exploitation_categories.length > 0 && (
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Exploitation Concerns</p>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium text-muted-foreground">Exploitation Concerns</p>
+                      <Button variant="ghost" size="sm" onClick={() => setEditSection("exploitation")} className="h-7 w-7 p-0"><Pencil className="h-3.5 w-3.5" /></Button>
+                    </div>
+                    {youngPerson.exploitation_categories?.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {youngPerson.exploitation_categories.map((cat: string) => (
-                          <span key={cat} className="px-2.5 py-1 bg-destructive/20 text-destructive rounded-md text-xs font-medium uppercase">
-                            {cat.replace(/-/g, ' ')}
-                          </span>
+                          <span key={cat} className="px-2.5 py-1 bg-destructive/20 text-destructive rounded-md text-xs font-medium uppercase">{cat.replace(/-/g, ' ')}</span>
                         ))}
                       </div>
-                      {youngPerson.exploitation_notes && (
-                        <p className="text-sm mt-2">{youngPerson.exploitation_notes}</p>
-                      )}
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-sm text-muted-foreground">None recorded. Click edit to add.</p>
+                    )}
+                    {youngPerson.exploitation_notes && <p className="text-sm mt-2">{youngPerson.exploitation_notes}</p>}
+                  </div>
                   {youngPerson.initial_risk_summary && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">Risk Summary</p>
@@ -506,15 +505,20 @@ export default function YoungPersonDetails() {
             )}
 
             {/* YOT / Probation */}
-            {youngPerson.yot_involved && (
-              <Card>
-                <CardHeader>
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5" />
                     YOT / Probation
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  <Button variant="ghost" size="sm" onClick={() => setEditSection("yot_details")} className="h-8 w-8 p-0">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {youngPerson.yot_involved ? (
                   <div className="grid gap-6 md:grid-cols-2">
                     {youngPerson.yot_worker_name && (
                       <div>
@@ -537,9 +541,11 @@ export default function YoungPersonDetails() {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No YOT involvement recorded. Click edit to add.</p>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Structured IDs */}
             <Card>
@@ -729,6 +735,8 @@ export default function YoungPersonDetails() {
           editSection === "social_media" ? youngPerson.social_media_accounts
           : editSection === "structured_ids" ? youngPerson.structured_ids
           : editSection === "associated_areas" ? { areas: youngPerson.associated_areas, notes: youngPerson.associated_areas_notes }
+          : editSection === "exploitation" ? { categories: youngPerson.exploitation_categories, notes: youngPerson.exploitation_notes }
+          : editSection === "yot_details" ? youngPerson
           : null
         }
         onSaved={fetchYoungPerson}
