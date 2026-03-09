@@ -219,6 +219,16 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Analytics Charts */}
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Analytics</h2>
+          <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
+            <RiskTrendChart />
+            <CaseloadDistributionChart />
+            <TaskCompletionChart />
+          </div>
+        </div>
+
         {/* Main Content Cards */}
         <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
           {/* Recent Tasks */}
