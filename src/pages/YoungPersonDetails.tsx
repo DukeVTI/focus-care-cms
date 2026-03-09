@@ -27,7 +27,7 @@ export default function YoungPersonDetails() {
   const navigate = useNavigate();
   const [youngPerson, setYoungPerson] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(true);
-  const [editSection, setEditSection] = useState<"social_media" | "structured_ids" | "associated_areas" | null>(null);
+  const [editSection, setEditSection] = useState<EditSection | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
