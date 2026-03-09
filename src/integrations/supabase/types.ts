@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          due_date: string | null
+          id: string
+          is_read: boolean
+          message: string | null
+          severity: string
+          title: string
+          user_id: string
+          young_person_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          severity?: string
+          title: string
+          user_id: string
+          young_person_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          severity?: string
+          title?: string
+          user_id?: string
+          young_person_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_log: {
+        Row: {
+          action: string
+          actor_name: string | null
+          created_at: string
+          field_changed: string | null
+          id: string
+          new_value: string | null
+          notes: string | null
+          old_value: string | null
+          record_id: string
+          record_type: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          actor_name?: string | null
+          created_at?: string
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          notes?: string | null
+          old_value?: string | null
+          record_id: string
+          record_type: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          actor_name?: string | null
+          created_at?: string
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          notes?: string | null
+          old_value?: string | null
+          record_id?: string
+          record_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chronology_entries: {
         Row: {
           author_name: string | null
