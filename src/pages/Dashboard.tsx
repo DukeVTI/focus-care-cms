@@ -7,6 +7,9 @@ import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, M
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { format } from "date-fns";
 import focusLogo from "@/assets/focus-logo.jpg";
+import { RiskTrendChart } from "@/components/dashboard/RiskTrendChart";
+import { CaseloadDistributionChart } from "@/components/dashboard/CaseloadDistributionChart";
+import { TaskCompletionChart } from "@/components/dashboard/TaskCompletionChart";
 
 export default function Dashboard() {
   const { user, signOut, loading } = useAuth();
@@ -213,6 +216,16 @@ export default function Dashboard() {
                 </CardHeader>
               </Card>
             ))}
+          </div>
+        </div>
+
+        {/* Analytics Charts */}
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Analytics</h2>
+          <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
+            <RiskTrendChart />
+            <CaseloadDistributionChart />
+            <TaskCompletionChart />
           </div>
         </div>
 
