@@ -542,42 +542,54 @@ export default function YoungPersonDetails() {
             )}
 
             {/* Structured IDs */}
-            {youngPerson.structured_ids && youngPerson.structured_ids.length > 0 && (
-              <Card>
-                <CardHeader>
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Fingerprint className="h-5 w-5" />
                     Identification Documents
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  <Button variant="ghost" size="sm" onClick={() => setEditSection("structured_ids")} className="h-8 w-8 p-0">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {youngPerson.structured_ids && youngPerson.structured_ids.length > 0 ? (
                   <div className="space-y-3">
-                    {youngPerson.structured_ids.map((id: any, i: number) => (
+                    {youngPerson.structured_ids.map((sid: any, i: number) => (
                       <div key={i} className="flex items-center justify-between border rounded-lg p-3">
                         <div>
-                          <p className="text-sm font-medium capitalize">{id.type?.replace(/-/g, ' ')}</p>
-                          <p className="text-xs text-muted-foreground">{id.value}</p>
+                          <p className="text-sm font-medium capitalize">{sid.type?.replace(/-/g, ' ')}</p>
+                          <p className="text-xs text-muted-foreground">{sid.value}</p>
                         </div>
-                        {id.expiryDate && (
-                          <p className="text-xs text-muted-foreground">Exp: {format(new Date(id.expiryDate), "PP")}</p>
+                        {sid.expiryDate && (
+                          <p className="text-xs text-muted-foreground">Exp: {format(new Date(sid.expiryDate), "PP")}</p>
                         )}
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No documents added yet. Click the edit button to add.</p>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Social Media */}
-            {youngPerson.social_media_accounts && youngPerson.social_media_accounts.length > 0 && (
-              <Card>
-                <CardHeader>
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Globe className="h-5 w-5" />
                     Social Media Accounts
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  <Button variant="ghost" size="sm" onClick={() => setEditSection("social_media")} className="h-8 w-8 p-0">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {youngPerson.social_media_accounts && youngPerson.social_media_accounts.length > 0 ? (
                   <div className="space-y-3">
                     {youngPerson.social_media_accounts.map((acc: any, i: number) => (
                       <div key={i} className="flex items-center justify-between border rounded-lg p-3">
@@ -589,32 +601,44 @@ export default function YoungPersonDetails() {
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No accounts added yet. Click the edit button to add.</p>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Associated Areas */}
-            {youngPerson.associated_areas && youngPerson.associated_areas.length > 0 && (
-              <Card>
-                <CardHeader>
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="h-5 w-5" />
                     Associated Areas
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {youngPerson.associated_areas.map((area: string, i: number) => (
-                      <span key={i} className="px-2.5 py-1 bg-accent text-accent-foreground rounded-md text-xs font-medium">
-                        {area}
-                      </span>
-                    ))}
-                  </div>
-                  {youngPerson.associated_areas_notes && (
-                    <p className="text-sm text-muted-foreground mt-2">{youngPerson.associated_areas_notes}</p>
-                  )}
-                </CardContent>
-              </Card>
+                  <Button variant="ghost" size="sm" onClick={() => setEditSection("associated_areas")} className="h-8 w-8 p-0">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {youngPerson.associated_areas && youngPerson.associated_areas.length > 0 ? (
+                  <>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {youngPerson.associated_areas.map((area: string, i: number) => (
+                        <span key={i} className="px-2.5 py-1 bg-accent text-accent-foreground rounded-md text-xs font-medium">
+                          {area}
+                        </span>
+                      ))}
+                    </div>
+                    {youngPerson.associated_areas_notes && (
+                      <p className="text-sm text-muted-foreground mt-2">{youngPerson.associated_areas_notes}</p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No areas added yet. Click the edit button to add.</p>
+                )}
+              </CardContent>
+            </Card>
             )}
 
             {/* Culture & Preferences */}
