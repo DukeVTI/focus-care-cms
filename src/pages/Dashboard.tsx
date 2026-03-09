@@ -10,6 +10,7 @@ import focusLogo from "@/assets/focus-logo.jpg";
 import { RiskTrendChart } from "@/components/dashboard/RiskTrendChart";
 import { CaseloadDistributionChart } from "@/components/dashboard/CaseloadDistributionChart";
 import { TaskCompletionChart } from "@/components/dashboard/TaskCompletionChart";
+import { NotificationsBell } from "@/components/dashboard/NotificationsBell";
 
 export default function Dashboard() {
   const { user, signOut, loading } = useAuth();
