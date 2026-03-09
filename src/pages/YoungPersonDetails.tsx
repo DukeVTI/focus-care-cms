@@ -461,28 +461,27 @@ export default function YoungPersonDetails() {
                       <p className="text-sm font-medium text-muted-foreground mb-2">Known Risks</p>
                       <div className="flex flex-wrap gap-2">
                         {youngPerson.known_risks.map((risk: string) => (
-                          <span key={risk} className="px-2.5 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-medium uppercase">
-                            {risk}
-                          </span>
+                          <span key={risk} className="px-2.5 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-medium uppercase">{risk}</span>
                         ))}
                       </div>
                     </div>
                   )}
-                  {youngPerson.exploitation_categories && youngPerson.exploitation_categories.length > 0 && (
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Exploitation Concerns</p>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium text-muted-foreground">Exploitation Concerns</p>
+                      <Button variant="ghost" size="sm" onClick={() => setEditSection("exploitation")} className="h-7 w-7 p-0"><Pencil className="h-3.5 w-3.5" /></Button>
+                    </div>
+                    {youngPerson.exploitation_categories?.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {youngPerson.exploitation_categories.map((cat: string) => (
-                          <span key={cat} className="px-2.5 py-1 bg-destructive/20 text-destructive rounded-md text-xs font-medium uppercase">
-                            {cat.replace(/-/g, ' ')}
-                          </span>
+                          <span key={cat} className="px-2.5 py-1 bg-destructive/20 text-destructive rounded-md text-xs font-medium uppercase">{cat.replace(/-/g, ' ')}</span>
                         ))}
                       </div>
-                      {youngPerson.exploitation_notes && (
-                        <p className="text-sm mt-2">{youngPerson.exploitation_notes}</p>
-                      )}
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-sm text-muted-foreground">None recorded. Click edit to add.</p>
+                    )}
+                    {youngPerson.exploitation_notes && <p className="text-sm mt-2">{youngPerson.exploitation_notes}</p>}
+                  </div>
                   {youngPerson.initial_risk_summary && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">Risk Summary</p>
