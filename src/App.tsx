@@ -31,7 +31,7 @@ import ReportReturn from "./pages/ReportReturn";
 import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 import HealthWellbeing from "./pages/HealthWellbeing";
-
+import StaffManagement from "./pages/StaffManagement";
 import EditYoungPerson from "./pages/EditYoungPerson";
 
 const queryClient = new QueryClient();
