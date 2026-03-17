@@ -56,7 +56,7 @@ export default function NewRiskAssessment() {
   const [selectedYP, setSelectedYP] = useState<any>(null);
   const [sections, setSections] = useState(DEFAULT_SECTIONS);
   const [saving, setSaving] = useState(false);
-  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const preselectedYP = searchParams.get("yp");
 
