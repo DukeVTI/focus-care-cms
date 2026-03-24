@@ -33,6 +33,7 @@ import NotFound from "./pages/NotFound";
 import HealthWellbeing from "./pages/HealthWellbeing";
 import StaffManagement from "./pages/StaffManagement";
 import EditYoungPerson from "./pages/EditYoungPerson";
+import CalendarScheduling from "./pages/CalendarScheduling";
 
 const queryClient = new QueryClient();
 
