@@ -200,13 +200,23 @@ export default function CalendarScheduling() {
                               {ev.event_type.replace(/_/g, " ")}
                             </Badge>
                           </div>
-                          <Button
-                            variant="ghost" size="icon"
-                            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
-                            onClick={() => handleDelete(ev.id)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost" size="icon"
+                              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => downloadICS(ev)}
+                              title="Export .ics"
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost" size="icon"
+                              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
+                              onClick={() => handleDelete(ev.id)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         </div>
                         <div className="space-y-1 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1.5">
