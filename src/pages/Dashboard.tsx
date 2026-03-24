@@ -116,6 +116,7 @@ export default function Dashboard() {
     { title: "Chronology", description: "Daily observations", icon: BookOpen, link: "/chronology", color: "text-primary", bgColor: "bg-primary/10" },
     { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "text-destructive", bgColor: "bg-destructive/10" },
     { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "text-primary", bgColor: "bg-primary/10" },
+    { title: "Calendar", description: "Schedule & meetings", icon: Calendar, link: "/calendar", color: "text-success", bgColor: "bg-success/10" },
   ];
 
   return (
