@@ -86,6 +86,7 @@ const App = () => {
               <Route path="/missing-episodes/:id/report-return" element={<ReportReturn />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/staff" element={<StaffManagement />} />
+              <Route path="/calendar" element={<CalendarScheduling />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
