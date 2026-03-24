@@ -71,12 +71,22 @@ export function HealthConditionSection({ category, youngPersonId, entries, onRef
       resetForm();
       onRefresh();
 
-      // Risk trigger: rating of 5 triggers alert
+      // Risk trigger: rating of 5 triggers alert + creates persistent alert
       if (rating === 5) {
         toast({
           title: "⚠️ High Severity Alert",
           description: "A severity rating of 5 (Crisis) has been recorded. Please review and update the Risk Assessment immediately.",
           variant: "destructive",
+        });
+        // Create a persistent alert in the alerts table
+        const displayCondition = conditionName === "Other" ? freeTextCondition : conditionName;
+        await supabase.from("alerts").insert({
+          user_id: user?.id,
+          young_person_id: youngPersonId,
+          alert_type: "health_crisis",
+          title: `Crisis-Level Health Rating: ${displayCondition}`,
+          message: `A severity rating of 5 (Crisis) was recorded for "${displayCondition}" in ${title}. Mandatory Risk Assessment review required.`,
+          severity: "critical",
         });
       }
     }
