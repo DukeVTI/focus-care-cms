@@ -110,6 +110,21 @@ export default function Documents() {
       toast.error("File must be under 10MB");
       return;
     }
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "image/jpeg",
+      "image/png",
+    ];
+    const allowedExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png"];
+    const fileExt = "." + (uploadFile.name.split(".").pop()?.toLowerCase() || "");
+    if (!allowedTypes.includes(uploadFile.type) && !allowedExtensions.includes(fileExt)) {
+      toast.error("Invalid file type. Allowed: PDF, Word, Excel, JPEG, PNG");
+      return;
+    }
 
     setUploading(true);
     try {
