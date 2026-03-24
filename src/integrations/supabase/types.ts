@@ -103,6 +103,87 @@ export type Database = {
         }
         Relationships: []
       }
+      calendar_events: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_time: string | null
+          event_date: string
+          event_type: string
+          id: string
+          is_group_event: boolean | null
+          linked_task_id: string | null
+          location: string | null
+          notes: string | null
+          participant_names: string[] | null
+          participants: string[] | null
+          recurrence: string | null
+          start_time: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          young_person_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_time?: string | null
+          event_date: string
+          event_type?: string
+          id?: string
+          is_group_event?: boolean | null
+          linked_task_id?: string | null
+          location?: string | null
+          notes?: string | null
+          participant_names?: string[] | null
+          participants?: string[] | null
+          recurrence?: string | null
+          start_time: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          young_person_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_time?: string | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          is_group_event?: boolean | null
+          linked_task_id?: string | null
+          location?: string | null
+          notes?: string | null
+          participant_names?: string[] | null
+          participants?: string[] | null
+          recurrence?: string | null
+          start_time?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          young_person_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_linked_task_id_fkey"
+            columns: ["linked_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chronology_entries: {
         Row: {
           author_name: string | null
