@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
-import { Plus, ChevronLeft, ChevronRight, Clock, MapPin, User, Users, LinkIcon, Trash2 } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Clock, MapPin, User, Users, LinkIcon, Trash2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
 import { CreateEventDialog } from "@/components/calendar/CreateEventDialog";
