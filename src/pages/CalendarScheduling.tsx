@@ -92,11 +92,7 @@ export default function CalendarScheduling() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-background">
-      <ModuleHeader
-        title="Calendar & Scheduling"
-        subtitle="Manage meetings, reviews, and task diarization"
-        backLink="/dashboard"
-      />
+      <ModuleHeader backTo="/dashboard" />
       <main className="container py-6 px-4 md:px-6 max-w-7xl mx-auto space-y-6">
         {/* Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3">
