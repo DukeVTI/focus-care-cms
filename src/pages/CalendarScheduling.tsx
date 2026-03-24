@@ -13,6 +13,7 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInte
 import { CreateEventDialog } from "@/components/calendar/CreateEventDialog";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { downloadICS } from "@/utils/icsExport";
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
   meeting: "bg-primary/15 text-primary border-primary/30",
