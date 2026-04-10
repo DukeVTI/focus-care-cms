@@ -30,6 +30,7 @@ export default function YoungPersonDetails() {
   const [youngPerson, setYoungPerson] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [editSection, setEditSection] = useState<EditSection | null>(null);
+  const [moodRefreshKey, setMoodRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) {
