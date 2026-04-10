@@ -580,6 +580,50 @@ export type Database = {
           },
         ]
       }
+      mood_entries: {
+        Row: {
+          created_at: string | null
+          id: string
+          mood_date: string
+          mood_label: string
+          mood_score: number
+          notes: string | null
+          recorded_by: string
+          updated_at: string | null
+          young_person_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mood_date?: string
+          mood_label: string
+          mood_score: number
+          notes?: string | null
+          recorded_by: string
+          updated_at?: string | null
+          young_person_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mood_date?: string
+          mood_label?: string
+          mood_score?: number
+          notes?: string | null
+          recorded_by?: string
+          updated_at?: string | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mood_entries_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           availability_note: string | null
