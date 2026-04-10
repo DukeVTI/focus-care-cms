@@ -199,6 +199,12 @@ export default function YoungPersonDetails() {
               <MissingEpisodesWidget youngPersonId={youngPerson.id} />
             </div>
 
+            {/* Mood Tracking */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <MoodCaptureWidget youngPersonId={youngPerson.id} onSaved={() => setMoodRefreshKey((k) => k + 1)} />
+              <MoodHeatmapWidget youngPersonId={youngPerson.id} refreshKey={moodRefreshKey} />
+            </div>
+
             {/* Documents */}
             <DocumentsWidget youngPersonId={youngPerson.id} />
           </TabsContent>
