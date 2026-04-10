@@ -20,6 +20,8 @@ import { MonthlyReportButton } from "@/components/young-people/MonthlyReportButt
 import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 import { DocumentsWidget } from "@/components/young-people/DocumentsWidget";
 import { InlineEditDialog, EditSection } from "@/components/young-people/InlineEditDialog";
+import { MoodCaptureWidget } from "@/components/young-people/MoodCaptureWidget";
+import { MoodHeatmapWidget } from "@/components/young-people/MoodHeatmapWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
