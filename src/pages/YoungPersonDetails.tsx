@@ -20,6 +20,8 @@ import { MonthlyReportButton } from "@/components/young-people/MonthlyReportButt
 import { KeyContactsWidget } from "@/components/young-people/KeyContactsWidget";
 import { DocumentsWidget } from "@/components/young-people/DocumentsWidget";
 import { InlineEditDialog, EditSection } from "@/components/young-people/InlineEditDialog";
+import { MoodCaptureWidget } from "@/components/young-people/MoodCaptureWidget";
+import { MoodHeatmapWidget } from "@/components/young-people/MoodHeatmapWidget";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +30,7 @@ export default function YoungPersonDetails() {
   const [youngPerson, setYoungPerson] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [editSection, setEditSection] = useState<EditSection | null>(null);
+  const [moodRefreshKey, setMoodRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -194,6 +197,12 @@ export default function YoungPersonDetails() {
             <div className="grid gap-6 lg:grid-cols-2">
               <KeyContactsWidget youngPersonId={youngPerson.id} />
               <MissingEpisodesWidget youngPersonId={youngPerson.id} />
+            </div>
+
+            {/* Mood Tracking */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <MoodCaptureWidget youngPersonId={youngPerson.id} onSaved={() => setMoodRefreshKey((k) => k + 1)} />
+              <MoodHeatmapWidget youngPersonId={youngPerson.id} refreshKey={moodRefreshKey} />
             </div>
 
             {/* Documents */}
