@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { LoadingScreen } from "@/components/LoadingScreen";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -34,32 +33,22 @@ import HealthWellbeing from "./pages/HealthWellbeing";
 import StaffManagement from "./pages/StaffManagement";
 import EditYoungPerson from "./pages/EditYoungPerson";
 import CalendarScheduling from "./pages/CalendarScheduling";
+import AuditLog from "./pages/AuditLog";
+import AdminDashboard from "./pages/AdminDashboard";
+import MonthlyReports from "./pages/MonthlyReports";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <Routes>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <AuthProvider>
+              <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -87,10 +76,14 @@ const App = () => {
               <Route path="/documents" element={<Documents />} />
               <Route path="/staff" element={<StaffManagement />} />
               <Route path="/calendar" element={<CalendarScheduling />} />
+              <Route path="/audit-log" element={<AuditLog />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/monthly-reports" element={<MonthlyReports />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
         </BrowserRouter>
+        </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   );

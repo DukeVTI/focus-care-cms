@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
@@ -16,6 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { IncidentDetailsForm } from "@/components/missing-episodes/IncidentDetailsForm";
 import { NotificationChecklist } from "@/components/missing-episodes/NotificationChecklist";
+import { MISSING_EPISODE_STATUSES } from "@/lib/constants";
+import { YoungPerson } from "@/lib/types";
 
 const missingReportSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
@@ -42,7 +44,7 @@ export default function NewMissingEpisode() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<MissingReportFormValues>({
@@ -110,7 +112,7 @@ export default function NewMissingEpisode() {
         likely_destinations: values.likely_destinations || null,
         transport_mode: values.transport_mode || null,
         risk_level: values.risk_level || "unknown",
-        status: "missing",
+        status: MISSING_EPISODE_STATUSES.MISSING,
         reported_by: user.id,
       }]);
 

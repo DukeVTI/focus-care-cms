@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { format } from "date-fns";
+import { RiskAssessment } from "@/lib/types";
 
 interface RiskTrendWidgetProps {
   youngPersonId: string;
 }
 
 export function RiskTrendWidget({ youngPersonId }: RiskTrendWidgetProps) {
-  const [assessments, setAssessments] = useState<any[]>([]);
+  const [assessments, setAssessments] = useState<RiskAssessment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

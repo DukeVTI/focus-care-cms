@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Save, AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { TASK_STATUSES, NOTIFICATION_TYPES } from "@/lib/constants";
+import { YoungPerson } from "@/lib/types";
+import { NotificationService } from "@/utils/notificationService";
 
 const DEFAULT_SECTIONS = [
   { key: "safety_missing", label: "Safety & Missing Episodes", weight: 1 },
@@ -52,8 +55,8 @@ export default function NewRiskAssessment() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
-  const [selectedYP, setSelectedYP] = useState<any>(null);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
+  const [selectedYP, setSelectedYP] = useState<YoungPerson | null>(null);
   const [sections, setSections] = useState(DEFAULT_SECTIONS);
   const [saving, setSaving] = useState(false);
   const [autoSaveTimer, setAutoSaveTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
@@ -150,7 +153,7 @@ export default function NewRiskAssessment() {
             due_date: values.task_due_date,
             importance: "High",
             requires_support: "No",
-            status: "pending"
+            status: TASK_STATUSES.PENDING
           })
           .select()
           .single();
@@ -180,6 +183,70 @@ export default function NewRiskAssessment() {
         title: "Assessment saved",
         description: `Risk level: ${riskLevel} (Score: ${totalScore})`
       });
+
+      // Fire notification for high-risk assessments
+      if (riskLevel === "High") {
+        try {
+          const yp = youngPeople.find((y) => y.id === values.young_person_id);
+
+          // Notify the assessor themselves
+          const { data: assessorProfile } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", user!.id)
+            .single();
+
+          if (assessorProfile?.email && yp) {
+            await NotificationService.enqueueNotification(
+              assessorProfile.email,
+              user!.id,
+              NOTIFICATION_TYPES.RISK_ASSESSMENT_HIGH,
+              {
+                young_person_name: `${yp.first_name} ${yp.last_name || ""}`.trim(),
+                risk_level: riskLevel,
+                risk_score: totalScore,
+                assessment_date: values.assessment_date,
+                recommendations: values.recommendations || "",
+              }
+            );
+          }
+
+          // Also notify the young person's key worker if different
+          if (yp) {
+            const { data: ypFull } = await supabase
+              .from("young_people")
+              .select("key_worker_id")
+              .eq("id", values.young_person_id)
+              .single();
+
+            if (ypFull?.key_worker_id && ypFull.key_worker_id !== user!.id) {
+              const { data: kwProfile } = await supabase
+                .from("profiles")
+                .select("email")
+                .eq("id", ypFull.key_worker_id)
+                .single();
+
+              if (kwProfile?.email) {
+                await NotificationService.enqueueNotification(
+                  kwProfile.email,
+                  ypFull.key_worker_id,
+                  NOTIFICATION_TYPES.RISK_ASSESSMENT_HIGH,
+                  {
+                    young_person_name: `${yp.first_name} ${yp.last_name || ""}`.trim(),
+                    risk_level: riskLevel,
+                    risk_score: totalScore,
+                    assessment_date: values.assessment_date,
+                    recommendations: values.recommendations || "",
+                  }
+                );
+              }
+            }
+          }
+        } catch {
+          // Notification failure is non-fatal — assessment was already saved
+          console.warn("Failed to enqueue risk assessment notification");
+        }
+      }
 
       navigate(`/young-people/${values.young_person_id}?tab=risk`);
     } catch (error: any) {

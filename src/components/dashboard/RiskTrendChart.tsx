@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 import { TrendingUp } from "lucide-react";
 import { format, subMonths } from "date-fns";
+import { RISK_LEVELS } from "@/lib/constants";
 
 export function RiskTrendChart() {
   const [data, setData] = useState<any[]>([]);
@@ -32,10 +33,10 @@ export function RiskTrendChart() {
         if (!monthlyData[monthKey]) {
           monthlyData[monthKey] = { high: 0, medium: 0, low: 0 };
         }
-        const level = assessment.risk_level.toLowerCase();
-        if (level === "high") monthlyData[monthKey].high++;
-        else if (level === "medium") monthlyData[monthKey].medium++;
-        else if (level === "low") monthlyData[monthKey].low++;
+        const level = assessment.risk_level?.toLowerCase() || "";
+        if (level === RISK_LEVELS.HIGH.toLowerCase()) monthlyData[monthKey].high++;
+        else if (level === RISK_LEVELS.MEDIUM.toLowerCase()) monthlyData[monthKey].medium++;
+        else if (level === RISK_LEVELS.LOW.toLowerCase()) monthlyData[monthKey].low++;
       });
 
       setData(Object.entries(monthlyData).map(([month, counts]) => ({

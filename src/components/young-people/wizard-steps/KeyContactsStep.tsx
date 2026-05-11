@@ -5,8 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { Plus, Trash2 } from "lucide-react";
+import { Profile } from "@/lib/types";
 
 interface StepProps {
   form: UseFormReturn<any>;
@@ -23,7 +24,7 @@ interface KeyContact {
 }
 
 export const KeyContactsStep = ({ form }: StepProps) => {
-  const [staffMembers, setStaffMembers] = useState<any[]>([]);
+  const [staffMembers, setStaffMembers] = useState<Profile[]>([]);
   const [keyContacts, setKeyContacts] = useState<KeyContact[]>([
     {
       id: crypto.randomUUID(),

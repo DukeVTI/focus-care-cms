@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Calendar, Clock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format, differenceInHours } from "date-fns";
+import { MissingEpisodeWithYoungPerson } from "@/lib/types";
 
 interface MissingEpisodesWidgetProps {
   youngPersonId: string;
@@ -13,7 +14,7 @@ interface MissingEpisodesWidgetProps {
 
 export const MissingEpisodesWidget = ({ youngPersonId }: MissingEpisodesWidgetProps) => {
   const navigate = useNavigate();
-  const [currentEpisode, setCurrentEpisode] = useState<any>(null);
+  const [currentEpisode, setCurrentEpisode] = useState<MissingEpisodeWithYoungPerson | null>(null);
   const [recentCount, setRecentCount] = useState({ last30Days: 0, last90Days: 0 });
   const [loading, setLoading] = useState(true);
 

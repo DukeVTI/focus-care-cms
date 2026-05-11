@@ -5,46 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Calendar, Clock, FileText } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
+import { SESSION_TYPES } from "@/lib/constants";
+import { KeyworkSessionDetail } from "@/lib/types";
+import { useKeyworkSessions } from "@/hooks/use-keywork-sessions";
 
 export default function KeyworkSessions() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
+  const { data: sessions = [], isLoading: loadingData } = useKeyworkSessions();
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
     }
   }, [user, loading, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      fetchSessions();
-    }
-  }, [user]);
-
-  const fetchSessions = async () => {
-    setLoadingData(true);
-    const { data, error } = await supabase
-      .from("keywork_sessions")
-      .select(`
-        *,
-        young_people:young_person_id (
-          first_name,
-          last_name
-        )
-      `)
-      .order("session_date", { ascending: false });
-    
-    if (!error && data) {
-      setSessions(data);
-    }
-    setLoadingData(false);
-  };
 
   if (loading || loadingData) {
     return null;
@@ -108,7 +85,7 @@ export default function KeyworkSessions() {
                       </CardDescription>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Badge variant={session.session_type === "Planned" ? "default" : "secondary"}>
+                      <Badge variant={session.session_type === SESSION_TYPES.PLANNED ? "default" : "secondary"}>
                         {session.session_type}
                       </Badge>
                       {session.follow_up_required && (

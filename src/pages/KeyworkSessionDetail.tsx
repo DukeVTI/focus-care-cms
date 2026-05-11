@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft, Calendar, Clock, FileText, MapPin, CheckSquare } from "lucide-react";
 import { z } from "zod";
@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SessionForm } from "@/components/keywork-sessions/SessionForm";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { KeyworkSessionDetail as KeyworkSessionDetailType, YoungPerson, Profile } from "@/lib/types";
 
 const sessionSchema = z.object({
   session_date: z.string().min(1, "Session date is required"),
@@ -40,9 +41,9 @@ export default function KeyworkSessionDetail() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [session, setSession] = useState<any>(null);
-  const [youngPerson, setYoungPerson] = useState<any>(null);
-  const [staffList, setStaffList] = useState<any[]>([]);
+  const [session, setSession] = useState<KeyworkSessionDetailType | null>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
+  const [staffList, setStaffList] = useState<Profile[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 

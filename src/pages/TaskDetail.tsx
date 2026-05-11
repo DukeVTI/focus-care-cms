@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft, Trash2, CheckCircle2, UserCog } from "lucide-react";
 import { z } from "zod";
@@ -18,6 +18,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ReassignDialog } from "@/components/tasks/ReassignDialog";
+import { ASSIGNEE_TYPES } from "@/lib/constants";
+import { TaskDetail as TaskDetailType, YoungPerson, BadgeVariant } from "@/lib/types";
 
 const taskSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200, "Title must be less than 200 characters"),
@@ -39,8 +41,8 @@ export default function TaskDetail() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [task, setTask] = useState<any>(null);
-  const [youngPerson, setYoungPerson] = useState<any>(null);
+  const [task, setTask] = useState<TaskDetailType | null>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -93,7 +95,7 @@ export default function TaskDetail() {
       form.reset({
         title: data.title,
         description: data.description || "",
-        assignee_type: data.assignee_type || "STAFF_NAMED",
+        assignee_type: data.assignee_type || ASSIGNEE_TYPES.STAFF_NAMED,
         assigned_to_user_id: data.assigned_to_user_id || "",
         expected_completion: data.expected_completion || data.due_date || "",
         date_actioned: data.date_actioned || "",
@@ -113,7 +115,7 @@ export default function TaskDetail() {
         title: values.title,
         description: values.description || null,
         assignee_type: values.assignee_type,
-        assigned_to_user_id: values.assignee_type === "STAFF_NAMED" ? values.assigned_to_user_id : null,
+        assigned_to_user_id: values.assignee_type === ASSIGNEE_TYPES.STAFF_NAMED ? values.assigned_to_user_id : null,
         expected_completion: values.expected_completion || null,
         date_actioned: values.date_actioned || null,
         support_required: values.support_required,
@@ -210,7 +212,7 @@ export default function TaskDetail() {
 
   if (loading || !task) return null;
 
-  const getImportanceColor = (importance: string) => {
+  const getImportanceColor = (importance: string): BadgeVariant => {
     const upper = importance?.toUpperCase();
     switch (upper) {
       case "HIGH": return "destructive";
@@ -220,7 +222,7 @@ export default function TaskDetail() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): BadgeVariant => {
     const upper = status?.toUpperCase();
     switch (upper) {
       case "DONE": return "default";
@@ -251,10 +253,10 @@ export default function TaskDetail() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <Badge variant={getImportanceColor(task.importance) as any}>
+                    <Badge variant={getImportanceColor(task.importance)}>
                       {task.importance} Priority
                     </Badge>
-                    <Badge variant={getStatusColor(task.status) as any}>
+                    <Badge variant={getStatusColor(task.status)}>
                       {task.status.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                     </Badge>
                     {task.support_required && (

@@ -7,13 +7,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { YoungPerson } from "@/lib/types";
+import { NotificationService } from "@/utils/notificationService";
+import { NOTIFICATION_TYPES } from "@/lib/constants";
 
 const taskSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
@@ -35,7 +38,7 @@ export default function NewTask() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<TaskFormValues>({
@@ -44,7 +47,7 @@ export default function NewTask() {
       young_person_id: "",
       title: "",
       description: "",
-      assignee_type: "STAFF_NAMED",
+      assignee_type: ASSIGNEE_TYPES.STAFF_NAMED,
       assigned_to_user_id: "",
       expected_completion: "",
       date_actioned: "",
@@ -89,7 +92,7 @@ export default function NewTask() {
         title: values.title,
         description: values.description || null,
         assignee_type: values.assignee_type,
-        assigned_to_user_id: values.assignee_type === "STAFF_NAMED" ? values.assigned_to_user_id : null,
+        assigned_to_user_id: values.assignee_type === ASSIGNEE_TYPES.STAFF_NAMED ? values.assigned_to_user_id : null,
         expected_completion: values.expected_completion || null,
         date_actioned: values.date_actioned || null,
         support_required: values.support_required,
@@ -111,6 +114,37 @@ export default function NewTask() {
         title: "Success",
         description: "Task created successfully"
       });
+
+      // Fire task_assigned notification if assigned to a named staff member
+      if (values.assignee_type === "STAFF_NAMED" && values.assigned_to_user_id) {
+        try {
+          const { data: assigneeProfile } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", values.assigned_to_user_id)
+            .single();
+
+          const yp = youngPeople.find((y) => y.id === values.young_person_id);
+
+          if (assigneeProfile?.email && yp) {
+            await NotificationService.enqueueNotification(
+              assigneeProfile.email,
+              values.assigned_to_user_id,
+              NOTIFICATION_TYPES.TASK_ASSIGNED,
+              {
+                task_title: values.title,
+                task_id: "new",
+                due_date: values.expected_completion || "No due date set",
+                young_person_name: `${yp.first_name} ${yp.last_name}`,
+              }
+            );
+          }
+        } catch {
+          // Notification failure is non-fatal — task was already saved
+          console.warn("Failed to enqueue task_assigned notification");
+        }
+      }
+
       navigate("/tasks");
     }
     setSubmitting(false);

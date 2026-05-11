@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { downloadMissingPersonGrabPack } from "@/utils/missingPersonGrabPack";
 
 interface MissingPersonGrabPackButtonProps {

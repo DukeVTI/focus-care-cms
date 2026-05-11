@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,12 +22,13 @@ import { DocumentsWidget } from "@/components/young-people/DocumentsWidget";
 import { InlineEditDialog, EditSection } from "@/components/young-people/InlineEditDialog";
 import { MoodCaptureWidget } from "@/components/young-people/MoodCaptureWidget";
 import { MoodHeatmapWidget } from "@/components/young-people/MoodHeatmapWidget";
+import { YoungPerson } from "@/lib/types";
 
 export default function YoungPersonDetails() {
   const { id } = useParams<{ id: string }>();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [youngPerson, setYoungPerson] = useState<any>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [editSection, setEditSection] = useState<EditSection | null>(null);
   const [moodRefreshKey, setMoodRefreshKey] = useState(0);

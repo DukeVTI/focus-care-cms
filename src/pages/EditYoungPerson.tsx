@@ -5,14 +5,15 @@ import { ModuleHeader } from "@/components/ModuleHeader";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { NewYoungPersonWizard } from "@/components/young-people/NewYoungPersonWizard";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { YoungPerson } from "@/lib/types";
 
 const EditYoungPerson = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [youngPerson, setYoungPerson] = useState<any>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

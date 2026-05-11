@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, CheckCircle2, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface ManagerApprovalSectionProps {

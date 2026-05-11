@@ -11,9 +11,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
+import { YoungPerson, Task, Profile } from "@/lib/types";
+import { NotificationService } from "@/utils/notificationService";
+import { 
+  CALENDAR_ACTIVITY_TYPE_LABELS, 
+  CALENDAR_EVENT_STATUS_LABELS,
+  CALENDAR_ACTIVITY_TYPES,
+  CALENDAR_EVENT_STATUSES
+} from "@/lib/constants";
 
 interface CreateEventDialogProps {
   open: boolean;
@@ -38,9 +46,9 @@ const EVENT_TYPES = [
 export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }: CreateEventDialogProps) {
   const { user } = useAuth();
   const [saving, setSaving] = useState(false);
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [staff, setStaff] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [staff, setStaff] = useState<Profile[]>([]);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -55,6 +63,8 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [recurrence, setRecurrence] = useState("none");
   const [notes, setNotes] = useState("");
+  const [activityType, setActivityType] = useState<string>(CALENDAR_ACTIVITY_TYPES.ADMINISTRATIVE);
+  const [status, setStatus] = useState<string>(CALENDAR_EVENT_STATUSES.SCHEDULED);
 
   useEffect(() => {
     if (open && user) {
@@ -100,6 +110,8 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
       participants: selectedParticipants,
       participant_names: participantNames,
       recurrence,
+      activity_type: activityType,
+      status: status,
       notes: notes.trim() || null,
     });
 
@@ -108,6 +120,27 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
       toast({ title: "Failed to create event", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Event created" });
+      
+      // Send notifications to participants
+      if (selectedParticipants.length > 0 && user?.email) {
+        for (const participantId of selectedParticipants) {
+          const participant = staff.find(s => s.id === participantId);
+          if (participant?.email) {
+            await NotificationService.enqueueNotification(
+              participant.email,
+              participantId,
+              "calendar_created",
+              {
+                event_title: title,
+                event_date: format(eventDate!, "PPP"),
+                event_time: startTime,
+                location: location || "TBD",
+              }
+            );
+          }
+        }
+      }
+      
       resetForm();
       onCreated();
       onOpenChange(false);
@@ -115,9 +148,20 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
   };
 
   const resetForm = () => {
-    setTitle(""); setDescription(""); setEventType("meeting"); setStartTime("09:00"); setEndTime("10:00");
-    setLocation(""); setYoungPersonId(""); setLinkedTaskId(""); setIsGroupEvent(false);
-    setSelectedParticipants([]); setRecurrence("none"); setNotes("");
+    setTitle(""); 
+    setDescription(""); 
+    setEventType("meeting"); 
+    setStartTime("09:00"); 
+    setEndTime("10:00");
+    setLocation(""); 
+    setYoungPersonId(""); 
+    setLinkedTaskId(""); 
+    setIsGroupEvent(false);
+    setSelectedParticipants([]); 
+    setRecurrence("none"); 
+    setNotes("");
+    setActivityType(CALENDAR_ACTIVITY_TYPES.ADMINISTRATIVE);
+    setStatus(CALENDAR_EVENT_STATUSES.SCHEDULED);
   };
 
   const toggleParticipant = (id: string) => {
@@ -176,6 +220,31 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
           <div>
             <Label>Location</Label>
             <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Office, Virtual, Home Visit" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Activity Type</Label>
+              <Select value={activityType} onValueChange={setActivityType}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(CALENDAR_ACTIVITY_TYPE_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Status</Label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(CALENDAR_EVENT_STATUS_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div>

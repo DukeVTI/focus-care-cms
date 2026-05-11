@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, FileText } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { ChronologyEntryWithYoungPerson } from "@/lib/types";
 
 interface ChronologyWidgetProps {
   youngPersonId: string;
@@ -13,7 +14,7 @@ interface ChronologyWidgetProps {
 
 export function ChronologyWidget({ youngPersonId }: ChronologyWidgetProps) {
   const navigate = useNavigate();
-  const [entries, setEntries] = useState<any[]>([]);
+  const [entries, setEntries] = useState<ChronologyEntryWithYoungPerson[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

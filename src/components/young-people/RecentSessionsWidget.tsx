@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { FileText, Calendar, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { KeyworkSessionWithYoungPerson } from "@/lib/types";
 
 interface RecentSessionsWidgetProps {
   youngPersonId: string;
 }
 
 export function RecentSessionsWidget({ youngPersonId }: RecentSessionsWidgetProps) {
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<KeyworkSessionWithYoungPerson[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

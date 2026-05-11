@@ -8,12 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { Plus, ChevronLeft, ChevronRight, Clock, MapPin, User, Users, LinkIcon, Trash2, Download } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
 import { CreateEventDialog } from "@/components/calendar/CreateEventDialog";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { downloadICS } from "@/utils/icsExport";
+import { CalendarEvent } from "@/lib/types";
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
   meeting: "bg-primary/15 text-primary border-primary/30",
@@ -31,7 +32,7 @@ const EVENT_TYPE_COLORS: Record<string, string> = {
 export default function CalendarScheduling() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [createOpen, setCreateOpen] = useState(false);

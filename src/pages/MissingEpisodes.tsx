@@ -5,17 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, AlertTriangle, MapPin, Calendar, UserCheck, Shield } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format, differenceInHours } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { MissingEpisodeFilters } from "@/components/missing-episodes/MissingEpisodeFilters";
 import { EscalationBadge } from "@/components/missing-episodes/EscalationBadge";
+import {
+  MISSING_EPISODE_STATUSES,
+  RISK_LEVELS,
+  RISK_LEVEL_COLORS,
+} from "@/lib/constants";
+import { MissingEpisodeDetail, BadgeVariant } from "@/lib/types";
+import { useMissingEpisodes } from "@/hooks/use-missing-episodes";
 
 export default function MissingEpisodes() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [episodes, setEpisodes] = useState<any[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
+  const { data: episodes = [], isLoading: loadingData } = useMissingEpisodes();
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,47 +31,23 @@ export default function MissingEpisodes() {
     }
   }, [user, loading, navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchEpisodes();
-    }
-  }, [user]);
-
-  const fetchEpisodes = async () => {
-    setLoadingData(true);
-    const { data, error } = await supabase
-      .from("missing_episodes")
-      .select(`
-        *,
-        young_people:young_person_id (
-          first_name,
-          last_name,
-          focus_id
-        )
-      `)
-      .order("missing_from", { ascending: false });
-    
-    if (!error && data) {
-      setEpisodes(data);
-    }
-    setLoadingData(false);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "missing": return "destructive";
-      case "returned": return "secondary";
-      default: return "secondary";
-    }
+  const getStatusColor = (status: string): BadgeVariant => {
+    return MISSING_EPISODE_STATUS_COLORS[status as keyof typeof MISSING_EPISODE_STATUS_COLORS] || "secondary";
   };
 
   const getRiskBadge = (level: string) => {
-    switch (level) {
-      case "critical": return <Badge variant="destructive">Critical Risk</Badge>;
-      case "high": return <Badge variant="destructive" className="bg-orange-600">High Risk</Badge>;
-      case "medium": return <Badge variant="outline" className="border-amber-500 text-amber-600">Medium Risk</Badge>;
-      case "low": return <Badge variant="outline">Low Risk</Badge>;
-      default: return null;
+    const normalizedLevel = level?.toLowerCase() || "";
+    switch (normalizedLevel) {
+      case RISK_LEVELS.CRITICAL.toLowerCase():
+        return <Badge variant="destructive">Critical Risk</Badge>;
+      case RISK_LEVELS.HIGH.toLowerCase():
+        return <Badge variant="destructive" className="bg-orange-600">High Risk</Badge>;
+      case RISK_LEVELS.MEDIUM.toLowerCase():
+        return <Badge variant="outline" className="border-amber-500 text-amber-600">Medium Risk</Badge>;
+      case RISK_LEVELS.LOW.toLowerCase():
+        return <Badge variant="outline">Low Risk</Badge>;
+      default:
+        return null;
     }
   };
 
@@ -80,7 +62,7 @@ export default function MissingEpisodes() {
     return true;
   });
 
-  const activeMissing = episodes.filter(e => e.status === "missing");
+  const activeMissing = episodes.filter(e => e.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase());
   const criticalMissing = activeMissing.filter(e => differenceInHours(new Date(), new Date(e.missing_from)) >= 24);
 
   if (loading || loadingData) return null;
@@ -116,7 +98,7 @@ export default function MissingEpisodes() {
           </Card>
           <Card className="p-4">
             <p className="text-2xl font-bold">
-              {episodes.filter(e => e.status === "returned" && !e.manager_approved).length}
+              {episodes.filter(e => e.status?.toLowerCase() === MISSING_EPISODE_STATUSES.RETURNED.toLowerCase() && !e.manager_approved).length}
             </p>
             <p className="text-xs text-muted-foreground">Awaiting Approval</p>
           </Card>
@@ -204,7 +186,7 @@ export default function MissingEpisodes() {
                       </CardDescription>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Badge variant={getStatusColor(episode.status) as any}>
+                      <Badge variant={getStatusColor(episode.status)}>
                         {episode.status.charAt(0).toUpperCase() + episode.status.slice(1)}
                       </Badge>
                       <EscalationBadge
@@ -216,7 +198,7 @@ export default function MissingEpisodes() {
                       {episode.police_notified && (
                         <Badge variant="outline">Police Notified</Badge>
                       )}
-                      {episode.status === "returned" && !episode.manager_approved && (
+                      {episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.RETURNED.toLowerCase() && !episode.manager_approved && (
                         <Badge variant="outline" className="gap-1 border-amber-500 text-amber-600">
                           <Shield className="h-3 w-3" />
                           Needs Approval

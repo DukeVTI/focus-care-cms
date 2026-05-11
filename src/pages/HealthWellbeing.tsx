@@ -1,21 +1,23 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Heart, Link2, BarChart3 } from "lucide-react";
 import { HealthConditionSection } from "@/components/health-wellbeing/HealthConditionSection";
 import { MedicalVisitsSection } from "@/components/health-wellbeing/MedicalVisitsSection";
+import { HEALTH_CATEGORIES } from "@/lib/constants";
+import { YoungPerson, HealthEntry, MedicalVisit } from "@/lib/types";
 
 export default function HealthWellbeing() {
   const { id } = useParams<{ id: string }>();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [youngPerson, setYoungPerson] = useState<any>(null);
-  const [healthEntries, setHealthEntries] = useState<any[]>([]);
-  const [medicalVisits, setMedicalVisits] = useState<any[]>([]);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
+  const [healthEntries, setHealthEntries] = useState<HealthEntry[]>([]);
+  const [medicalVisits, setMedicalVisits] = useState<MedicalVisit[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
@@ -45,9 +47,9 @@ export default function HealthWellbeing() {
   if (loading || loadingData) return null;
   if (!youngPerson) return null;
 
-  const physicalEntries = healthEntries.filter(e => e.category === "physical");
-  const substanceEntries = healthEntries.filter(e => e.category === "substance");
-  const mentalHealthEntries = healthEntries.filter(e => e.category === "mental_health");
+  const physicalEntries = healthEntries.filter(e => e.category === HEALTH_CATEGORIES.PHYSICAL);
+  const substanceEntries = healthEntries.filter(e => e.category === HEALTH_CATEGORIES.SUBSTANCE);
+  const mentalHealthEntries = healthEntries.filter(e => e.category === HEALTH_CATEGORIES.MENTAL_HEALTH);
 
   // Calculate summary stats
   const avgRating = healthEntries.length > 0

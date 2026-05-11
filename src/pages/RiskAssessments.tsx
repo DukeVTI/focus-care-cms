@@ -5,17 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Shield, TrendingUp, Calendar, Download } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { exportRiskAssessmentsToCSV } from "@/utils/riskAssessmentExport";
 import { useToast } from "@/hooks/use-toast";
+import { RISK_LEVELS, RISK_LEVEL_BADGE_VARIANTS } from "@/lib/constants";
+import { RiskAssessmentDetail, BadgeVariant } from "@/lib/types";
 
 export default function RiskAssessments() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [assessments, setAssessments] = useState<any[]>([]);
+  const [assessments, setAssessments] = useState<RiskAssessmentDetail[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
@@ -87,13 +89,8 @@ export default function RiskAssessments() {
     });
   };
 
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case "High": return "destructive";
-      case "Medium": return "warning";
-      case "Low": return "secondary";
-      default: return "secondary";
-    }
+  const getRiskColor = (level: string): BadgeVariant => {
+    return RISK_LEVEL_BADGE_VARIANTS[level as keyof typeof RISK_LEVEL_BADGE_VARIANTS] || "secondary";
   };
 
   if (loading || loadingData) {
@@ -155,7 +152,7 @@ export default function RiskAssessments() {
                       </CardDescription>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Badge variant={getRiskColor(assessment.risk_level) as any} className="text-sm">
+                      <Badge variant={getRiskColor(assessment.risk_level)} className="text-sm">
                         {assessment.risk_level} Risk
                       </Badge>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">

@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
+import { RISK_LEVEL_BADGE_VARIANTS } from "@/lib/constants";
+import { ChronologyEntryDetail, BadgeVariant } from "@/lib/types";
 
 export default function ChronologyDetail() {
   const { id } = useParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [entry, setEntry] = useState<any>(null);
+  const [entry, setEntry] = useState<ChronologyEntryDetail | null>(null);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
@@ -49,13 +51,8 @@ export default function ChronologyDetail() {
     setLoadingData(false);
   };
 
-  const getSignificanceColor = (significance: string) => {
-    switch (significance) {
-      case "High": return "destructive";
-      case "Medium": return "warning";
-      case "Low": return "secondary";
-      default: return "secondary";
-    }
+  const getSignificanceColor = (significance: string): BadgeVariant => {
+    return RISK_LEVEL_BADGE_VARIANTS[significance as keyof typeof RISK_LEVEL_BADGE_VARIANTS] || "secondary";
   };
 
   if (loading || loadingData) {
@@ -98,7 +95,7 @@ export default function ChronologyDetail() {
                 </CardDescription>
               </div>
               {entry.significance && (
-                <Badge variant={getSignificanceColor(entry.significance) as any} className="text-sm">
+                <Badge variant={getSignificanceColor(entry.significance)} className="text-sm">
                   {entry.significance} Significance
                 </Badge>
               )}

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, TrendingUp, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { RISK_LEVEL_BADGE_VARIANTS } from "@/lib/constants";
+import { RiskAssessment, BadgeVariant } from "@/lib/types";
 
 interface RiskLevelWidgetProps {
   youngPersonId: string;
@@ -13,7 +15,7 @@ interface RiskLevelWidgetProps {
 
 export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
   const navigate = useNavigate();
-  const [latestAssessment, setLatestAssessment] = useState<any>(null);
+  const [latestAssessment, setLatestAssessment] = useState<RiskAssessment | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,13 +38,9 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
     setLoading(false);
   };
 
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case "High": return "destructive";
-      case "Medium": return "warning";
-      case "Low": return "secondary";
-      default: return "secondary";
-    }
+  const getRiskColor = (level: string): BadgeVariant => {
+    const normalized = level?.toLowerCase();
+    return RISK_LEVEL_BADGE_VARIANTS[normalized as keyof typeof RISK_LEVEL_BADGE_VARIANTS] || "secondary";
   };
 
   const getRiskGaugeColor = (level: string) => {
@@ -148,7 +146,7 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
         </div>
 
         <div className="text-center space-y-3">
-          <Badge variant={getRiskColor(latestAssessment.risk_level) as any} className="text-sm px-4 py-1.5 font-semibold">
+          <Badge variant={getRiskColor(latestAssessment.risk_level)} className="text-sm px-4 py-1.5 font-semibold">
             {latestAssessment.risk_level} Risk
           </Badge>
           {latestAssessment.previous_level && (

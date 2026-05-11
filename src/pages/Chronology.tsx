@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, FileText, Calendar, Clock, Download, ChevronLeft, ChevronRight, FileDown, Search } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { useToast } from "@/hooks/use-toast";
 import { generateChronologyPDF } from "@/utils/chronologyExport";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RISK_LEVEL_BADGE_VARIANTS } from "@/lib/constants";
+import { ChronologyEntryDetail, BadgeVariant } from "@/lib/types";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -19,8 +21,8 @@ export default function Chronology() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [entries, setEntries] = useState<any[]>([]);
-  const [filteredEntries, setFilteredEntries] = useState<any[]>([]);
+  const [entries, setEntries] = useState<ChronologyEntryDetail[]>([]);
+  const [filteredEntries, setFilteredEntries] = useState<ChronologyEntryDetail[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -183,13 +185,8 @@ export default function Chronology() {
     });
   };
 
-  const getSignificanceColor = (significance: string) => {
-    switch (significance) {
-      case "High": return "destructive";
-      case "Medium": return "warning";
-      case "Low": return "secondary";
-      default: return "secondary";
-    }
+  const getSignificanceColor = (significance: string): BadgeVariant => {
+    return RISK_LEVEL_BADGE_VARIANTS[significance as keyof typeof RISK_LEVEL_BADGE_VARIANTS] || "secondary";
   };
 
   if (loading || loadingData) {
@@ -353,7 +350,7 @@ export default function Chronology() {
                       </CardDescription>
                     </div>
                     {entry.significance && (
-                      <Badge variant={getSignificanceColor(entry.significance) as any}>
+                      <Badge variant={getSignificanceColor(entry.significance)}>
                         {entry.significance}
                       </Badge>
                     )}

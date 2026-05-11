@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft, MapPin, Calendar, Clock, UserCheck, Shirt, Users, Navigation } from "lucide-react";
 import { z } from "zod";
@@ -20,6 +20,8 @@ import { format, differenceInHours, differenceInMinutes } from "date-fns";
 import { EpisodeTimeline } from "@/components/missing-episodes/EpisodeTimeline";
 import { EscalationBadge } from "@/components/missing-episodes/EscalationBadge";
 import { ManagerApprovalSection } from "@/components/missing-episodes/ManagerApprovalSection";
+import { MISSING_EPISODE_STATUSES, MISSING_EPISODE_STATUS_COLORS } from "@/lib/constants";
+import { MissingEpisodeDetail as MissingEpisodeDetailType, YoungPerson, BadgeVariant } from "@/lib/types";
 
 const missingEpisodeSchema = z.object({
   missing_from: z.string().min(1, "Missing date/time is required"),
@@ -39,8 +41,8 @@ export default function MissingEpisodeDetail() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [episode, setEpisode] = useState<any>(null);
-  const [youngPerson, setYoungPerson] = useState<any>(null);
+  const [episode, setEpisode] = useState<MissingEpisodeDetailType | null>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -87,7 +89,7 @@ export default function MissingEpisodeDetail() {
 
   const onSubmit = async (values: MissingEpisodeFormValues) => {
     setSubmitting(true);
-    const status = values.returned_at ? "returned" : "missing";
+    const status = values.returned_at ? MISSING_EPISODE_STATUSES.RETURNED : MISSING_EPISODE_STATUSES.MISSING;
     
     const { error } = await supabase
       .from("missing_episodes")
@@ -116,11 +118,8 @@ export default function MissingEpisodeDetail() {
 
   if (loading || !episode) return null;
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "missing": return "destructive";
-      default: return "secondary";
-    }
+  const getStatusColor = (status: string): BadgeVariant => {
+    return MISSING_EPISODE_STATUS_COLORS[status as keyof typeof MISSING_EPISODE_STATUS_COLORS] || "secondary";
   };
 
   const calculateDuration = () => {
@@ -177,7 +176,7 @@ export default function MissingEpisodeDetail() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3 flex-wrap">
-                    <Badge variant={getStatusColor(episode.status) as any}>
+                    <Badge variant={getStatusColor(episode.status)}>
                       {episode.status.charAt(0).toUpperCase() + episode.status.slice(1)}
                     </Badge>
                     <EscalationBadge missingFrom={episode.missing_from} status={episode.status} />
@@ -215,7 +214,7 @@ export default function MissingEpisodeDetail() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  {episode.status === "missing" && (
+                  {episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase() && (
                     <Button onClick={() => navigate(`/missing-episodes/${id}/report-return`)} size="sm">
                       <UserCheck className="h-4 w-4 mr-2" /> Report Return
                     </Button>
@@ -394,7 +393,7 @@ export default function MissingEpisodeDetail() {
                     </div>
                   )}
 
-                  {episode.status === "returned" && (
+                  {episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.RETURNED.toLowerCase() && (
                     <>
                       <div className="border-t pt-4 mt-4">
                         <p className="text-sm font-semibold mb-3">Return Information</p>
@@ -448,7 +447,7 @@ export default function MissingEpisodeDetail() {
               )}
 
               {/* Manager approval & return interview */}
-              {episode.status === "returned" && user && (
+              {episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.RETURNED.toLowerCase() && user && (
                 <ManagerApprovalSection episode={episode} userId={user.id} onUpdate={fetchEpisode} />
               )}
             </>

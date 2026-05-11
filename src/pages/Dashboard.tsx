@@ -3,42 +3,66 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen, UserCog, ArrowRight, Clock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { LogOut, Users, CheckCircle2, AlertCircle, Calendar, FileText, Shield, MapPin, BookOpen, UserCog, ArrowRight, Clock, History, BrainCircuit } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import focusLogo from "@/assets/focus-logo.jpg";
 import { RiskTrendChart } from "@/components/dashboard/RiskTrendChart";
 import { CaseloadDistributionChart } from "@/components/dashboard/CaseloadDistributionChart";
 import { TaskCompletionChart } from "@/components/dashboard/TaskCompletionChart";
 import { NotificationsBell } from "@/components/dashboard/NotificationsBell";
+import { Profile, Task, YoungPerson, KeyworkSession } from "@/lib/types";
+import {
+  TASK_STATUSES,
+  TASK_IMPORTANCE,
+  COMPLETED_TASK_STATUSES,
+} from "@/lib/constants";
+import { useRecentYoungPeople, useYoungPeopleCount } from "@/hooks/use-young-people";
+import { useRecentTasks, useTasksBase } from "@/hooks/use-tasks";
+import { useUpcomingSessions, useKeyworkSessionsCount } from "@/hooks/use-keywork-sessions";
 
 export default function Dashboard() {
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [stats, setStats] = useState({
-    youngPeople: 0,
     activeTasks: 0,
     highPriority: 0,
     sessions: 0
   });
-  const [recentTasks, setRecentTasks] = useState<any[]>([]);
-  const [recentYoungPeople, setRecentYoungPeople] = useState<any[]>([]);
-  const [upcomingSessions, setUpcomingSessions] = useState<any[]>([]);
+
+  // React Query Hooks
+  const { data: recentYoungPeople = [] } = useRecentYoungPeople(4);
+  const { data: youngPeopleCount = 0 } = useYoungPeopleCount();
+  const { data: recentTasks = [] } = useRecentTasks(4);
+  const { data: upcomingSessions = [] } = useUpcomingSessions(3);
+  const { data: tasksBase = [] } = useTasksBase();
+  const { data: sessionsCount = 0 } = useKeyworkSessionsCount();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
+    if (tasksBase) {
+      const activeTasks = tasksBase.filter(
+        t => !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(t.status?.toLowerCase())
+      ).length;
+      
+      const highPriority = tasksBase.filter(
+        t => t.importance?.toLowerCase() === TASK_IMPORTANCE.HIGH.toLowerCase() &&
+             !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(t.status?.toLowerCase())
+      ).length;
+
+      setStats({
+        activeTasks,
+        highPriority,
+        sessions: sessionsCount
+      });
     }
-  }, [user, loading, navigate]);
+  }, [tasksBase, sessionsCount]);
 
   useEffect(() => {
     if (user) {
       fetchProfile();
-      fetchStats();
-      fetchRecentTasks();
-      fetchRecentYoungPeople();
-      fetchUpcomingSessions();
+      fetchAdminStatus();
     }
   }, [user]);
 
@@ -51,58 +75,23 @@ export default function Dashboard() {
     setProfile(data);
   };
 
-  const fetchStats = async () => {
-    const [youngPeopleRes, tasksRes, sessionsRes] = await Promise.all([
-      supabase.from("young_people").select("id", { count: "exact", head: true }),
-      supabase.from("tasks").select("*"),
-      supabase.from("keywork_sessions").select("id", { count: "exact", head: true })
-    ]);
-
-    const activeTasks = tasksRes.data?.filter(t => !["completed","COMPLETED","done","DONE","archived","ARCHIVED"].includes(t.status)).length || 0;
-    const highPriority = tasksRes.data?.filter(t => ["High","HIGH"].includes(t.importance) && !["completed","COMPLETED","done","DONE","archived","ARCHIVED"].includes(t.status)).length || 0;
-
-    setStats({
-      youngPeople: youngPeopleRes.count || 0,
-      activeTasks,
-      highPriority,
-      sessions: sessionsRes.count || 0
-    });
-  };
-
-  const fetchRecentTasks = async () => {
-    const { data } = await supabase
-      .from("tasks")
-      .select(`*, young_people:young_person_id (first_name, last_name)`)
-      .order("created_at", { ascending: false })
-      .limit(4);
-    if (data) setRecentTasks(data);
-  };
-
-  const fetchRecentYoungPeople = async () => {
-    const { data } = await supabase
-      .from("young_people")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(4);
-    if (data) setRecentYoungPeople(data);
-  };
-
-  const fetchUpcomingSessions = async () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const { data } = await supabase
-      .from("keywork_sessions")
-      .select(`*, young_people:young_person_id (first_name, last_name)`)
-      .gte("session_date", today.toISOString())
-      .order("session_date", { ascending: true })
-      .limit(3);
-    if (data) setUpcomingSessions(data);
+  const fetchAdminStatus = async () => {
+    try {
+      const result = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
+      });
+      setIsAdmin(result.data === true);
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      setIsAdmin(false);
+    }
   };
 
   if (loading) return null;
 
   const statCards = [
-    { title: "Young People", value: stats.youngPeople, icon: Users, color: "text-primary", bgColor: "bg-primary/10", link: "/young-people" },
+    { title: "Young People", value: youngPeopleCount, icon: Users, color: "text-primary", bgColor: "bg-primary/10", link: "/young-people" },
     { title: "Active Tasks", value: stats.activeTasks, icon: CheckCircle2, color: "text-success", bgColor: "bg-success/10", link: "/tasks" },
     { title: "High Priority", value: stats.highPriority, icon: AlertCircle, color: "text-warning", bgColor: "bg-warning/10", link: "/tasks" },
     { title: "Sessions Logged", value: stats.sessions, icon: Calendar, color: "text-primary", bgColor: "bg-primary/10", link: "/keywork-sessions" },
@@ -117,6 +106,11 @@ export default function Dashboard() {
     { title: "Missing Episodes", description: "Track incidents", icon: MapPin, link: "/missing-episodes", color: "text-destructive", bgColor: "bg-destructive/10" },
     { title: "Staff Management", description: "Team & caseloads", icon: UserCog, link: "/staff", color: "text-primary", bgColor: "bg-primary/10" },
     { title: "Calendar", description: "Schedule & meetings", icon: Calendar, link: "/calendar", color: "text-success", bgColor: "bg-success/10" },
+    { title: "AI Reports", description: "Monthly progress", icon: BrainCircuit, link: "/monthly-reports", color: "text-primary", bgColor: "bg-primary/10" },
+    ...(isAdmin ? [
+      { title: "Audit Log", description: "System activity history", icon: History, link: "/audit-log", color: "text-primary", bgColor: "bg-primary/10" },
+      { title: "Admin Dashboard", description: "Analytics & data exports", icon: Shield, link: "/admin", color: "text-violet-600", bgColor: "bg-violet-500/10" },
+    ] : []),
   ];
 
   return (
@@ -247,11 +241,11 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${
-                        task.status === "completed" || task.status === "DONE" ? "bg-success/15 text-success" :
-                        task.status === "in_progress" || task.status === "IN_PROGRESS" ? "bg-warning/15 text-warning" :
+                        COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(task.status?.toLowerCase()) ? "bg-success/15 text-success" :
+                        task.status?.toLowerCase() === TASK_STATUSES.IN_PROGRESS.toLowerCase() ? "bg-warning/15 text-warning" :
                         "bg-destructive/15 text-destructive"
                       }`}>
-                        {task.status.replace('_', ' ')}
+                        {task.status?.replace('_', ' ')}
                       </span>
                     </div>
                   ))

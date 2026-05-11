@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { ModuleHeader } from "@/components/ModuleHeader";
@@ -20,6 +20,7 @@ import { Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { YoungPerson } from "@/lib/types";
 
 const AVAILABLE_TAGS = [
   "Health",
@@ -82,7 +83,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function NewChronologyEntry() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
   const [loadingYP, setLoadingYP] = useState(true);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);

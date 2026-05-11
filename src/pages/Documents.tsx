@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,18 +17,19 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import {
   FileText, Upload, Search, Filter, FolderOpen, AlertTriangle,
-  Download, Trash2, Eye, Clock, User, Shield, Heart, Scale, Wallet, Plus
+  Download, Trash2, Eye, Clock, User, Shield, Heart, Scale, Wallet, Plus, Share2, Mail
 } from "lucide-react";
+import { YoungPerson, Document } from "@/lib/types";
 
 const CATEGORIES = [
-  { value: "health", label: "Health & Medical", icon: Heart, color: "text-red-500" },
-  { value: "legal", label: "Legal & Care", icon: Scale, color: "text-blue-500" },
-  { value: "finance", label: "Finance & Benefits", icon: Wallet, color: "text-green-500" },
-  { value: "education", label: "Education", icon: FileText, color: "text-amber-500" },
-  { value: "safeguarding", label: "Safeguarding", icon: Shield, color: "text-purple-500" },
-  { value: "id", label: "ID & Identity", icon: User, color: "text-cyan-500" },
-  { value: "consent", label: "Consents", icon: FileText, color: "text-pink-500" },
-  { value: "other", label: "Other", icon: FolderOpen, color: "text-muted-foreground" },
+  { value: "health", label: "Health & Medical", icon: Heart, color: "text-red-500", badgeVariant: "destructive" as const },
+  { value: "legal", label: "Legal & Care", icon: Scale, color: "text-blue-500", badgeVariant: "default" as const },
+  { value: "finance", label: "Finance & Benefits", icon: Wallet, color: "text-green-500", badgeVariant: "secondary" as const },
+  { value: "education", label: "Education", icon: FileText, color: "text-amber-500", badgeVariant: "outline" as const },
+  { value: "safeguarding", label: "Safeguarding", icon: Shield, color: "text-purple-500", badgeVariant: "destructive" as const },
+  { value: "id", label: "ID & Identity", icon: User, color: "text-cyan-500", badgeVariant: "default" as const },
+  { value: "consent", label: "Consents", icon: FileText, color: "text-pink-500", badgeVariant: "secondary" as const },
+  { value: "other", label: "Other", icon: FolderOpen, color: "text-muted-foreground", badgeVariant: "outline" as const },
 ];
 
 const DOCUMENT_TYPES: Record<string, string[]> = {
@@ -48,8 +49,8 @@ export default function Documents() {
   const [searchParams] = useSearchParams();
   const youngPersonId = searchParams.get("youngPersonId");
 
-  const [documents, setDocuments] = useState<any[]>([]);
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -65,6 +66,19 @@ export default function Documents() {
   const [uploadActionNotes, setUploadActionNotes] = useState("");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isManager, setIsManager] = useState(false);
+
+  // Duplicate detection state
+  const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+  const [duplicateDoc, setDuplicateDoc] = useState<Document | null>(null);
+  const [pendingUpload, setPendingUpload] = useState<Document | null>(null);
+
+  // Share dialog state
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareDoc, setShareDoc] = useState<Document | null>(null);
+  const [shareEmail, setShareEmail] = useState("");
+  const [shareMessage, setShareMessage] = useState("");
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -72,6 +86,7 @@ export default function Documents() {
 
   useEffect(() => {
     if (user) {
+      checkManagerRole();
       fetchDocuments();
       fetchYoungPeople();
     }
@@ -93,6 +108,22 @@ export default function Documents() {
     setLoadingData(false);
   };
 
+  const checkManagerRole = async () => {
+    try {
+      const managerResult = await supabase.rpc("has_role", {
+        _user_id: user?.id || "",
+        _role: "manager",
+      });
+      const adminResult = await supabase.rpc("has_role", {
+        _user_id: user?.id || "",
+        _role: "admin",
+      });
+      setIsManager(managerResult.data === true || adminResult.data === true);
+    } catch (error) {
+      console.error("Error checking manager role:", error);
+    }
+  };
+
   const fetchYoungPeople = async () => {
     const { data } = await supabase
       .from("young_people")
@@ -101,7 +132,7 @@ export default function Documents() {
     if (data) setYoungPeople(data);
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (forceProceed = false) => {
     if (!uploadFile || !uploadYPId || !uploadCategory || !uploadDocType) {
       toast.error("Please fill in all required fields");
       return;
@@ -124,6 +155,25 @@ export default function Documents() {
     if (!allowedTypes.includes(uploadFile.type) && !allowedExtensions.includes(fileExt)) {
       toast.error("Invalid file type. Allowed: PDF, Word, Excel, JPEG, PNG");
       return;
+    }
+
+    // Check for duplicates if not forcing proceed
+    if (!forceProceed) {
+      const duplicate = await checkForDuplicate();
+      if (duplicate) {
+        setDuplicateDoc(duplicate);
+        setPendingUpload({
+          uploadYPId,
+          uploadCategory,
+          uploadDocType,
+          uploadExpiry,
+          uploadAction,
+          uploadActionNotes,
+          uploadFile,
+        });
+        setDuplicateDialogOpen(true);
+        return;
+      }
     }
 
     setUploading(true);
@@ -157,7 +207,10 @@ export default function Documents() {
 
       toast.success("Document uploaded successfully");
       setUploadOpen(false);
+      setDuplicateDialogOpen(false);
       resetUploadForm();
+      setPendingUpload(null);
+      setDuplicateDoc(null);
       fetchDocuments();
     } catch (err: any) {
       toast.error(err.message || "Upload failed");
@@ -175,12 +228,43 @@ export default function Documents() {
     if (!youngPersonId) setUploadYPId("");
   };
 
+  const checkForDuplicate = async () => {
+    if (!uploadFile || !uploadYPId || !uploadCategory) return null;
+    
+    const { data: existingDocs, error } = await supabase
+      .from("young_person_documents")
+      .select("*")
+      .eq("young_person_id", uploadYPId)
+      .eq("category", uploadCategory)
+      .eq("file_name", uploadFile.name)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    
+    if (error) {
+      console.error("Error checking for duplicates:", error);
+      return null;
+    }
+    
+    return existingDocs && existingDocs.length > 0 ? existingDocs[0] : null;
+  };
+
   const handleDelete = async (doc: any) => {
+    // RBAC check: only managers and admins can delete documents
+    if (!isManager) {
+      toast.error("Only managers and admins can delete documents");
+      return;
+    }
+    
     if (!confirm("Delete this document permanently?")) return;
-    await supabase.storage.from("young-person-documents").remove([doc.file_path]);
-    await supabase.from("young_person_documents").delete().eq("id", doc.id);
-    toast.success("Document deleted");
-    fetchDocuments();
+    
+    try {
+      await supabase.storage.from("young-person-documents").remove([doc.file_path]);
+      await supabase.from("young_person_documents").delete().eq("id", doc.id);
+      toast.success("Document deleted");
+      fetchDocuments();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete document");
+    }
   };
 
   const handleDownload = async (doc: any) => {
@@ -200,6 +284,60 @@ export default function Documents() {
       .update({ action_required: !doc.action_required })
       .eq("id", doc.id);
     fetchDocuments();
+  };
+
+  const handleShare = async () => {
+    if (!shareDoc || !shareEmail) {
+      toast.error("Email address is required");
+      return;
+    }
+
+    setSharing(true);
+    try {
+      // 1. Create 7-day signed URL
+      const { data: signedData, error: signError } = await supabase.storage
+        .from("young-person-documents")
+        .createSignedUrl(shareDoc.file_path, 60 * 60 * 24 * 7);
+
+      if (signError) throw signError;
+      if (!signedData?.signedUrl) throw new Error("Failed to generate link");
+
+      // 2. Trigger edge function
+      const { data: edgeData, error: edgeError } = await supabase.functions.invoke(
+        "send-notification",
+        {
+          body: {
+            notification_type: "document_share",
+            recipient_email: shareEmail,
+            payload: {
+              young_person_name: `${shareDoc.young_people?.first_name} ${shareDoc.young_people?.last_name}`,
+              document_name: shareDoc.document_type || shareDoc.file_name,
+              shared_by: user?.email,
+              message: shareMessage,
+              secure_link: signedData.signedUrl
+            }
+          }
+        }
+      );
+
+      if (edgeError) throw edgeError;
+
+      toast.success(`Document shared securely with ${shareEmail}`);
+      setShareOpen(false);
+      setShareEmail("");
+      setShareMessage("");
+      setShareDoc(null);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to share document");
+    }
+    setSharing(false);
+  };
+
+  const openShareDialog = (doc: any) => {
+    setShareDoc(doc);
+    setShareEmail("");
+    setShareMessage("");
+    setShareOpen(true);
   };
 
   const filtered = documents.filter((d) => {
@@ -329,7 +467,94 @@ export default function Documents() {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
+
+        {/* Duplicate Confirmation Dialog */}
+        <Dialog open={duplicateDialogOpen} onOpenChange={setDuplicateDialogOpen}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Duplicate Document Detected</DialogTitle>
+            </DialogHeader>
+            {duplicateDoc && (
+              <div className="space-y-4 pt-2">
+                <div className="bg-warning/10 border border-warning rounded-lg p-4">
+                  <p className="text-sm font-medium text-foreground mb-2">
+                    A document with the same filename and category already exists:
+                  </p>
+                  <div className="space-y-1 text-sm text-muted-foreground">
+                    <p><strong>Filename:</strong> {duplicateDoc.file_name}</p>
+                    <p><strong>Category:</strong> {duplicateDoc.category}</p>
+                    <p><strong>Uploaded:</strong> {duplicateDoc.created_at ? format(new Date(duplicateDoc.created_at), "PPp") : "Unknown"}</p>
+                    <p><strong>Size:</strong> {(duplicateDoc.file_size / 1024).toFixed(0)} KB</p>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Do you want to upload this document anyway? The newer version will replace the existing one.
+                </p>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={() => setDuplicateDialogOpen(false)} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={() => handleUpload(true)} 
+                    disabled={uploading}
+                    className="flex-1"
+                  >
+                    {uploading ? "Uploading..." : "Upload Anyway"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Share Document Dialog */}
+        <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Share Document Securely</DialogTitle>
+            </DialogHeader>
+            {shareDoc && (
+              <div className="space-y-4 pt-4">
+                <div className="p-3 bg-muted rounded-lg flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-primary" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{shareDoc.document_type || shareDoc.file_name}</p>
+                    <p className="text-xs text-muted-foreground">Link will be valid for 7 days</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Recipient Email *</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                      type="email" 
+                      placeholder="professional@example.com" 
+                      value={shareEmail}
+                      onChange={(e) => setShareEmail(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Message (Optional)</Label>
+                  <Textarea 
+                    placeholder="Add a secure message..." 
+                    value={shareMessage}
+                    onChange={(e) => setShareMessage(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <Button onClick={handleShare} disabled={sharing || !shareEmail} className="w-full">
+                  <Share2 className="h-4 w-4 mr-2" />
+                  {sharing ? "Sending Secure Link..." : "Send Secure Link"}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Stats */}
         <div className="grid gap-4 md:grid-cols-4 mb-8">
@@ -446,7 +671,7 @@ export default function Documents() {
                             {isExpired && (
                               <Badge variant="outline" className="text-destructive border-destructive">Expired</Badge>
                             )}
-                            <Badge variant="secondary">{catInfo.label}</Badge>
+                            <Badge variant={catInfo.badgeVariant}>{catInfo.label}</Badge>
                           </div>
                         </div>
 
@@ -482,6 +707,9 @@ export default function Documents() {
                         <Button size="icon" variant="ghost" onClick={() => handleDownload(doc)} title="Download">
                           <Download className="h-4 w-4" />
                         </Button>
+                        <Button size="icon" variant="ghost" onClick={() => openShareDialog(doc)} title="Share securely">
+                          <Share2 className="h-4 w-4 text-primary" />
+                        </Button>
                         <Button
                           size="icon"
                           variant="ghost"
@@ -491,7 +719,14 @@ export default function Documents() {
                         >
                           <AlertTriangle className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" onClick={() => handleDelete(doc)} title="Delete" className="text-destructive">
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          onClick={() => handleDelete(doc)} 
+                          title={isManager ? "Delete" : "Delete (managers only)"}
+                          disabled={!isManager}
+                          className={`text-destructive ${!isManager ? "opacity-50 cursor-not-allowed" : ""}`}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

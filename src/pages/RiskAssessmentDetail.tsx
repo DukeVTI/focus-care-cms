@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import { format } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { RISK_LEVEL_BADGE_VARIANTS } from "@/lib/constants";
+import { RiskAssessmentDetail as RiskAssessmentDetailType, YoungPerson, Profile, Task, BadgeVariant } from "@/lib/types";
 
 const DEFAULT_SECTIONS = [
   { key: "safety_missing", label: "Safety & Missing Episodes", weight: 1 },
@@ -27,10 +29,10 @@ export default function RiskAssessmentDetail() {
   const { id } = useParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [assessment, setAssessment] = useState<any>(null);
-  const [youngPerson, setYoungPerson] = useState<any>(null);
-  const [assessor, setAssessor] = useState<any>(null);
-  const [linkedTask, setLinkedTask] = useState<any>(null);
+  const [assessment, setAssessment] = useState<RiskAssessmentDetailType | null>(null);
+  const [youngPerson, setYoungPerson] = useState<YoungPerson | null>(null);
+  const [assessor, setAssessor] = useState<Profile | null>(null);
+  const [linkedTask, setLinkedTask] = useState<Task | null>(null);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
@@ -94,13 +96,8 @@ export default function RiskAssessmentDetail() {
     setLoadingData(false);
   };
 
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case "High": return "destructive";
-      case "Medium": return "warning";
-      case "Low": return "secondary";
-      default: return "secondary";
-    }
+  const getRiskColor = (level: string): BadgeVariant => {
+    return RISK_LEVEL_BADGE_VARIANTS[level as keyof typeof RISK_LEVEL_BADGE_VARIANTS] || "secondary";
   };
 
   const getScorePercentage = (score: number) => {
@@ -156,7 +153,7 @@ export default function RiskAssessmentDetail() {
                 </p>
               )}
             </div>
-            <Badge variant={getRiskColor(assessment.risk_level) as any} className="text-lg px-4 py-2">
+            <Badge variant={getRiskColor(assessment.risk_level)} className="text-lg px-4 py-2">
               {assessment.risk_level} Risk
             </Badge>
           </div>
@@ -284,7 +281,7 @@ export default function RiskAssessmentDetail() {
             {assessment.previous_level && (
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Previous Level:</span>
-                <Badge variant={getRiskColor(assessment.previous_level) as any}>
+                <Badge variant={getRiskColor(assessment.previous_level)}>
                   {assessment.previous_level}
                 </Badge>
               </div>

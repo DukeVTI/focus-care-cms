@@ -4,22 +4,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Users, BarChart3, Clock, UserPlus } from "lucide-react";
 import { StaffDirectoryTab } from "@/components/staff/StaffDirectoryTab";
 import { CaseloadTab } from "@/components/staff/CaseloadTab";
 import { AvailabilityTab } from "@/components/staff/AvailabilityTab";
 import { ReassignDialog } from "@/components/staff/ReassignDialog";
+import { COMPLETED_TASK_STATUSES, MISSING_EPISODE_STATUSES } from "@/lib/constants";
+import { Profile, YoungPerson, Task, MissingEpisode, UserRole } from "@/lib/types";
 
 export default function StaffManagement() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [staffData, setStaffData] = useState<any[]>([]);
-  const [userRoles, setUserRoles] = useState<any[]>([]);
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [missingEpisodes, setMissingEpisodes] = useState<any[]>([]);
+  const [staffData, setStaffData] = useState<Profile[]>([]);
+  const [userRoles, setUserRoles] = useState<UserRole[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [missingEpisodes, setMissingEpisodes] = useState<MissingEpisode[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [reassignOpen, setReassignOpen] = useState(false);
   const [isReassigning, setIsReassigning] = useState(false);
@@ -85,13 +87,14 @@ export default function StaffManagement() {
   const caseloads = staffData.map(s => {
     const myYP = youngPeople.filter(yp => yp.user_id === s.id);
     const ypIds = myYP.map(yp => yp.id);
+    const completedStatusList = COMPLETED_TASK_STATUSES.map(s => s.toLowerCase());
     const openTasks = tasks.filter(t => 
       ypIds.includes(t.young_person_id) && 
-      !["completed", "COMPLETED", "done", "DONE", "archived"].includes(t.status)
+      !completedStatusList.includes(t.status?.toLowerCase())
     ).length;
     const activeMissing = missingEpisodes.filter(m => 
       ypIds.includes(m.young_person_id) && 
-      m.status === "missing"
+      m.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase()
     ).length;
     const highRisk = myYP.filter(yp => (yp.known_risks?.length || 0) > 2).length;
 

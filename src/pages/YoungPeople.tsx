@@ -4,14 +4,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, User, Calendar } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
+import { YoungPerson } from "@/lib/types";
 
 export default function YoungPeople() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {

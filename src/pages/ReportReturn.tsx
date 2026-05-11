@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { format, addDays } from "date-fns";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { MissingEpisodeDetail } from "@/lib/types";
 
 const returnReportSchema = z.object({
   returned_at: z.string().min(1, "Return date/time is required"),
@@ -35,7 +36,7 @@ export default function ReportReturn() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [episode, setEpisode] = useState<any>(null);
+  const [episode, setEpisode] = useState<MissingEpisodeDetail | null>(null);
   const [loadingEpisode, setLoadingEpisode] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 

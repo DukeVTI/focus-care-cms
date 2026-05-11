@@ -1,5 +1,6 @@
 import { format, differenceInHours } from "date-fns";
 import { AlertTriangle, Clock, FileCheck, Shield, UserCheck, Radio } from "lucide-react";
+import { MISSING_EPISODE_STATUSES } from "@/lib/constants";
 
 interface EpisodeTimelineProps {
   episode: any;
@@ -19,9 +20,9 @@ export const EpisodeTimeline = ({ episode }: EpisodeTimelineProps) => {
       case "reported":
         return episode.missing_from ? "completed" : "pending";
       case "escalated":
-        return episode.escalated_at ? "completed" : episode.status === "missing" ? "active" : "skipped";
+        return episode.escalated_at ? "completed" : episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase() ? "active" : "skipped";
       case "returned":
-        return episode.returned_at ? "completed" : episode.status === "missing" ? "active" : "pending";
+        return episode.returned_at ? "completed" : episode.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase() ? "active" : "pending";
       case "interview":
         return episode.return_interview_completed ? "completed" : episode.returned_at ? "active" : "pending";
       case "approved":

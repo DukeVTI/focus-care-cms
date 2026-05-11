@@ -5,15 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, CheckCircle2, Clock, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ModuleHeader } from "@/components/ModuleHeader";
+import { TaskWithYoungPerson, BadgeVariant } from "@/lib/types";
+import {
+  TASK_STATUSES,
+  TASK_IMPORTANCE,
+  ACTIVE_TASK_STATUSES,
+  TASK_IMPORTANCE_BADGE_VARIANTS,
+} from "@/lib/constants";
+import { useTasks } from "@/hooks/use-tasks";
 
 export default function Tasks() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
+  const { data: tasks = [], isLoading: loadingData } = useTasks();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -21,60 +28,49 @@ export default function Tasks() {
     }
   }, [user, loading, navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchTasks();
-    }
-  }, [user]);
-
-  const fetchTasks = async () => {
-    setLoadingData(true);
-    const { data, error } = await supabase
-      .from("tasks")
-      .select(`
-        *,
-        young_people:young_person_id (
-          first_name,
-          last_name
-        )
-      `)
-      .order("created_at", { ascending: false });
-    
-    if (!error && data) {
-      setTasks(data);
-    }
-    setLoadingData(false);
-  };
-
-  const getImportanceColor = (importance: string) => {
-    const upper = importance?.toUpperCase();
-    switch (upper) {
-      case "HIGH": return "destructive";
-      case "MEDIUM": return "warning";
-      case "LOW": return "secondary";
-      default: return "secondary";
-    }
+  const getImportanceColor = (importance: string): BadgeVariant => {
+    const normalized = importance?.toLowerCase();
+    return TASK_IMPORTANCE_BADGE_VARIANTS[normalized as keyof typeof TASK_IMPORTANCE_BADGE_VARIANTS] || "secondary";
   };
 
   const getStatusIcon = (status: string) => {
-    const upper = status?.toUpperCase();
-    switch (upper) {
-      case "DONE":
-      case "COMPLETED": return <CheckCircle2 className="h-4 w-4 text-success" />;
-      case "IN_PROGRESS": return <Clock className="h-4 w-4 text-warning" />;
-      case "OPEN":
-      case "PENDING": return <AlertCircle className="h-4 w-4 text-destructive" />;
-      default: return <Clock className="h-4 w-4" />;
+    const normalized = status?.toLowerCase();
+    if (
+      normalized === TASK_STATUSES.COMPLETED.toLowerCase() ||
+      normalized === TASK_STATUSES.DONE.toLowerCase()
+    ) {
+      return <CheckCircle2 className="h-4 w-4 text-success" />;
     }
+    if (normalized === TASK_STATUSES.IN_PROGRESS.toLowerCase()) {
+      return <Clock className="h-4 w-4 text-warning" />;
+    }
+    if (
+      normalized === TASK_STATUSES.OPEN.toLowerCase() ||
+      normalized === TASK_STATUSES.PENDING.toLowerCase()
+    ) {
+      return <AlertCircle className="h-4 w-4 text-destructive" />;
+    }
+    return <Clock className="h-4 w-4" />;
   };
 
   if (loading || loadingData) {
     return null;
   }
 
-  const pendingTasks = tasks.filter(t => ["pending", "OPEN"].includes(t.status));
-  const inProgressTasks = tasks.filter(t => t.status === "in_progress" || t.status === "IN_PROGRESS");
-  const completedTasks = tasks.filter(t => ["completed", "DONE", "ARCHIVED"].includes(t.status));
+  const pendingTasks = tasks.filter(t => {
+    const normalized = t.status?.toLowerCase();
+    return [
+      TASK_STATUSES.PENDING.toLowerCase(),
+      TASK_STATUSES.OPEN.toLowerCase(),
+    ].includes(normalized);
+  });
+  const inProgressTasks = tasks.filter(
+    t => t.status?.toLowerCase() === TASK_STATUSES.IN_PROGRESS.toLowerCase()
+  );
+  const completedTasks = tasks.filter(t => {
+    const normalized = t.status?.toLowerCase();
+    return COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(normalized);
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-background">
@@ -154,7 +150,7 @@ export default function Tasks() {
                       </CardDescription>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Badge variant={getImportanceColor(task.importance) as any}>
+                      <Badge variant={getImportanceColor(task.importance)}>
                         {task.importance}
                       </Badge>
                       {task.requires_support === "Yes" && (

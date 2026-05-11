@@ -8,9 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { categoryOptions, categoryLabels, severityLabels } from "@/lib/healthDropdownOptions";
+import { NotificationService } from "@/utils/notificationService";
 import { format } from "date-fns";
 
 interface HealthEntry {
@@ -71,15 +72,48 @@ export function HealthConditionSection({ category, youngPersonId, entries, onRef
       resetForm();
       onRefresh();
 
-      // Risk trigger: rating of 5 triggers alert + creates persistent alert
+      // Risk trigger: rating of 5 triggers alert + email notifications
       if (rating === 5) {
         toast({
           title: "⚠️ High Severity Alert",
           description: "A severity rating of 5 (Crisis) has been recorded. Please review and update the Risk Assessment immediately.",
           variant: "destructive",
         });
-        // Create a persistent alert in the alerts table
+        
         const displayCondition = conditionName === "Other" ? freeTextCondition : conditionName;
+        
+        // Get young person details for notification
+        const { data: youngPerson } = await supabase
+          .from("young_people")
+          .select("first_name, last_name, key_worker_id")
+          .eq("id", youngPersonId)
+          .single();
+
+        // Get key worker email if assigned
+        if (youngPerson?.key_worker_id) {
+          const { data: keyWorker } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", youngPerson.key_worker_id)
+            .single();
+
+          if (keyWorker?.email && user?.email) {
+            // Send health crisis notification to key worker
+            await NotificationService.notifyHealthCrisis(
+              youngPerson.key_worker_id,
+              keyWorker.email,
+              {
+                young_person_name: `${youngPerson.first_name} ${youngPerson.last_name}`,
+                young_person_id: youngPersonId,
+                condition_name: displayCondition,
+                rating: 5,
+                severity_level: "Crisis",
+              }
+            );
+          }
+        }
+        
+        // Create a persistent alert in the alerts table
         await supabase.from("alerts").insert({
           user_id: user?.id,
           young_person_id: youngPersonId,

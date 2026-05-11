@@ -4,13 +4,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/untypedClient";
+import { supabase } from "@/integrations/supabase/client";
 import { ModuleHeader } from "@/components/ModuleHeader";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SessionForm } from "@/components/keywork-sessions/SessionForm";
+import { TASK_STATUSES } from "@/lib/constants";
+import { YoungPerson, Profile } from "@/lib/types";
 
 const sessionSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
@@ -37,8 +39,8 @@ export default function NewKeyworkSession() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [youngPeople, setYoungPeople] = useState<any[]>([]);
-  const [staffList, setStaffList] = useState<any[]>([]);
+  const [youngPeople, setYoungPeople] = useState<YoungPerson[]>([]);
+  const [staffList, setStaffList] = useState<Profile[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
 
@@ -117,7 +119,7 @@ export default function NewKeyworkSession() {
             due_date: values.task_due_date || null,
             importance: "Medium",
             requires_support: "No",
-            status: "pending",
+            status: TASK_STATUSES.PENDING,
             assigned_to: user.id
           }])
           .select()
