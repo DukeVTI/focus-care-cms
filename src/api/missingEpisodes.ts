@@ -15,5 +15,5 @@ export const fetchMissingEpisodes = async (): Promise<MissingEpisodeDetail[]> =>
     .order("missing_from", { ascending: false });
 
   if (error) throw error;
-  return data as MissingEpisodeDetail[];
+  return data as unknown as MissingEpisodeDetail[];
 };
