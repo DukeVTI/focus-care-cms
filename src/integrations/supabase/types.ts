@@ -105,6 +105,7 @@ export type Database = {
       }
       calendar_events: {
         Row: {
+          activity_type: string | null
           created_at: string | null
           description: string | null
           end_time: string | null
@@ -114,6 +115,7 @@ export type Database = {
           is_group_event: boolean | null
           linked_task_id: string | null
           location: string | null
+          meeting_type: string | null
           notes: string | null
           participant_names: string[] | null
           participants: string[] | null
@@ -126,6 +128,7 @@ export type Database = {
           young_person_id: string | null
         }
         Insert: {
+          activity_type?: string | null
           created_at?: string | null
           description?: string | null
           end_time?: string | null
@@ -135,6 +138,7 @@ export type Database = {
           is_group_event?: boolean | null
           linked_task_id?: string | null
           location?: string | null
+          meeting_type?: string | null
           notes?: string | null
           participant_names?: string[] | null
           participants?: string[] | null
@@ -147,6 +151,7 @@ export type Database = {
           young_person_id?: string | null
         }
         Update: {
+          activity_type?: string | null
           created_at?: string | null
           description?: string | null
           end_time?: string | null
@@ -156,6 +161,7 @@ export type Database = {
           is_group_event?: boolean | null
           linked_task_id?: string | null
           location?: string | null
+          meeting_type?: string | null
           notes?: string | null
           participant_names?: string[] | null
           participants?: string[] | null
@@ -193,6 +199,7 @@ export type Database = {
           entry_time: string
           entry_type: string | null
           flagged_for_report: boolean | null
+          fts_vector: unknown
           id: string
           observation: string
           significance: string | null
@@ -210,6 +217,7 @@ export type Database = {
           entry_time: string
           entry_type?: string | null
           flagged_for_report?: boolean | null
+          fts_vector?: unknown
           id?: string
           observation: string
           significance?: string | null
@@ -227,6 +235,7 @@ export type Database = {
           entry_time?: string
           entry_type?: string | null
           flagged_for_report?: boolean | null
+          fts_vector?: unknown
           id?: string
           observation?: string
           significance?: string | null
@@ -239,6 +248,105 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "chronology_entries_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_notification_log: {
+        Row: {
+          body_html: string | null
+          body_text: string | null
+          calendar_event_id: string | null
+          created_at: string | null
+          error_message: string | null
+          health_entry_id: string | null
+          id: string
+          notification_type: string
+          recipient_email: string
+          recipient_user_id: string | null
+          retry_count: number | null
+          risk_assessment_id: string | null
+          sent_at: string | null
+          status: string | null
+          subject: string
+          task_id: string | null
+          updated_at: string | null
+          young_person_id: string | null
+        }
+        Insert: {
+          body_html?: string | null
+          body_text?: string | null
+          calendar_event_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          health_entry_id?: string | null
+          id?: string
+          notification_type: string
+          recipient_email: string
+          recipient_user_id?: string | null
+          retry_count?: number | null
+          risk_assessment_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject: string
+          task_id?: string | null
+          updated_at?: string | null
+          young_person_id?: string | null
+        }
+        Update: {
+          body_html?: string | null
+          body_text?: string | null
+          calendar_event_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          health_entry_id?: string | null
+          id?: string
+          notification_type?: string
+          recipient_email?: string
+          recipient_user_id?: string | null
+          retry_count?: number | null
+          risk_assessment_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string
+          task_id?: string | null
+          updated_at?: string | null
+          young_person_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_notification_log_calendar_event_id_fkey"
+            columns: ["calendar_event_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_notification_log_health_entry_id_fkey"
+            columns: ["health_entry_id"]
+            isOneToOne: false
+            referencedRelation: "health_condition_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_notification_log_risk_assessment_id_fkey"
+            columns: ["risk_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "risk_assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_notification_log_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_notification_log_young_person_id_fkey"
             columns: ["young_person_id"]
             isOneToOne: false
             referencedRelation: "young_people"
@@ -580,6 +688,53 @@ export type Database = {
           },
         ]
       }
+      monthly_reports: {
+        Row: {
+          ai_draft_content: string | null
+          created_at: string
+          final_content: string | null
+          id: string
+          report_month: string
+          smart_goals: Json | null
+          status: string
+          updated_at: string
+          utilization_metrics: Json | null
+          young_person_id: string
+        }
+        Insert: {
+          ai_draft_content?: string | null
+          created_at?: string
+          final_content?: string | null
+          id?: string
+          report_month: string
+          smart_goals?: Json | null
+          status?: string
+          updated_at?: string
+          utilization_metrics?: Json | null
+          young_person_id: string
+        }
+        Update: {
+          ai_draft_content?: string | null
+          created_at?: string
+          final_content?: string | null
+          id?: string
+          report_month?: string
+          smart_goals?: Json | null
+          status?: string
+          updated_at?: string
+          utilization_metrics?: Json | null
+          young_person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_reports_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mood_entries: {
         Row: {
           created_at: string | null
@@ -623,6 +778,114 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string | null
+          digest_enabled: boolean | null
+          digest_frequency: string | null
+          id: string
+          notify_calendar_24h: boolean | null
+          notify_calendar_48h: boolean | null
+          notify_calendar_created: boolean | null
+          notify_document_uploaded: boolean | null
+          notify_health_crisis: boolean | null
+          notify_health_updates: boolean | null
+          notify_risk_high: boolean | null
+          notify_risk_updated: boolean | null
+          notify_task_48h: boolean | null
+          notify_task_assigned: boolean | null
+          notify_task_due: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          digest_enabled?: boolean | null
+          digest_frequency?: string | null
+          id?: string
+          notify_calendar_24h?: boolean | null
+          notify_calendar_48h?: boolean | null
+          notify_calendar_created?: boolean | null
+          notify_document_uploaded?: boolean | null
+          notify_health_crisis?: boolean | null
+          notify_health_updates?: boolean | null
+          notify_risk_high?: boolean | null
+          notify_risk_updated?: boolean | null
+          notify_task_48h?: boolean | null
+          notify_task_assigned?: boolean | null
+          notify_task_due?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          digest_enabled?: boolean | null
+          digest_frequency?: string | null
+          id?: string
+          notify_calendar_24h?: boolean | null
+          notify_calendar_48h?: boolean | null
+          notify_calendar_created?: boolean | null
+          notify_document_uploaded?: boolean | null
+          notify_health_crisis?: boolean | null
+          notify_health_updates?: boolean | null
+          notify_risk_high?: boolean | null
+          notify_risk_updated?: boolean | null
+          notify_task_48h?: boolean | null
+          notify_task_assigned?: boolean | null
+          notify_task_due?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_queue: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          max_retries: number | null
+          notification_type: string
+          payload: Json
+          processed_at: string | null
+          recipient_email: string
+          recipient_user_id: string | null
+          retry_count: number | null
+          scheduled_for: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_retries?: number | null
+          notification_type: string
+          payload: Json
+          processed_at?: string | null
+          recipient_email: string
+          recipient_user_id?: string | null
+          retry_count?: number | null
+          scheduled_for?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_retries?: number | null
+          notification_type?: string
+          payload?: Json
+          processed_at?: string | null
+          recipient_email?: string
+          recipient_user_id?: string | null
+          retry_count?: number | null
+          scheduled_for?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -951,6 +1214,7 @@ export type Database = {
           exploitation_notes: string | null
           first_name: string
           focus_id: string | null
+          fts_vector: unknown
           gender: string | null
           gp_practice: string | null
           health_support: string | null
@@ -1042,6 +1306,7 @@ export type Database = {
           exploitation_notes?: string | null
           first_name: string
           focus_id?: string | null
+          fts_vector?: unknown
           gender?: string | null
           gp_practice?: string | null
           health_support?: string | null
@@ -1133,6 +1398,7 @@ export type Database = {
           exploitation_notes?: string | null
           first_name?: string
           focus_id?: string | null
+          fts_vector?: unknown
           gender?: string | null
           gp_practice?: string | null
           health_support?: string | null
@@ -1357,174 +1623,6 @@ export type Database = {
           },
         ]
       }
-      notification_queue: {
-        Row: {
-          id: string
-          notification_type: string
-          recipient_email: string
-          recipient_user_id: string | null
-          payload: Json
-          status: string
-          scheduled_for: string
-          processed_at: string | null
-          retry_count: number
-          max_retries: number
-          error_message: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          notification_type: string
-          recipient_email: string
-          recipient_user_id?: string | null
-          payload?: Json
-          status?: string
-          scheduled_for?: string
-          processed_at?: string | null
-          retry_count?: number
-          max_retries?: number
-          error_message?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          notification_type?: string
-          recipient_email?: string
-          recipient_user_id?: string | null
-          payload?: Json
-          status?: string
-          scheduled_for?: string
-          processed_at?: string | null
-          retry_count?: number
-          max_retries?: number
-          error_message?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      email_notification_log: {
-        Row: {
-          id: string
-          recipient_email: string
-          recipient_user_id: string | null
-          notification_type: string
-          subject: string
-          body_text: string | null
-          body_html: string | null
-          status: string
-          message_id: string | null
-          error_message: string | null
-          health_entry_id: string | null
-          calendar_event_id: string | null
-          task_id: string | null
-          risk_assessment_id: string | null
-          young_person_id: string | null
-          sent_at: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          recipient_email: string
-          recipient_user_id?: string | null
-          notification_type: string
-          subject: string
-          body_text?: string | null
-          body_html?: string | null
-          status?: string
-          message_id?: string | null
-          error_message?: string | null
-          health_entry_id?: string | null
-          calendar_event_id?: string | null
-          task_id?: string | null
-          risk_assessment_id?: string | null
-          young_person_id?: string | null
-          sent_at?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          recipient_email?: string
-          recipient_user_id?: string | null
-          notification_type?: string
-          subject?: string
-          body_text?: string | null
-          body_html?: string | null
-          status?: string
-          message_id?: string | null
-          error_message?: string | null
-          health_entry_id?: string | null
-          calendar_event_id?: string | null
-          task_id?: string | null
-          risk_assessment_id?: string | null
-          young_person_id?: string | null
-          sent_at?: string | null
-          created_at?: string
-        }
-        Relationships: []
-      }
-      notification_preferences: {
-        Row: {
-          id: string
-          user_id: string
-          notify_health_crisis: boolean
-          notify_health_updates: boolean
-          notify_calendar_created: boolean
-          notify_calendar_24h: boolean
-          notify_calendar_48h: boolean
-          notify_task_assigned: boolean
-          notify_task_due: boolean
-          notify_task_48h: boolean
-          notify_risk_updated: boolean
-          notify_risk_high: boolean
-          notify_document_uploaded: boolean
-          digest_enabled: boolean
-          digest_frequency: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          notify_health_crisis?: boolean
-          notify_health_updates?: boolean
-          notify_calendar_created?: boolean
-          notify_calendar_24h?: boolean
-          notify_calendar_48h?: boolean
-          notify_task_assigned?: boolean
-          notify_task_due?: boolean
-          notify_task_48h?: boolean
-          notify_risk_updated?: boolean
-          notify_risk_high?: boolean
-          notify_document_uploaded?: boolean
-          digest_enabled?: boolean
-          digest_frequency?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          notify_health_crisis?: boolean
-          notify_health_updates?: boolean
-          notify_calendar_created?: boolean
-          notify_calendar_24h?: boolean
-          notify_calendar_48h?: boolean
-          notify_task_assigned?: boolean
-          notify_task_due?: boolean
-          notify_task_48h?: boolean
-          notify_risk_updated?: boolean
-          notify_risk_high?: boolean
-          notify_document_uploaded?: boolean
-          digest_enabled?: boolean
-          digest_frequency?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -1534,6 +1632,7 @@ export type Database = {
         Args: { config_id: string; score: number }
         Returns: string
       }
+      enqueue_upcoming_reminders: { Args: never; Returns: Json }
       generate_missing_case_id: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -1542,6 +1641,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      process_notification_queue: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "staff" | "keyworker" | "manager" | "admin"

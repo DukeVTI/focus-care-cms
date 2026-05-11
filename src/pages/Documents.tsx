@@ -467,6 +467,7 @@ export default function Documents() {
               </div>
             </DialogContent>
           </Dialog>
+        </div>
 
         {/* Duplicate Confirmation Dialog */}
         <Dialog open={duplicateDialogOpen} onOpenChange={setDuplicateDialogOpen}>
