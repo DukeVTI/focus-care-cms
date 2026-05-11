@@ -14,7 +14,7 @@ export const fetchTasks = async (): Promise<TaskWithYoungPerson[]> => {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return data as TaskWithYoungPerson[];
+  return data as unknown as TaskWithYoungPerson[];
 };
 
 export const fetchRecentTasks = async (limit: number = 4): Promise<TaskWithYoungPerson[]> => {
@@ -25,11 +25,11 @@ export const fetchRecentTasks = async (limit: number = 4): Promise<TaskWithYoung
     .limit(limit);
 
   if (error) throw error;
-  return data as TaskWithYoungPerson[];
+  return data as unknown as TaskWithYoungPerson[];
 };
 
 export const fetchTasksBase = async (): Promise<Task[]> => {
   const { data, error } = await supabase.from("tasks").select("*");
   if (error) throw error;
-  return data as Task[];
+  return data as unknown as Task[];
 };
