@@ -14,7 +14,7 @@ export const fetchKeyworkSessions = async (): Promise<KeyworkSessionDetail[]> =>
     .order("session_date", { ascending: false });
 
   if (error) throw error;
-  return data as KeyworkSessionDetail[];
+  return data as unknown as KeyworkSessionDetail[];
 };
 
 export const fetchUpcomingSessions = async (limit: number = 3): Promise<KeyworkSessionDetail[]> => {
@@ -28,7 +28,7 @@ export const fetchUpcomingSessions = async (limit: number = 3): Promise<KeyworkS
     .limit(limit);
 
   if (error) throw error;
-  return data as KeyworkSessionDetail[];
+  return data as unknown as KeyworkSessionDetail[];
 };
 
 export const fetchKeyworkSessionsCount = async (): Promise<number> => {
