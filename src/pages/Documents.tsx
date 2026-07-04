@@ -20,6 +20,7 @@ import {
   Download, Trash2, Eye, Clock, User, Shield, Heart, Scale, Wallet, Plus, Share2, Mail
 } from "lucide-react";
 import { YoungPerson, Document } from "@/lib/types";
+import { DocumentDuplicateDialog } from "@/components/DocumentDuplicateDialog";
 
 const CATEGORIES = [
   { value: "health", label: "Health & Medical", icon: Heart, color: "text-red-500", badgeVariant: "destructive" as const },
@@ -248,6 +249,112 @@ export default function Documents() {
     return existingDocs && existingDocs.length > 0 ? existingDocs[0] : null;
   };
 
+  const handleReplaceDocument = async () => {
+    if (!duplicateDoc || !uploadFile) return;
+
+    setUploading(true);
+    try {
+      // 1. Mark the old document as not latest and store the new document as previous version
+      const { error: updateError } = await supabase
+        .from("young_person_documents")
+        .update({ is_latest: false })
+        .eq("id", duplicateDoc.id);
+
+      if (updateError) throw updateError;
+
+      // 2. Upload new file
+      const filePath = `${uploadYPId}/${Date.now()}_${uploadFile.name}`;
+      const { error: storageError } = await supabase.storage
+        .from("young-person-documents")
+        .upload(filePath, uploadFile);
+
+      if (storageError) throw storageError;
+
+      // 3. Create new document record with reference to previous version
+      const { error: dbError } = await supabase
+        .from("young_person_documents")
+        .insert({
+          young_person_id: uploadYPId,
+          document_type: uploadDocType,
+          category: uploadCategory,
+          file_name: uploadFile.name,
+          file_size: uploadFile.size,
+          storage_path: filePath,
+          uploaded_by: user?.id,
+          uploaded_by_name: user?.email,
+          action_required: uploadAction,
+          action_notes: uploadActionNotes || null,
+          is_latest: true,
+          previous_version_id: duplicateDoc.id, // Link to old version for audit trail
+        });
+
+      if (dbError) throw dbError;
+
+      toast.success("Document replaced successfully. Previous version archived.");
+      setDuplicateDialogOpen(false);
+      setUploadOpen(false);
+      resetUploadForm();
+      setPendingUpload(null);
+      setDuplicateDoc(null);
+      fetchDocuments();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to replace document");
+    }
+    setUploading(false);
+  };
+
+  const handleNewVersion = async () => {
+    if (!uploadFile) return;
+
+    setUploading(true);
+    try {
+      // Generate new filename with version suffix
+      const nameParts = uploadFile.name.split(".");
+      const extension = nameParts.pop();
+      const baseName = nameParts.join(".");
+      const versionedName = `${baseName}_v2.${extension}`;
+
+      // Upload new file
+      const filePath = `${uploadYPId}/${Date.now()}_${versionedName}`;
+      const { error: storageError } = await supabase.storage
+        .from("young-person-documents")
+        .upload(filePath, uploadFile);
+
+      if (storageError) throw storageError;
+
+      // Create new document record
+      const { error: dbError } = await supabase
+        .from("young_person_documents")
+        .insert({
+          young_person_id: uploadYPId,
+          document_type: uploadDocType,
+          category: uploadCategory,
+          file_name: versionedName, // Use versioned name
+          file_size: uploadFile.size,
+          storage_path: filePath,
+          uploaded_by: user?.id,
+          uploaded_by_name: user?.email,
+          action_required: uploadAction,
+          action_notes: uploadActionNotes || null,
+          is_latest: true,
+          previous_version_id: duplicateDoc?.id || null,
+        });
+
+      if (dbError) throw dbError;
+
+      toast.success(`Document uploaded as new version: ${versionedName}`);
+      setDuplicateDialogOpen(false);
+      setUploadOpen(false);
+      resetUploadForm();
+      setPendingUpload(null);
+      setDuplicateDoc(null);
+      fetchDocuments();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create new version");
+    }
+    setUploading(false);
+  };
+
   const handleDelete = async (doc: any) => {
     // RBAC check: only managers and admins can delete documents
     if (!isManager) {
@@ -470,43 +577,20 @@ export default function Documents() {
         </div>
 
         {/* Duplicate Confirmation Dialog */}
-        <Dialog open={duplicateDialogOpen} onOpenChange={setDuplicateDialogOpen}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Duplicate Document Detected</DialogTitle>
-            </DialogHeader>
-            {duplicateDoc && (
-              <div className="space-y-4 pt-2">
-                <div className="bg-warning/10 border border-warning rounded-lg p-4">
-                  <p className="text-sm font-medium text-foreground mb-2">
-                    A document with the same filename and category already exists:
-                  </p>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <p><strong>Filename:</strong> {duplicateDoc.file_name}</p>
-                    <p><strong>Category:</strong> {duplicateDoc.category}</p>
-                    <p><strong>Uploaded:</strong> {duplicateDoc.created_at ? format(new Date(duplicateDoc.created_at), "PPp") : "Unknown"}</p>
-                    <p><strong>Size:</strong> {(duplicateDoc.file_size / 1024).toFixed(0)} KB</p>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Do you want to upload this document anyway? The newer version will replace the existing one.
-                </p>
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setDuplicateDialogOpen(false)} className="flex-1">
-                    Cancel
-                  </Button>
-                  <Button 
-                    onClick={() => handleUpload(true)} 
-                    disabled={uploading}
-                    className="flex-1"
-                  >
-                    {uploading ? "Uploading..." : "Upload Anyway"}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        <DocumentDuplicateDialog
+          isOpen={duplicateDialogOpen}
+          existingDocument={duplicateDoc}
+          fileName={uploadFile?.name || ""}
+          category={uploadCategory}
+          onReplace={handleReplaceDocument}
+          onNewVersion={handleNewVersion}
+          onCancel={() => {
+            setDuplicateDialogOpen(false);
+            setPendingUpload(null);
+            setDuplicateDoc(null);
+          }}
+          isLoading={uploading}
+        />
 
         {/* Share Document Dialog */}
         <Dialog open={shareOpen} onOpenChange={setShareOpen}>

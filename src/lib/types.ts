@@ -150,8 +150,14 @@ export interface Document {
   id: string;
   young_person_id: string;
   file_name: string;
+  category?: string;
   document_type?: string;
   action_required: boolean;
+  action_notes?: string | null;
+  storage_path?: string;
+  file_size?: number;
+  is_latest?: boolean;
+  previous_version_id?: string | null;
   created_at: string;
   updated_at: string;
 }
