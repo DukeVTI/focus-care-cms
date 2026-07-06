@@ -54,7 +54,7 @@ export default function RiskAssessmentDetail() {
     const { data: assessmentData, error } = await supabase
       .from("risk_assessments")
       .select("*")
-      .eq("id", id)
+      .eq("id", id ?? "")
       .single();
 
     if (error || !assessmentData) {
@@ -62,7 +62,7 @@ export default function RiskAssessmentDetail() {
       return;
     }
 
-    setAssessment(assessmentData);
+    setAssessment(assessmentData as any);
 
     // Fetch young person
     const { data: ypData } = await supabase
@@ -71,7 +71,7 @@ export default function RiskAssessmentDetail() {
       .eq("id", assessmentData.young_person_id)
       .single();
     
-    if (ypData) setYoungPerson(ypData);
+    if (ypData) setYoungPerson(ypData as any);
 
     // Fetch assessor
     const { data: profileData } = await supabase

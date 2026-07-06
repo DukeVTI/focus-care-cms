@@ -133,26 +133,26 @@ export default function HealthWellbeing() {
           <HealthConditionSection
             category="physical"
             youngPersonId={id!}
-            entries={physicalEntries}
+            entries={physicalEntries as any}
             onRefresh={fetchData}
           />
           <HealthConditionSection
             category="substance"
             youngPersonId={id!}
-            entries={substanceEntries}
+            entries={substanceEntries as any}
             onRefresh={fetchData}
           />
           <HealthConditionSection
             category="mental_health"
             youngPersonId={id!}
-            entries={mentalHealthEntries}
+            entries={mentalHealthEntries as any}
             onRefresh={fetchData}
           />
 
           {/* Medical Visits Log */}
           <MedicalVisitsSection
             youngPersonId={id!}
-            visits={medicalVisits}
+            visits={medicalVisits as any}
             onRefresh={fetchData}
           />
         </div>

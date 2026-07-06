@@ -146,7 +146,7 @@ export default function KeyworkSessionDetail() {
         outcomes: values.outcomes || null,
         follow_up_notes: values.follow_up_notes || null
       })
-      .eq("id", id);
+      .eq("id", id ?? "");
 
     if (error) {
       toast({
@@ -379,11 +379,11 @@ export default function KeyworkSessionDetail() {
                 <CardContent className="space-y-2 text-sm">
                   <div>
                     <span className="text-muted-foreground">Created:</span>{" "}
-                    <span className="font-medium">{format(new Date(session.created_at), "PPP 'at' p")}</span>
+                    <span className="font-medium">{session.created_at ? format(new Date(session.created_at), "PPP 'at' p") : "—"}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Last Updated:</span>{" "}
-                    <span className="font-medium">{format(new Date(session.updated_at), "PPP 'at' p")}</span>
+                    <span className="font-medium">{session.updated_at ? format(new Date(session.updated_at), "PPP 'at' p") : "—"}</span>
                   </div>
                 </CardContent>
               </Card>

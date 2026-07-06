@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { YoungPerson } from "@/lib/types";
 import { NotificationService } from "@/utils/notificationService";
-import { NOTIFICATION_TYPES } from "@/lib/constants";
+import { NOTIFICATION_TYPES, ASSIGNEE_TYPES } from "@/lib/constants";
 
 const taskSchema = z.object({
   young_person_id: z.string().min(1, "Please select a young person"),
@@ -77,7 +77,7 @@ export default function NewTask() {
       .order("last_name");
     
     if (data) {
-      setYoungPeople(data);
+      setYoungPeople(data as any);
     }
   };
 
@@ -85,8 +85,8 @@ export default function NewTask() {
     if (!user) return;
     
     setSubmitting(true);
-    const { error } = await supabase
-      .from("tasks")
+    const { error } = await (supabase
+      .from("tasks") as any)
       .insert([{
         young_person_id: values.young_person_id,
         title: values.title,
@@ -100,7 +100,8 @@ export default function NewTask() {
         importance: values.importance,
         status: values.status,
         assigned_to: user.id,
-        created_by_user_id: user.id
+        created_by_user_id: user.id,
+        requires_support: values.support_required ? "yes" : "no",
       }]);
 
     if (error) {

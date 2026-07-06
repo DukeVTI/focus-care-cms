@@ -12,6 +12,7 @@ import { MissingEpisodeFilters } from "@/components/missing-episodes/MissingEpis
 import { EscalationBadge } from "@/components/missing-episodes/EscalationBadge";
 import {
   MISSING_EPISODE_STATUSES,
+  MISSING_EPISODE_STATUS_COLORS,
   RISK_LEVELS,
   RISK_LEVEL_COLORS,
 } from "@/lib/constants";
@@ -31,14 +32,14 @@ export default function MissingEpisodes() {
     }
   }, [user, loading, navigate]);
 
-  const getStatusColor = (status: string): BadgeVariant => {
-    return MISSING_EPISODE_STATUS_COLORS[status as keyof typeof MISSING_EPISODE_STATUS_COLORS] || "secondary";
+  const getStatusColor = (status: string | null): BadgeVariant => {
+    return (MISSING_EPISODE_STATUS_COLORS as any)[status as string] || "secondary";
   };
 
-  const getRiskBadge = (level: string) => {
+  const getRiskBadge = (level: string | null) => {
     const normalizedLevel = level?.toLowerCase() || "";
     switch (normalizedLevel) {
-      case RISK_LEVELS.CRITICAL.toLowerCase():
+      case "critical":
         return <Badge variant="destructive">Critical Risk</Badge>;
       case RISK_LEVELS.HIGH.toLowerCase():
         return <Badge variant="destructive" className="bg-orange-600">High Risk</Badge>;
@@ -63,7 +64,7 @@ export default function MissingEpisodes() {
   });
 
   const activeMissing = episodes.filter(e => e.status?.toLowerCase() === MISSING_EPISODE_STATUSES.MISSING.toLowerCase());
-  const criticalMissing = activeMissing.filter(e => differenceInHours(new Date(), new Date(e.missing_from)) >= 24);
+  const criticalMissing = activeMissing.filter(e => e.missing_from && differenceInHours(new Date(), new Date(e.missing_from)) >= 24);
 
   if (loading || loadingData) return null;
 
@@ -175,7 +176,7 @@ export default function MissingEpisodes() {
                       <CardDescription className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-3 w-3" />
-                          Missing from: {format(new Date(episode.missing_from), "PPP p")}
+                          Missing from: {episode.missing_from ? format(new Date(episode.missing_from), "PPP p") : "—"}
                         </div>
                         {episode.returned_at && (
                           <div className="flex items-center gap-2">
@@ -187,14 +188,14 @@ export default function MissingEpisodes() {
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <Badge variant={getStatusColor(episode.status)}>
-                        {episode.status.charAt(0).toUpperCase() + episode.status.slice(1)}
+                        {(episode.status ?? "").charAt(0).toUpperCase() + (episode.status ?? "").slice(1)}
                       </Badge>
                       <EscalationBadge
-                        missingFrom={episode.missing_from}
-                        status={episode.status}
-                        escalationLevel={episode.escalation_level}
+                        missingFrom={episode.missing_from ?? ""}
+                        status={episode.status ?? ""}
+                        escalationLevel={(episode as any).escalation_level}
                       />
-                      {getRiskBadge(episode.risk_level)}
+                      {getRiskBadge((episode as any).risk_level ?? "")}
                       {episode.police_notified && (
                         <Badge variant="outline">Police Notified</Badge>
                       )}

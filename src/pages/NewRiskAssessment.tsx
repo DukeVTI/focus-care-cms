@@ -114,7 +114,7 @@ export default function NewRiskAssessment() {
       .single();
     
     if (data?.sections) {
-      setSections(data.sections);
+      setSections(data.sections as any);
     }
   };
 
@@ -318,7 +318,7 @@ export default function NewRiskAssessment() {
                         onValueChange={(value) => {
                           field.onChange(value);
                           const yp = youngPeople.find(y => y.id === value);
-                          setSelectedYP(yp);
+                          setSelectedYP((yp ?? null) as any);
                         }}
                         defaultValue={field.value}
                       >

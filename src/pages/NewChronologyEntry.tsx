@@ -122,11 +122,11 @@ export default function NewChronologyEntry() {
     const { data, error } = await supabase
       .from("young_people")
       .select("id, first_name, last_name, focus_id")
-      .eq("user_id", user?.id)
+      .eq("user_id", user?.id ?? "")
       .order("first_name");
     
     if (!error && data) {
-      setYoungPeople(data);
+      setYoungPeople(data as any);
     }
     setLoadingYP(false);
   };
@@ -135,7 +135,7 @@ export default function NewChronologyEntry() {
     const { data } = await supabase
       .from("profiles")
       .select("full_name")
-      .eq("id", user?.id)
+      .eq("id", user?.id ?? "")
       .single();
     
     if (data?.full_name) {
