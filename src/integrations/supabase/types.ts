@@ -1535,6 +1535,9 @@ export type Database = {
           file_path: string
           file_size: number | null
           id: string
+          is_latest: boolean | null
+          previous_version_id: string | null
+          storage_path: string | null
           updated_at: string | null
           uploaded_by: string | null
           uploaded_by_name: string | null
@@ -1551,6 +1554,9 @@ export type Database = {
           file_path: string
           file_size?: number | null
           id?: string
+          is_latest?: boolean | null
+          previous_version_id?: string | null
+          storage_path?: string | null
           updated_at?: string | null
           uploaded_by?: string | null
           uploaded_by_name?: string | null
@@ -1567,12 +1573,29 @@ export type Database = {
           file_path?: string
           file_size?: number | null
           id?: string
+          is_latest?: boolean | null
+          previous_version_id?: string | null
+          storage_path?: string | null
           updated_at?: string | null
           uploaded_by?: string | null
           uploaded_by_name?: string | null
           young_person_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "young_person_documents_previous_version_id_fkey"
+            columns: ["previous_version_id"]
+            isOneToOne: false
+            referencedRelation: "document_version_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_person_documents_previous_version_id_fkey"
+            columns: ["previous_version_id"]
+            isOneToOne: false
+            referencedRelation: "young_person_documents"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "young_person_documents_young_person_id_fkey"
             columns: ["young_person_id"]
@@ -1625,7 +1648,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      document_version_history: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          created_by: string | null
+          file_name: string | null
+          id: string | null
+          is_latest: boolean | null
+          version_number: number | null
+          young_person_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_person_documents_young_person_id_fkey"
+            columns: ["young_person_id"]
+            isOneToOne: false
+            referencedRelation: "young_people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_risk_level: {
