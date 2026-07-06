@@ -77,18 +77,19 @@ export function CreateEventDialog({ open, onOpenChange, onCreated, defaultDate }
   }, [defaultDate]);
 
   const fetchDropdowns = async () => {
+    if (!user) return;
     const [ypRes, taskRes, staffRes] = await Promise.all([
       supabase.from("young_people").select("id, first_name, last_name").eq("user_id", user.id).order("first_name"),
       supabase.from("tasks").select("id, title").eq("assigned_to", user.id).eq("status", "pending").order("created_at", { ascending: false }).limit(20),
       supabase.from("profiles").select("id, full_name").order("full_name"),
     ]);
-    if (ypRes.data) setYoungPeople(ypRes.data);
-    if (taskRes.data) setTasks(taskRes.data);
-    if (staffRes.data) setStaff(staffRes.data.filter((s: any) => s.id !== user.id));
+    if (ypRes.data) setYoungPeople(ypRes.data as any);
+    if (taskRes.data) setTasks(taskRes.data as any);
+    if (staffRes.data) setStaff(staffRes.data.filter((s: any) => s.id !== user.id) as any);
   };
 
   const handleSave = async () => {
-    if (!title.trim() || !eventDate) {
+    if (!title.trim() || !eventDate || !user) {
       toast({ title: "Title and date are required", variant: "destructive" });
       return;
     }

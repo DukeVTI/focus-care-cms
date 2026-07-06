@@ -47,7 +47,7 @@ export function MedicalVisitsSection({ youngPersonId, visits, onRefresh }: Medic
     }
 
     setSaving(true);
-    const { error } = await supabase.from("medical_appointment_logs").insert({
+    const { error } = await (supabase.from("medical_appointment_logs") as any).insert({
       young_person_id: youngPersonId,
       visit_type: visitType,
       date_of_visit: dateOfVisit,

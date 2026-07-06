@@ -38,7 +38,7 @@ export const MissingEpisodesWidget = ({ youngPersonId }: MissingEpisodesWidgetPr
       .maybeSingle();
 
     if (currentData) {
-      setCurrentEpisode(currentData);
+      setCurrentEpisode(currentData as any);
     }
 
     // Get counts for last 30 and 90 days
@@ -114,14 +114,18 @@ export const MissingEpisodesWidget = ({ youngPersonId }: MissingEpisodesWidgetPr
                   <span>Case: {currentEpisode.case_id}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <Calendar className="h-3 w-3" />
-                <span>Since: {format(new Date(currentEpisode.missing_from), "PPp")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-3 w-3" />
-                <span>Duration: {calculateDuration(currentEpisode.missing_from)}</span>
-              </div>
+              {currentEpisode.missing_from && (
+                <>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-3 w-3" />
+                    <span>Since: {format(new Date(currentEpisode.missing_from), "PPp")}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-3 w-3" />
+                    <span>Duration: {calculateDuration(currentEpisode.missing_from)}</span>
+                  </div>
+                </>
+              )}
             </div>
             <Button
               size="sm"

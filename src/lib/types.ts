@@ -24,80 +24,88 @@ export interface Profile {
 export interface YoungPerson {
   id: string;
   first_name: string;
-  last_name: string;
-  focus_id: string | null;
-  date_of_birth: string | null;
-  user_id: string | null;
-  key_worker_id: string | null;
-  known_risks: string | null;
-  created_at: string;
-  updated_at: string;
+  last_name: string | null;
+  focus_id?: string | null;
+  date_of_birth?: string | null;
+  user_id?: string | null;
+  key_worker_id?: string | null;
+  known_risks?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface Task {
   id: string;
   young_person_id: string;
-  title: string;
-  description: string | null;
-  importance: string;
-  status: string;
-  assigned_to: string | null;
-  due_date: string | null;
-  created_at: string;
-  updated_at: string;
+  title: string | null;
+  description?: string | null;
+  importance?: string | null;
+  status?: string | null;
+  assigned_to?: string | null;
+  due_date?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface MissingEpisode {
   id: string;
   young_person_id: string;
-  missing_from: string;
-  returned_at: string | null;
-  status: string;
-  case_id: string | null;
-  police_notified: boolean;
-  manager_approved: boolean;
-  created_at: string;
-  updated_at: string;
+  missing_from: string | null;
+  returned_at?: string | null;
+  status?: string | null;
+  case_id?: string | null;
+  police_notified?: boolean | null;
+  manager_approved?: boolean | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface RiskAssessment {
   id: string;
   young_person_id: string;
-  assessed_by: string;
-  assessment_date: string;
-  risk_level: string;
-  risk_score: number;
-  recommendations: string | null;
-  follow_up_needed: boolean;
-  created_at: string;
-  updated_at: string;
+  assessed_by?: string | null;
+  assessment_date?: string | null;
+  risk_level?: string | null;
+  risk_score?: number | null;
+  recommendations?: string | null;
+  follow_up_needed?: boolean | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface ChronologyEntry {
   id: string;
   young_person_id: string;
-  staff_id: string;
+  staff_id?: string | null;
   entry_date: string;
   entry_time: string;
-  summary: string;
-  observation: string | null;
-  category: string | null;
-  significance: string | null;
-  created_at: string;
-  updated_at: string;
+  summary?: string | null;
+  observation?: string | null;
+  category?: string | null;
+  significance?: string | null;
+  tags?: string[] | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface KeyworkSession {
   id: string;
   young_person_id: string;
   session_date: string;
-  session_type: string;
-  title: string;
-  topic: string;
-  duration_minutes: number;
-  location: string;
-  created_at: string;
-  updated_at: string;
+  session_type?: string | null;
+  title?: string | null;
+  topic?: string | null;
+  duration_minutes?: number | null;
+  location?: string | null;
+  linked_task_id?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface HealthEntry {
@@ -106,8 +114,9 @@ export interface HealthEntry {
   category: string;
   condition_name: string;
   rating: number;
-  created_at: string;
-  updated_at: string;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface CalendarEvent {
@@ -150,16 +159,17 @@ export interface Document {
   id: string;
   young_person_id: string;
   file_name: string;
-  category?: string;
-  document_type?: string;
-  action_required: boolean;
+  category?: string | null;
+  document_type?: string | null;
+  action_required?: boolean | null;
   action_notes?: string | null;
-  storage_path?: string;
-  file_size?: number;
-  is_latest?: boolean;
+  storage_path?: string | null;
+  file_size?: number | null;
+  is_latest?: boolean | null;
   previous_version_id?: string | null;
-  created_at: string;
-  updated_at: string;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface NotificationPreferences {

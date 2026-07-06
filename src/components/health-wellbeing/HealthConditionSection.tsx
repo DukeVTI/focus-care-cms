@@ -55,7 +55,7 @@ export function HealthConditionSection({ category, youngPersonId, entries, onRef
     }
 
     setSaving(true);
-    const { error } = await supabase.from("health_condition_entries").insert({
+    const { error } = await (supabase.from("health_condition_entries") as any).insert({
       young_person_id: youngPersonId,
       category,
       condition_name: conditionName,
@@ -114,7 +114,7 @@ export function HealthConditionSection({ category, youngPersonId, entries, onRef
         }
         
         // Create a persistent alert in the alerts table
-        await supabase.from("alerts").insert({
+        await (supabase.from("alerts") as any).insert({
           user_id: user?.id,
           young_person_id: youngPersonId,
           alert_type: "health_crisis",

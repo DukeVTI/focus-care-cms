@@ -31,7 +31,7 @@ export function RecentSessionsWidget({ youngPersonId }: RecentSessionsWidgetProp
       .limit(5);
 
     if (data) {
-      setSessions(data);
+      setSessions(data as any);
     }
     setLoading(false);
   };
