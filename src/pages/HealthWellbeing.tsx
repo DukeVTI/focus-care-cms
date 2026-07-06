@@ -34,9 +34,9 @@ export default function HealthWellbeing() {
       supabase.from("medical_appointment_logs").select("*").eq("young_person_id", id).order("date_of_visit", { ascending: false }),
     ]);
 
-    if (ypRes.data) setYoungPerson(ypRes.data);
-    if (healthRes.data) setHealthEntries(healthRes.data);
-    if (medRes.data) setMedicalVisits(medRes.data);
+    if (ypRes.data) setYoungPerson(ypRes.data as any);
+    if (healthRes.data) setHealthEntries(healthRes.data as any);
+    if (medRes.data) setMedicalVisits(medRes.data as any);
     setLoadingData(false);
   }, [user, id]);
 

@@ -33,12 +33,12 @@ const EditYoungPerson = () => {
       const { data, error } = await supabase
         .from("young_people")
         .select("*")
-        .eq("id", id)
-        .eq("user_id", user?.id)
+        .eq("id", id ?? "")
+        .eq("user_id", user?.id ?? "")
         .single();
 
       if (error) throw error;
-      setYoungPerson(data);
+      setYoungPerson(data as any);
     } catch (error) {
       console.error("Error loading young person:", error);
       navigate("/young-people");
