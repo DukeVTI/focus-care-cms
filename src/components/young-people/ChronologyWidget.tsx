@@ -32,7 +32,7 @@ export function ChronologyWidget({ youngPersonId }: ChronologyWidgetProps) {
       .limit(3);
     
     if (!error && data) {
-      setEntries(data);
+      setEntries(data as any);
     }
     setLoading(false);
   };

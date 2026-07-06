@@ -25,7 +25,7 @@ export function DocumentsWidget({ youngPersonId }: Props) {
         .eq("young_person_id", youngPersonId)
         .order("created_at", { ascending: false })
         .limit(5);
-      if (data) setDocuments(data);
+      if (data) setDocuments(data as any);
       setLoading(false);
     };
     fetch();

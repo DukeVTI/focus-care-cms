@@ -145,7 +145,7 @@ export default function NewKeyworkSession() {
           title: values.title,
           notes: values.notes || null,
           follow_on_action: values.follow_on_action || null,
-          standards_met: values.standards_met || null,
+          standards_met: values.standards_met ? (Array.isArray(values.standards_met) ? values.standards_met : [values.standards_met]) : null,
           follow_up_required: values.follow_up_required,
           author_name: values.author_name,
           staff_id: user.id,

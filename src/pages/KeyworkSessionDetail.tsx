@@ -87,7 +87,7 @@ export default function KeyworkSessionDetail() {
           focus_id
         )
       `)
-      .eq("id", id)
+      .eq("id", id ?? "")
       .single();
 
     if (error) {
@@ -101,7 +101,7 @@ export default function KeyworkSessionDetail() {
     }
 
     if (data) {
-      setSession(data);
+      setSession(data as any);
       setYoungPerson(data.young_people);
       form.reset({
         session_date: data.session_date,
@@ -114,7 +114,7 @@ export default function KeyworkSessionDetail() {
         notes: data.notes || "",
         follow_on_action: data.follow_on_action || "",
         standards_met: data.standards_met || [],
-        follow_up_required: data.follow_up_required,
+        follow_up_required: data.follow_up_required ?? false,
         author_name: data.author_name || "",
         standards_framework: data.standards_framework || "",
         standards_referenced: data.standards_referenced || [],
@@ -146,7 +146,7 @@ export default function KeyworkSessionDetail() {
         outcomes: values.outcomes || null,
         follow_up_notes: values.follow_up_notes || null
       })
-      .eq("id", id);
+      .eq("id", id ?? "");
 
     if (error) {
       toast({
@@ -379,11 +379,11 @@ export default function KeyworkSessionDetail() {
                 <CardContent className="space-y-2 text-sm">
                   <div>
                     <span className="text-muted-foreground">Created:</span>{" "}
-                    <span className="font-medium">{format(new Date(session.created_at), "PPP 'at' p")}</span>
+                    <span className="font-medium">{session.created_at ? format(new Date(session.created_at), "PPP 'at' p") : "—"}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Last Updated:</span>{" "}
-                    <span className="font-medium">{format(new Date(session.updated_at), "PPP 'at' p")}</span>
+                    <span className="font-medium">{session.updated_at ? format(new Date(session.updated_at), "PPP 'at' p") : "—"}</span>
                   </div>
                 </CardContent>
               </Card>

@@ -17,13 +17,13 @@ interface AuditEntry {
   id: string;
   created_at: string;
   user_id: string;
-  actor_name: string;
+  actor_name: string | null;
   action: string;
   record_type: string;
   record_id: string;
-  field_changed: string;
-  old_value: string;
-  new_value: string;
+  field_changed: string | null;
+  old_value: string | null;
+  new_value: string | null;
   notes: string | null;
 }
 

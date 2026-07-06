@@ -72,7 +72,7 @@ export default function Documents() {
   // Duplicate detection state
   const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
   const [duplicateDoc, setDuplicateDoc] = useState<Document | null>(null);
-  const [pendingUpload, setPendingUpload] = useState<Document | null>(null);
+  const [pendingUpload, setPendingUpload] = useState<any>(null);
 
   // Share dialog state
   const [shareOpen, setShareOpen] = useState(false);
@@ -105,7 +105,7 @@ export default function Documents() {
     }
 
     const { data } = await query;
-    if (data) setDocuments(data);
+    if (data) setDocuments(data as any);
     setLoadingData(false);
   };
 
@@ -130,7 +130,7 @@ export default function Documents() {
       .from("young_people")
       .select("id, first_name, last_name")
       .order("first_name");
-    if (data) setYoungPeople(data);
+    if (data) setYoungPeople(data as any);
   };
 
   const handleUpload = async (forceProceed = false) => {
@@ -188,8 +188,8 @@ export default function Documents() {
 
       if (storageError) throw storageError;
 
-      const { error: dbError } = await supabase
-        .from("young_person_documents")
+      const { error: dbError } = await (supabase
+        .from("young_person_documents") as any)
         .insert({
           young_person_id: uploadYPId,
           document_type: uploadDocType,
@@ -271,8 +271,8 @@ export default function Documents() {
       if (storageError) throw storageError;
 
       // 3. Create new document record with reference to previous version
-      const { error: dbError } = await supabase
-        .from("young_person_documents")
+      const { error: dbError } = await (supabase
+        .from("young_person_documents") as any)
         .insert({
           young_person_id: uploadYPId,
           document_type: uploadDocType,
@@ -323,8 +323,8 @@ export default function Documents() {
       if (storageError) throw storageError;
 
       // Create new document record
-      const { error: dbError } = await supabase
-        .from("young_person_documents")
+      const { error: dbError } = await (supabase
+        .from("young_person_documents") as any)
         .insert({
           young_person_id: uploadYPId,
           document_type: uploadDocType,
@@ -568,7 +568,7 @@ export default function Documents() {
                   </div>
                 )}
 
-                <Button onClick={handleUpload} disabled={uploading} className="w-full">
+                <Button onClick={() => handleUpload()} disabled={uploading} className="w-full">
                   {uploading ? "Uploading..." : "Upload Document"}
                 </Button>
               </div>
@@ -724,7 +724,7 @@ export default function Documents() {
         ) : (
           <div className="space-y-3">
             {filtered.map((doc) => {
-              const catInfo = getCategoryInfo(doc.category);
+              const catInfo = getCategoryInfo(doc.category ?? "");
               const CatIcon = catInfo.icon;
               const isExpired = doc.expiry_date && new Date(doc.expiry_date) < new Date();
 

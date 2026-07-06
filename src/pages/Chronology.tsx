@@ -91,13 +91,13 @@ export default function Chronology() {
           focus_id
         )
       `)
-      .eq("staff_id", user?.id)
+      .eq("staff_id", user?.id ?? "")
       .order("entry_date", { ascending: false })
       .order("entry_time", { ascending: false });
     
     if (!error && data) {
-      setEntries(data);
-      setFilteredEntries(data);
+      setEntries(data as any);
+      setFilteredEntries(data as any);
       setTotalCount(data.length);
       
       // Extract unique authors, categories, and tags for filters

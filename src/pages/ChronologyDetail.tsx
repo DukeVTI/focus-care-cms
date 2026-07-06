@@ -42,11 +42,11 @@ export default function ChronologyDetail() {
           focus_id
         )
       `)
-      .eq("id", id)
+      .eq("id", id ?? "")
       .single();
     
     if (!error && data) {
-      setEntry(data);
+      setEntry(data as any);
     }
     setLoadingData(false);
   };

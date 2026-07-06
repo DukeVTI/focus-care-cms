@@ -51,7 +51,7 @@ export const KeyContactsStep = ({ form }: StepProps) => {
 
   const loadStaffMembers = async () => {
     const { data } = await supabase.from("profiles").select("id, full_name, email");
-    if (data) setStaffMembers(data);
+    if (data) setStaffMembers(data as any);
   };
 
   const addContact = () => {

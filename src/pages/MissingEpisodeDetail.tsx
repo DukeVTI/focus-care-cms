@@ -62,7 +62,7 @@ export default function MissingEpisodeDetail() {
     const { data, error } = await supabase
       .from("missing_episodes")
       .select(`*, young_people:young_person_id (id, first_name, last_name, focus_id)`)
-      .eq("id", id)
+      .eq("id", id ?? "")
       .single();
 
     if (error) {
@@ -72,7 +72,7 @@ export default function MissingEpisodeDetail() {
     }
 
     if (data) {
-      setEpisode(data);
+      setEpisode(data as any);
       setYoungPerson(data.young_people);
       form.reset({
         missing_from: data.missing_from ? format(new Date(data.missing_from), "yyyy-MM-dd'T'HH:mm") : "",
@@ -104,7 +104,7 @@ export default function MissingEpisodeDetail() {
         police_reference: values.police_reference || null,
         status: status,
       })
-      .eq("id", id);
+      .eq("id", id ?? "");
 
     if (error) {
       toast({ title: "Error", description: "Failed to update", variant: "destructive" });
@@ -118,8 +118,8 @@ export default function MissingEpisodeDetail() {
 
   if (loading || !episode) return null;
 
-  const getStatusColor = (status: string): BadgeVariant => {
-    return MISSING_EPISODE_STATUS_COLORS[status as keyof typeof MISSING_EPISODE_STATUS_COLORS] || "secondary";
+  const getStatusColor = (status: string | null): BadgeVariant => {
+    return (MISSING_EPISODE_STATUS_COLORS as any)[status as string] || "secondary";
   };
 
   const calculateDuration = () => {
@@ -177,17 +177,17 @@ export default function MissingEpisodeDetail() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3 flex-wrap">
                     <Badge variant={getStatusColor(episode.status)}>
-                      {episode.status.charAt(0).toUpperCase() + episode.status.slice(1)}
+                      {(episode.status ?? "").charAt(0).toUpperCase() + (episode.status ?? "").slice(1)}
                     </Badge>
-                    <EscalationBadge missingFrom={episode.missing_from} status={episode.status} />
-                    {episode.risk_level && episode.risk_level !== "unknown" && (
-                      <Badge variant={episode.risk_level === "critical" || episode.risk_level === "high" ? "destructive" : "outline"}>
-                        {episode.risk_level.charAt(0).toUpperCase() + episode.risk_level.slice(1)} Risk
+                    <EscalationBadge missingFrom={episode.missing_from ?? ""} status={episode.status ?? ""} />
+                    {(episode as any).risk_level && (episode as any).risk_level !== "unknown" && (
+                      <Badge variant={((episode as any).risk_level === "critical" || (episode as any).risk_level === "high") ? "destructive" : "outline"}>
+                        {(episode as any).risk_level.charAt(0).toUpperCase() + (episode as any).risk_level.slice(1)} Risk
                       </Badge>
                     )}
                     {episode.police_notified && <Badge variant="outline">Police Notified</Badge>}
-                    {episode.social_worker_notified && <Badge variant="outline">SW Notified</Badge>}
-                    {episode.placing_authority_notified && <Badge variant="outline">PA Notified</Badge>}
+                    {(episode as any).social_worker_notified && <Badge variant="outline">SW Notified</Badge>}
+                    {(episode as any).placing_authority_notified && <Badge variant="outline">PA Notified</Badge>}
                   </div>
                   <CardTitle className="text-2xl mb-2">
                     {youngPerson?.first_name} {youngPerson?.last_name}
@@ -199,7 +199,7 @@ export default function MissingEpisodeDetail() {
                   <CardDescription className="space-y-2 text-base">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      Missing from: {format(new Date(episode.missing_from), "PPP p")}
+                      Missing from: {episode.missing_from ? format(new Date(episode.missing_from), "PPP p") : "—"}
                     </div>
                     {episode.returned_at && (
                       <div className="flex items-center gap-2">

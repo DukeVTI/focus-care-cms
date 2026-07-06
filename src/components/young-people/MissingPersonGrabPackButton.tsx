@@ -40,9 +40,9 @@ export const MissingPersonGrabPackButton = ({ youngPersonId }: MissingPersonGrab
 
       // Generate and download the grab pack
       downloadMissingPersonGrabPack(
-        youngPerson,
-        contacts || [],
-        episodes || []
+        youngPerson as any,
+        (contacts || []) as any,
+        (episodes || []) as any
       );
 
       toast({

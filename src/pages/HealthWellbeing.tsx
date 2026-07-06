@@ -34,9 +34,9 @@ export default function HealthWellbeing() {
       supabase.from("medical_appointment_logs").select("*").eq("young_person_id", id).order("date_of_visit", { ascending: false }),
     ]);
 
-    if (ypRes.data) setYoungPerson(ypRes.data);
-    if (healthRes.data) setHealthEntries(healthRes.data);
-    if (medRes.data) setMedicalVisits(medRes.data);
+    if (ypRes.data) setYoungPerson(ypRes.data as any);
+    if (healthRes.data) setHealthEntries(healthRes.data as any);
+    if (medRes.data) setMedicalVisits(medRes.data as any);
     setLoadingData(false);
   }, [user, id]);
 
@@ -133,26 +133,26 @@ export default function HealthWellbeing() {
           <HealthConditionSection
             category="physical"
             youngPersonId={id!}
-            entries={physicalEntries}
+            entries={physicalEntries as any}
             onRefresh={fetchData}
           />
           <HealthConditionSection
             category="substance"
             youngPersonId={id!}
-            entries={substanceEntries}
+            entries={substanceEntries as any}
             onRefresh={fetchData}
           />
           <HealthConditionSection
             category="mental_health"
             youngPersonId={id!}
-            entries={mentalHealthEntries}
+            entries={mentalHealthEntries as any}
             onRefresh={fetchData}
           />
 
           {/* Medical Visits Log */}
           <MedicalVisitsSection
             youngPersonId={id!}
-            visits={medicalVisits}
+            visits={medicalVisits as any}
             onRefresh={fetchData}
           />
         </div>

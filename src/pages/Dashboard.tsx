@@ -43,12 +43,12 @@ export default function Dashboard() {
   useEffect(() => {
     if (tasksBase) {
       const activeTasks = tasksBase.filter(
-        t => !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(t.status?.toLowerCase())
+        t => !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes((t.status ?? "").toLowerCase())
       ).length;
       
       const highPriority = tasksBase.filter(
-        t => t.importance?.toLowerCase() === TASK_IMPORTANCE.HIGH.toLowerCase() &&
-             !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(t.status?.toLowerCase())
+        t => (t.importance ?? "").toLowerCase() === TASK_IMPORTANCE.HIGH.toLowerCase() &&
+             !COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes((t.status ?? "").toLowerCase())
       ).length;
 
       setStats({
@@ -67,6 +67,7 @@ export default function Dashboard() {
   }, [user]);
 
   const fetchProfile = async () => {
+    if (!user) return;
     const { data } = await supabase
       .from("profiles")
       .select("*")
@@ -76,6 +77,7 @@ export default function Dashboard() {
   };
 
   const fetchAdminStatus = async () => {
+    if (!user) return;
     try {
       const result = await supabase.rpc("has_role", {
         _user_id: user.id,
@@ -241,8 +243,8 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${
-                        COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes(task.status?.toLowerCase()) ? "bg-success/15 text-success" :
-                        task.status?.toLowerCase() === TASK_STATUSES.IN_PROGRESS.toLowerCase() ? "bg-warning/15 text-warning" :
+                        COMPLETED_TASK_STATUSES.map(s => s.toLowerCase()).includes((task.status ?? "").toLowerCase()) ? "bg-success/15 text-success" :
+                        (task.status ?? "").toLowerCase() === TASK_STATUSES.IN_PROGRESS.toLowerCase() ? "bg-warning/15 text-warning" :
                         "bg-destructive/15 text-destructive"
                       }`}>
                         {task.status?.replace('_', ' ')}
@@ -275,7 +277,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground text-center py-6">No young people yet</p>
                 ) : (
                   recentYoungPeople.map((person) => {
-                    const age = new Date().getFullYear() - new Date(person.date_of_birth).getFullYear();
+                    const age = person.date_of_birth ? new Date().getFullYear() - new Date(person.date_of_birth).getFullYear() : "—";
                     return (
                       <div
                         key={person.id}

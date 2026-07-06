@@ -56,7 +56,7 @@ export default function CalendarScheduling() {
       .lte("event_date", end)
       .order("event_date")
       .order("start_time");
-    if (data) setEvents(data);
+    if (data) setEvents(data as any);
   };
 
   const filteredEvents = useMemo(() => {
@@ -205,7 +205,7 @@ export default function CalendarScheduling() {
                             <Button
                               variant="ghost" size="icon"
                               className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => downloadICS(ev)}
+                              onClick={() => downloadICS(ev as any)}
                               title="Export .ics"
                             >
                               <Download className="h-3.5 w-3.5" />
@@ -239,9 +239,9 @@ export default function CalendarScheduling() {
                               <LinkIcon className="h-3 w-3" />Task: {ev.tasks.title}
                             </div>
                           )}
-                          {ev.is_group_event && ev.participant_names?.length > 0 && (
+                          {ev.is_group_event && (ev.participant_names?.length ?? 0) > 0 && (
                             <div className="flex items-center gap-1.5">
-                              <Users className="h-3 w-3" />{ev.participant_names.join(", ")}
+                              <Users className="h-3 w-3" />{(ev.participant_names ?? []).join(", ")}
                             </div>
                           )}
                         </div>

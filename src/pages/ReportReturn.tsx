@@ -60,7 +60,7 @@ export default function ReportReturn() {
     const { data, error } = await supabase
       .from("missing_episodes")
       .select(`*, young_people:young_person_id (first_name, last_name, focus_id)`)
-      .eq("id", id)
+      .eq("id", id ?? "")
       .eq("status", "missing")
       .single();
     
@@ -69,7 +69,7 @@ export default function ReportReturn() {
       navigate("/missing-episodes");
       return;
     }
-    setEpisode(data);
+    setEpisode(data as any);
     setLoadingEpisode(false);
   };
 
@@ -121,11 +121,11 @@ export default function ReportReturn() {
         risks_encountered: values.risks_encountered || null,
         follow_up_actions: values.follow_up_actions || null,
         outcome: values.outcome,
-        notes: episode.notes
+        notes: episode?.notes
           ? `${episode.notes}\n\nReturn Notes: ${values.notes || "N/A"}`
           : `Return Notes: ${values.notes || "N/A"}`,
         status: "returned"
-      })
+      } as any)
       .eq("id", id);
 
     if (error) {
@@ -164,7 +164,7 @@ export default function ReportReturn() {
               </p>
               <p className="text-sm">
                 <span className="font-semibold">Missing From:</span>{" "}
-                {format(new Date(episode.missing_from), "PPp")}
+                {episode.missing_from ? format(new Date(episode.missing_from), "PPp") : "—"}
               </p>
               {episode.case_id && (
                 <p className="text-sm">
