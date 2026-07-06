@@ -235,8 +235,8 @@ export default function AdminDashboard() {
     if (!data) return;
 
     const headers = ["Timestamp", "Actor", "Action", "Record Type", "Field Changed", "Old Value", "New Value"];
-    const rows = data.map((r) => [
-      r.created_at, r.actor_name, r.action, r.record_type,
+    const rows: string[][] = data.map((r: any) => [
+      r.created_at ?? "", r.actor_name ?? "", r.action ?? "", r.record_type ?? "",
       r.field_changed || "", r.old_value || "", r.new_value || "",
     ]);
 

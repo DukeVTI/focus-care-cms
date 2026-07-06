@@ -74,7 +74,7 @@ export function DocumentDuplicateDialog({
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                Uploaded {format(new Date(existingDocument.created_at), "PPp")}
+                Uploaded {existingDocument.created_at ? format(new Date(existingDocument.created_at), "PPp") : "—"}
               </div>
               {existingDocument.file_size && (
                 <div className="text-sm text-muted-foreground">

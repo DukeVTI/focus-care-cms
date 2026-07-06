@@ -9,16 +9,17 @@
 
 export interface Profile {
   id: string;
-  email: string;
-  full_name: string | null;
-  phone: string | null;
-  job_title: string | null;
-  team: string | null;
-  avatar_url: string | null;
-  availability_status: string | null;
-  availability_note: string | null;
-  created_at: string;
-  updated_at: string;
+  email?: string | null;
+  full_name?: string | null;
+  phone?: string | null;
+  job_title?: string | null;
+  team?: string | null;
+  avatar_url?: string | null;
+  availability_status?: string | null;
+  availability_note?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: any;
 }
 
 export interface YoungPerson {
@@ -121,25 +122,28 @@ export interface HealthEntry {
 
 export interface CalendarEvent {
   id: string;
-  user_id?: string;
+  user_id?: string | null;
   title: string;
   event_type: string;
-  activity_type?: string;
-  status?: string;
+  activity_type?: string | null;
+  status?: string | null;
   event_date: string;
-  start_time?: string;
-  end_time?: string;
-  location?: string;
-  description?: string;
+  start_time?: string | null;
+  end_time?: string | null;
+  location?: string | null;
+  description?: string | null;
   young_person_id?: string | null;
   linked_task_id?: string | null;
-  participants?: string[];
-  participant_names?: string[];
-  is_group_event?: boolean;
-  recurrence?: string;
-  notes?: string;
-  created_at: string;
-  updated_at?: string;
+  participants?: string[] | null;
+  participant_names?: string[] | null;
+  is_group_event?: boolean | null;
+  recurrence?: string | null;
+  notes?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  young_people?: any;
+  tasks?: any;
+  [key: string]: any;
 }
 
 export interface MedicalVisit {
@@ -264,7 +268,7 @@ export interface ApiResponse<T> {
 // ============================================================================
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type UseFormProps<T = Record<string, any>> = {
+export type UseFormProps<T extends import("react-hook-form").FieldValues = any> = {
   form: import("react-hook-form").UseFormReturn<T>;
 };
 

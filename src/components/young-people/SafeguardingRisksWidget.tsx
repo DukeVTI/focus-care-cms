@@ -22,7 +22,7 @@ interface Risk {
   description: string;
   mitigation_plan: string | null;
   date_added: string;
-  is_active: boolean;
+  is_active: boolean | null;
   severity: string | null;
 }
 

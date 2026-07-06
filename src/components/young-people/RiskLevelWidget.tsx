@@ -33,7 +33,7 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
       .single();
 
     if (data) {
-      setLatestAssessment(data);
+      setLatestAssessment(data as any);
     }
     setLoading(false);
   };
@@ -92,7 +92,7 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
     );
   }
 
-  const riskPercentage = (latestAssessment.risk_score / 40) * 100;
+  const riskPercentage = ((latestAssessment.risk_score ?? 0) / 40) * 100;
 
   return (
     <Card className="h-full">
@@ -104,7 +104,7 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
               Current Risk Level
             </CardTitle>
             <CardDescription className="mt-1">
-              Last assessed {format(new Date(latestAssessment.assessment_date), "PP")}
+              Last assessed {latestAssessment.assessment_date ? format(new Date(latestAssessment.assessment_date), "PP") : "—"}
             </CardDescription>
           </div>
           {latestAssessment.level_change_flag && (
@@ -134,7 +134,7 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
                 strokeWidth="10"
                 fill="none"
                 strokeDasharray={`${(riskPercentage / 100) * 377} 377`}
-                className={getRiskGaugeColor(latestAssessment.risk_level)}
+                className={getRiskGaugeColor(latestAssessment.risk_level ?? "")}
                 strokeLinecap="round"
               />
             </svg>
@@ -146,8 +146,8 @@ export function RiskLevelWidget({ youngPersonId }: RiskLevelWidgetProps) {
         </div>
 
         <div className="text-center space-y-3">
-          <Badge variant={getRiskColor(latestAssessment.risk_level)} className="text-sm px-4 py-1.5 font-semibold">
-            {latestAssessment.risk_level} Risk
+          <Badge variant={getRiskColor(latestAssessment.risk_level ?? "")} className="text-sm px-4 py-1.5 font-semibold">
+            {latestAssessment.risk_level ?? "Unknown"} Risk
           </Badge>
           {latestAssessment.previous_level && (
             <p className="text-sm text-muted-foreground">

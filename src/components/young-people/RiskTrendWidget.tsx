@@ -28,7 +28,7 @@ export function RiskTrendWidget({ youngPersonId }: RiskTrendWidgetProps) {
       .limit(12);
 
     if (data) {
-      setAssessments(data);
+      setAssessments(data as any);
     }
     setLoading(false);
   };
@@ -69,7 +69,7 @@ export function RiskTrendWidget({ youngPersonId }: RiskTrendWidgetProps) {
   }
 
   const chartData = assessments.map((assessment) => ({
-    date: format(new Date(assessment.assessment_date), "MMM dd"),
+    date: assessment.assessment_date ? format(new Date(assessment.assessment_date), "MMM dd") : "—",
     score: assessment.risk_score,
     level: assessment.risk_level
   }));

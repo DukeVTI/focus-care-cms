@@ -56,7 +56,7 @@ export default function CalendarScheduling() {
       .lte("event_date", end)
       .order("event_date")
       .order("start_time");
-    if (data) setEvents(data);
+    if (data) setEvents(data as any);
   };
 
   const filteredEvents = useMemo(() => {
